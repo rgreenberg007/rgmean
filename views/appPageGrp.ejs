@@ -1,0 +1,212 @@
+<!doctype html>
+<html ng-app="scotchTodo">
+    
+<head X-Content-Type-Options: nosniff>
+        <base href="/" />
+         <!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+
+    <!-- script src="/js/controllers/main.js"></script --> <!-- load up our controller -->
+    <script>
+    angular.module('toDoGrpController', [])
+
+	// inject the Todo service factory into our controller
+	.controller('mainController', ['$scope','$http','toDoGrps', function($scope, $http, toDoGrps) {
+		console.log("toDoGrpControllere mainController reached");
+		$scope.formData = {};
+		$scope.loading = true;
+
+		// GET =====================================================================
+		// when landing on the page, get all todos and show them
+		// use the service to get all the todos
+        toDoGrps.get()
+			.success(function(data) {
+				console.log("mainController ToDoGrps.get success");
+                $scope.toDoGrps = data;
+				$scope.loading = false;
+			});
+
+		// CREATE ==================================================================
+		// when submitting the add form, send the text to the node API
+		$scope.createToDoGrp = function() {
+            console.log("mainController createToDoGrp ");
+			// validate the formData to make sure that something is there
+			// if form is empty, nothing will happen
+			if ($scope.formData.grpName != undefined) {
+				$scope.loading = true;
+
+                // call the create function from our service (returns a promise object)
+                console.log("$scope.formData: " + JSON.stringify($scope.formData) );
+                toDoGrps.create($scope.formData)
+
+					// if successful creation, call our get function to get all the new todos
+					.success(function(data) {
+						$scope.loading = false;
+						$scope.formData = {}; // clear the form so our user is ready to enter another
+						$scope.toDoGrps = data; // assign our new list of todos
+					});
+			}
+		};
+
+		// DELETE ==================================================================
+		// delete a todo after checking it
+        $scope.deleteToDoGrp = function(id) {
+			$scope.loading = true;
+
+			toDoGrps.delete(id)
+				// if successful creation, call our get function to get all the new todos
+				.success(function(data) {
+					$scope.loading = false;
+					$scope.toDoGrps = data; // assign our new list of todos
+				});
+		};
+	}]);
+</script>
+
+    <!-- script src="/js/services/todos.js"></script --> <!-- load our todo service -->
+<script>
+angular.module('toDoGrpService', [])
+
+// super simple service
+// each function returns a promise object 
+.factory('toDoGrps', ['$http',function($http) {
+    return {
+        get : function() {
+            console.log("service toDoGrp get");
+            return $http.get('/api/toDoGrps');
+        },
+        create : function(toDoGrpData) {
+            console.log("appPageGrp.ejs: service toDoGrp create" + JSON.stringify(toDoGrpData) );
+            console.log("appPageGrp.ejs: service toDoGrp create" + JSON.stringify("<%= user.local.email %>") );
+            
+            toDoGrpData.screenName = "<%= user.local.screenName %>";
+            toDoGrpData.ownerID = "<%= user.local.email %>";
+            return $http.post('/api/toDoGrps', toDoGrpData);
+
+        },
+        delete : function(id) {
+            console.log("service toDoGrp delete");
+            return $http.delete('/api/toDoGrps/' + id);
+        }
+    }
+}]);
+</script>
+
+    <!-- script src="/js/core.js/"></script --> <!-- load our main application -->
+<script>
+angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
+</script>
+
+    <title>Lists </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <style>
+        body         { padding-top:80px; word-wrap:break-word; }
+    </style>
+   
+</head>
+<body>
+
+    <div id='main'>
+        <nav class="navbar-fluid navbar-default navbar-fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#"> appPageGrp RG's List App! </a>
+                <p class="navbar-text"> Lists your way!</p>
+                <!-- div id='userLogin' ng-controller="usercontroller" -->
+
+                <% if (user.local.screenName) { %>
+                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
+                    <p class="navbar-right navbar-text" ><a href="/profile" >profile</a></p>
+                    <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
+                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
+                                  
+                <% } else { %>
+                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
+                    <p class="navbar-right navbar-text">Guest User</p>
+                <% } %>
+
+            </div>
+        </nav>
+        <div ng-view>
+
+            <div ng-controller="mainController">
+                <div class="container">
+                        
+                    <!-- HEADER AND TODO COUNT -->
+                    <div class="jumbotron text-center">
+                        <h1>RG's List App Groups <span class="label label-info">{{ toDoGrps.length }}</span></h1>
+                    </div>
+                                  
+                    <!-- TODO LIST -->
+                    <% var curUser = ""; %>
+                    <div id="toDoGrp-list" class="problemrow">
+                    
+                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                        <div>
+                            <table border="1" cellspacing="0" cellpadding="4">
+                                <tr>
+                                        <th>Operations</th> 
+                                        <th>Group Name</th>
+                                        <th>Author</th>
+                                        <th>ownerID</th>
+                                        <th>Public</th>
+                                        <th>More options</th>
+                                        </tr>
+                            
+                            <!-- LOOP OVER THE TODOS IN $scope.todos -->
+                            <tbody class="problemcheckbox" ng-repeat="toDoGrp in toDoGrps">
+                                <!-- make a table here-->
+                                <!-- label -->
+                                
+                                <td> 
+                                        <button type="submit" class="btn btn-primary btn-sm" ng-click="deleteToDoGrp(toDoGrp._id)">Del</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" ng-click="changeToDoGrp(toDoGrp._id)">Chg</button>
+                                   
+                                </td>
+                                <!-- td><a href="deleteTodo(todo._id)">Del</a></td -->
+                                <!-- td><input type="checkbox" ng-click="deleteTodo(todo._id)"></td -->
+                                <td>{{ toDoGrp.grpName }}</td>
+                                <td>{{ toDoGrp.screenName }}</td>
+                                <td>{{ toDoGrp.ownerID }}</td>
+                                <td>{{ toDoGrp.public }}</td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="detailsToDoGrp(toDoGrp._id)">Details</button>
+                                </td>
+                                
+                                <!-- /label -->
+                            
+                            </tbody>
+                        
+                            <p class="text-center" ng-show="loading">
+                                <span class="fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                            
+                            </table>
+
+                        </div>
+                    </div>
+
+                        
+                    <!-- FORM TO CREATE TODOS -->
+                    <div id="toDoGrp-form" class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text-center">
+                            <form>
+                                <div class="form-group">
+                        
+                                    <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                                    <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.grpName">
+                                </div>
+                        
+                                <!-- createToDo() WILL CREATE NEW TODOS -->
+                                <button type="submit" class="btn btn-primary btn-lg" ng-click="createToDoGrp()">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- /div -->
+        
+</body>
+</html>

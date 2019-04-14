@@ -1,18 +1,38 @@
+var path = require('path');
+var Todo = require('./models/todo');
+var toDoGrp = require('./models/toDoGrp');
+
 module.exports = function(app, passport) {
 
 // normal routes ===============================================================
 
-    // show the home page (will also have our login links)
+    // show the home page ?  (will also have our login links)
     app.get('/', function(req, res) {
         res.render('index.ejs');
     });
 
     // PROFILE SECTION =========================
+    // RG: need to bring up profile from a link near logout.
     app.get('/profile', isLoggedIn, function(req, res) {
         res.render('profile.ejs', {
             user : req.user
         });
     });
+
+    // App starting page once logged in or if already logged in =========================
+    app.get('/appPage1', isLoggedIn, function(req, res) {
+        res.render('appPage1.ejs', {
+            user : req.user
+        });
+    });
+
+    // App starting page once logged in or if already logged in =========================
+    app.get('/appPageGrp', isLoggedIn, function(req, res) {
+        res.render('appPageGrp.ejs', {
+            user : req.user
+        });
+    });
+
 
     // LOGOUT ==============================
     app.get('/logout', function(req, res) {
@@ -33,7 +53,7 @@ module.exports = function(app, passport) {
 
         // process the login form
         app.post('/login', passport.authenticate('local-login', {
-            successRedirect : '/profile', // redirect to the secure profile section
+            successRedirect : '/appPageGrp', // '/appPage1', // '/profile', // redirect to the secure profile section
             failureRedirect : '/login', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }));
@@ -46,7 +66,7 @@ module.exports = function(app, passport) {
 
         // process the signup form
         app.post('/signup', passport.authenticate('local-signup', {
-            successRedirect : '/profile', // redirect to the secure profile section
+            successRedirect : '/appPage1', // '/profile', // redirect to the secure profile section
             failureRedirect : '/signup', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }));
@@ -59,7 +79,7 @@ module.exports = function(app, passport) {
         // handle the callback after facebook has authenticated the user
         app.get('/auth/facebook/callback',
             passport.authenticate('facebook', {
-                successRedirect : '/profile',
+                successRedirect : '/appPage1', // '/profile',
                 failureRedirect : '/'
             }));
 
@@ -71,7 +91,7 @@ module.exports = function(app, passport) {
         // handle the callback after twitter has authenticated the user
         app.get('/auth/twitter/callback',
             passport.authenticate('twitter', {
-                successRedirect : '/profile',
+                successRedirect : '/appPage1', // '/profile',
                 failureRedirect : '/'
             }));
 
@@ -84,7 +104,7 @@ module.exports = function(app, passport) {
         // the callback after google has authenticated the user
         app.get('/auth/google/callback',
             passport.authenticate('google', {
-                successRedirect : '/profile',
+                successRedirect : '/appPage1', // '/profile',
                 failureRedirect : '/'
             }));
 
@@ -97,7 +117,7 @@ module.exports = function(app, passport) {
             res.render('connect-local.ejs', { message: req.flash('loginMessage') });
         });
         app.post('/connect/local', passport.authenticate('local-signup', {
-            successRedirect : '/profile', // redirect to the secure profile section
+            successRedirect : '/appPage1', // '/profile', // redirect to the secure profile section
             failureRedirect : '/connect/local', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }));
@@ -151,6 +171,7 @@ module.exports = function(app, passport) {
         var user            = req.user;
         user.local.email    = undefined;
         user.local.password = undefined;
+        user.local.screenName    = undefined;
         user.save(function(err) {
             res.redirect('/profile');
         });
@@ -183,6 +204,111 @@ module.exports = function(app, passport) {
         });
     });
 
+    // change profile
+    app.post('/changeProfile', isLoggedIn, function(req, res) {
+        console.log("req.body: " + JSON.stringify(req.body));
+        var user            = req.user;
+        //user.local.email    = undefined;
+        //user.local.password = undefined;
+        user.local.screenName    = req.body.screenName; //"newname";
+        user.save(function(err) {
+            res.redirect('/appPage1');
+        });
+    });
+
+    // toDo list stuff
+
+    // get all todos
+    app.get('/api/todos', function (req, res) {
+        // use mongoose to get all todos in the database
+        getTodos(res);
+    });
+
+    // create todo and send back all todos after creation
+    app.post('/api/todos', function (req, res) {
+        console.log("routes.js: app.post /api/todos about to create");
+        console.log("req.body.text: " + req.body.text);
+        console.log("req.body.screenName: " + req.body.screenName);
+        //console.log("res.body: " + JSON.stringify(res.body));
+
+        // create a todo, information comes from AJAX request from Angular
+        Todo.create({
+           text: req.body.text,
+           //text: {"item": "item newone", "screenName": "nuts"},
+           //screenName: "whoit",   
+           screenName: req.body.screenName,
+           ownerID: req.body.ownerID,
+           done: false
+        }, function (err, todo) {
+            if (err)
+                res.send(err);
+
+            // get and return all the todos after you create another
+            getTodos(res);
+        });
+    });
+
+    // delete a todo
+    app.delete('/api/todos/:todo_id', function (req, res) {
+        Todo.remove({
+            _id: req.params.todo_id
+        }, function (err, todo) {
+            if (err)
+                res.send(err);
+
+            getTodos(res);
+        });
+    });
+
+    // get all todos
+    app.get('/api/toDoGrps', function (req, res) {
+        // use mongoose to get all todos in the database
+        getToDoGrps(res);
+    });
+
+    // create todo and send back all todos after creation
+    app.post('/api/toDoGrps', function (req, res) {
+        console.log("routes.js: app.post /api/toDoGrps about to create");
+        console.log("req.body.grpName: " + req.body.grpName);
+        console.log("req.body.screenName: " + req.body.screenName);
+        //console.log("res.body: " + JSON.stringify(res.body));
+
+        // create a todo, information comes from AJAX request from Angular
+        toDoGrp.create({
+           grpName: req.body.grpName,
+           //text: {"item": "item newone", "screenName": "nuts"},
+           //screenName: "whoit",   
+           screenName: req.body.screenName,
+           public: 'Y',
+           ownerID: req.body.ownerID,
+           other: "other placeholder",
+           done: false
+        }, function (err, toDoGrp) {
+            if (err)
+                res.send(err);
+
+            // get and return all the todos after you create another
+            getToDoGrps(res);
+        });
+    });
+
+    // delete a todo
+    app.delete('/api/toDoGrps/:toDoGrp_id', function (req, res) {
+        toDoGrp.remove({
+            _id: req.params.toDoGrp_id
+        }, function (err, toDoGrp) {
+            if (err)
+                res.send(err);
+
+            getToDoGrps(res);
+        });
+    });
+
+    // application -------------------------------------------------------------
+    //??? ??? 
+    //app.get('*', function (req, res) {
+      //  res.sendFile(__dirname + '../views/toDoView.ejs'); // 
+    //});
 
 };
 
@@ -193,3 +319,28 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/');
 }
+
+
+function getTodos(res) {
+    Todo.find(function (err, todos) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err) {
+            res.send(err);
+        }
+
+        res.json(todos); // return all todos in JSON format
+    });
+};
+
+function getToDoGrps(res) {
+    toDoGrp.find(function (err, toDoGrps) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err) {
+            res.send(err);
+        }
+
+        res.json(toDoGrps); // return all todos in JSON format
+    });
+};

@@ -5,29 +5,39 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <style>
-        body         { padding-top:80px; }
+        body         { padding-top:80px; word-wrap:break-word; }
     </style>
 </head>
 <body>
-<div class="container">
 
-    <div class="jumbotron text-center">
-        <h1><span class="fa fa-lock"></span> Node Authentication</h1>
+        <div id='main'>
+                <nav class="navbar-fluid navbar-default navbar-fixed-top">
+                    <div class="container">
+                            <a class="navbar-brand" href="#"> index.ejs RG's List App! </a>
+                            <p class="navbar-text"> index.ejs Lists your way!</p>
+                            <!-- div id='userLogin' ng-controller="usercontroller" -->
+                            <% if (typeof(user) == 'undefined') { %>
+                                <p class="navbar-right navbar-text" ><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                                <p class="navbar-right navbar-text">User: Guest</p>
+                                <% } else { %>
+                            <% if (user.local.email) { %>
+                                <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
+                                <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
+                                <p class="navbar-right navbar-text">Logged in as: <%= user.local.email %></p>
+                                  
+                            <% } else { %>
+                                <p class="navbar-right navbar-text" ><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                                <p class="navbar-right navbar-text">Guest User</p>
+                            <% } %>
+                            <% } %>
 
-        <p>Login or Register with:</p>
-
-        <a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-        <a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
-        <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-        <a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
-        <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
-    </div>
-
-    <div class="text-center">
-        <p>A demo by <a href="http://scotch.io">Scotch</a>.</p>
-        <p>Visit the <a href="http://scotch.io/tutorials/javascript/easy-node-authentication-setup-and-local">tutorial</a>.</p>
-    </div>
-
-</div>
+                    </div>
+                </nav>
+                <div ng-view>
+                    <p>Gets replaced - with general stuff and guest stuff because user just reached the site or just logged out</p>
+                    
+                </div>
+            </div>
+        </div>
 </body>
 </html>

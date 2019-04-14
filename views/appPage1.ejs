@@ -1,0 +1,214 @@
+<!doctype html>
+<html ng-app="scotchTodo">
+    
+<head X-Content-Type-Options: nosniff>
+        <base href="/" />
+         <!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+
+    <!-- script src="/js/controllers/main.js"></script --> <!-- load up our controller -->
+    <script>
+    angular.module('todoController', [])
+
+	// inject the Todo service factory into our controller
+	.controller('mainController', ['$scope','$http','Todos', function($scope, $http, Todos) {
+		console.log("mainController reached");
+		$scope.formData = {};
+		$scope.loading = true;
+
+		// GET =====================================================================
+		// when landing on the page, get all todos and show them
+		// use the service to get all the todos
+		Todos.get()
+			.success(function(data) {
+				console.log("mainController Todos.get success");
+				$scope.todos = data;
+				$scope.loading = false;
+			});
+
+		// CREATE ==================================================================
+		// when submitting the add form, send the text to the node API
+		$scope.createTodo = function() {
+			console.log("mainController createTodo ");
+			// validate the formData to make sure that something is there
+			// if form is empty, nothing will happen
+			if ($scope.formData.text != undefined) {
+				$scope.loading = true;
+
+                // call the create function from our service (returns a promise object)
+                console.log("$scope.formData: " + JSON.stringify($scope.formData) );
+                Todos.create($scope.formData)
+                //Todos.create({"text": "item yyy", "screenName": "who"})
+
+					// if successful creation, call our get function to get all the new todos
+					.success(function(data) {
+						$scope.loading = false;
+						$scope.formData = {}; // clear the form so our user is ready to enter another
+						$scope.todos = data; // assign our new list of todos
+					});
+			}
+		};
+
+		// DELETE ==================================================================
+		// delete a todo after checking it
+		$scope.deleteTodo = function(id) {
+			$scope.loading = true;
+
+			Todos.delete(id)
+				// if successful creation, call our get function to get all the new todos
+				.success(function(data) {
+					$scope.loading = false;
+					$scope.todos = data; // assign our new list of todos
+				});
+		};
+	}]);
+</script>
+
+    <!-- script src="/js/services/todos.js"></script --> <!-- load our todo service -->
+<script>
+angular.module('todoService', [])
+
+// super simple service
+// each function returns a promise object 
+.factory('Todos', ['$http',function($http) {
+    return {
+        get : function() {
+            console.log("service todo get");
+            return $http.get('/api/todos');
+        },
+        create : function(todoData) {
+            console.log("appPage1.ejs: service todo create" + JSON.stringify(todoData) );
+            console.log("appPage1.ejs: service todo create" + JSON.stringify("<%= user.local.email %>") );
+            //return $http.post('/api/todos', todoData);
+            //return $http.post('/api/todos', {"text":"item ddd"});
+            //return $http.post('/api/todos', {"text":"item eee", "screenName": "Who is This"});
+            //return $http.post('/api/todos', {"text":"item eee", "screenName": "<%= user.local.email %>" } );
+            todoData.screenName = "<%= user.local.screenName %>";
+            todoData.ownerID = "<%= user.local.email %>";
+            return $http.post('/api/todos', todoData);
+
+        },
+        delete : function(id) {
+            console.log("service todo delete");
+            return $http.delete('/api/todos/' + id);
+        }
+    }
+}]);
+</script>
+
+    <!-- script src="/js/core.js/"></script --> <!-- load our main application -->
+<script>
+angular.module('scotchTodo', ['todoController', 'todoService']);
+</script>
+
+    <title>Lists </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <style>
+        body         { padding-top:80px; word-wrap:break-word; }
+    </style>
+   
+</head>
+<body>
+
+    <div id='main'>
+        <nav class="navbar-fluid navbar-default navbar-fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#"> appPage1 RG's List App! </a>
+                <p class="navbar-text"> Lists your way!</p>
+                <!-- div id='userLogin' ng-controller="usercontroller" -->
+
+                <% if (user.local.screenName) { %>
+                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
+                    <p class="navbar-right navbar-text" ><a href="/profile" >profile</a></p>
+                    <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
+                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
+                                  
+                <% } else { %>
+                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
+                    <p class="navbar-right navbar-text">Guest User</p>
+                <% } %>
+
+            </div>
+        </nav>
+        <div ng-view>
+
+            <div ng-controller="mainController">
+                <div class="container">
+                        
+                    <!-- HEADER AND TODO COUNT -->
+                    <div class="jumbotron text-center">
+                        <h1>RG's List App  <span class="label label-info">{{ todos.length }}</span></h1>
+                    </div>
+                                  
+                    <!-- TODO LIST -->
+                    <% var curUser = ""; %>
+                    <div id="todo-list" class="problemrow">
+                    
+                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                        <div>
+                            <table border="1" cellspacing="0" cellpadding="4">
+                                <tr>
+                                        <th>Operations</th> 
+                                        <th>List item</th>
+                                        <th>Author</th>
+                                        <th>ownerID</th>
+                                        <th>More options</th>
+                                        </tr>
+                            
+                            <!-- LOOP OVER THE TODOS IN $scope.todos -->
+                            <tbody class="problemcheckbox" ng-repeat="todo in todos">
+                                <!-- make a table here-->
+                                <!-- label -->
+                                
+                                <td> 
+                                        <button type="submit" class="btn btn-primary btn-sm" ng-click="deleteTodo(todo._id)">Del</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" ng-click="changeTodo(todo._id)">Chg</button>
+                                   
+                                </td>
+                                <!-- td><a href="deleteTodo(todo._id)">Del</a></td -->
+                                <!-- td><input type="checkbox" ng-click="deleteTodo(todo._id)"></td -->
+                                <td>{{ todo.text }}</td>
+                                <td>{{ todo.screenName }}</td>
+                                <td>{{ todo.ownerID }}</td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="detailsTodo(todo._id)">Details</button>
+                                </td>
+                                
+                                <!-- /label -->
+                            
+                            </tbody>
+                        
+                            <p class="text-center" ng-show="loading">
+                                <span class="fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                            
+                            </table>
+
+                        </div>
+                    </div>
+
+                        
+                    <!-- FORM TO CREATE TODOS -->
+                    <div id="todo-form" class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text-center">
+                            <form>
+                                <div class="form-group">
+                        
+                                    <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+                                    <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
+                                </div>
+                        
+                                <!-- createToDo() WILL CREATE NEW TODOS -->
+                                <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- /div -->
+        
+</body>
+</html>

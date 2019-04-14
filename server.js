@@ -20,7 +20,20 @@ var session      = require('express-session');
 var configDB = require('./config/database.js');
 
 // configuration ===============================================================
-mongoose.connect(configDB.url); // connect to our database
+//mongoose.connect(configDB.url); // connect to our database
+
+// Here we find an appropriate database to connect to, defaulting to
+// localhost if we don't find one.  
+var uristring = process.env.MONGODB_URI || configDB.url;
+// Makes connection asynchronously.  Mongoose will queue up database
+// operations and release them when the connection is complete.
+mongoose.connect(uristring, function (err, res) {
+    if (err) { 
+      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+    } else {
+      console.log ('Succeeded connected to: ' + uristring);
+    }
+  });
 
 require('./config/passport')(passport); // pass passport for configuration
 

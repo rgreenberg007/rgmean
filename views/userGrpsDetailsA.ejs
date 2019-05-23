@@ -1,0 +1,271 @@
+<!doctype html>
+<html ng-app="scotchTodo" lang="en">
+<head X-Content-Type-Options: nosniff>
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" -->
+
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
+    <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+
+    <script>
+    angular.module('userGrpsDetailsController', [])
+
+	.controller('mainController', ['$scope','$http','userGrpsDetails', function($scope, $http, userGrpsDetails) {
+		console.log("userGrpsDetailsA.ejs: userGrpsDetailsController mainController reached");
+		$scope.formData = {};
+        $scope.loading = true;
+        $scope.myUserGrpsTableParams = {};
+        $("#grpnametaken").hide();
+        //var userEmail = "<!-- %= user.local.email % -->";
+        //console.log("userGrpsDetails.ejs: userEmail: ", userEmail);
+
+		// GET =====================================================================
+        userGrpsDetails.get()
+			.success(function(data) {
+				console.log("userGrpsDetails.ejs: mainController userGrpsDetails.get success");
+                $scope.userGrpsDetails = data;
+                $scope.loading = false;
+                $("#grpnametaken").hide();
+            });
+        // CREATE ==================================================================
+        $scope.createUserGrpDetail = function() {
+            console.log("userGrpsDetailsA.ejs:  mainController createUserGrpDetail ");
+			// validate the formData to make sure that something is there
+			// if form is empty, nothing will happen
+			if ($scope.formData.grp != undefined) {
+                $scope.loading = true;
+                //console.log("userGrpsDetailsA.ejs: user.local.email = " + <% user.local.email %> );
+                //$scope.formData.email = <% user.local.email %> ; // user.local.email;
+                
+                //$scope.formData.grpOwner = 'Y';
+                // call the create function from our service (returns a promise object)
+                console.log("userGrpsDetailsA.ejs: $scope.formData: " + JSON.stringify($scope.formData) );
+                //userGrps.create( {"grp":$scope.userGrpName, "grpOwner":"Y"} )
+                userGrpsDetails.create($scope.formData)
+                    .error(function(data) {
+                        $scope.loading = false;
+                        console.log("userGrpsDetailsA.ejs: createUserGrpDetail ERROR data: " + JSON.stringify(data) );
+                        console.log("userGrpsDetailsA.ejs: createUserGrpDetail ERROR data.message: " + data.message );
+                        message = data.message;
+                        $("#grpnametaken").show();
+
+                    })
+					.success(function(data) {
+						$scope.loading = false;
+                        $scope.formData = {}; // clear the form so our user is ready to enter another
+                        //console.log("userGrpsDetailsA.ejs: createUserGrpDetail $scope.userGrpsDetails: " + JSON.stringify($scope.userGrpsDetails) );
+                        $scope.userGrpsDetails = data; // 
+                        $("#grpnametaken").hide();
+                        console.log("userGrpsDetailsA.ejs: createUserGrpDetail $scope.userGrpsDetails: " + JSON.stringify($scope.userGrpsDetails) );
+                });
+			}
+        };
+
+        $scope.deleteGrpDetail = function(grpName) {
+            console.log("userGrpsDetailsA.ejs:  mainController deleteGrpDetail grpName: " + grpName);
+            $scope.loading = true;
+            userGrpsDetails.delGrpDetail(grpName)
+				.success(function(data) {
+					$scope.loading = false;
+					$scope.formData = {}; // clear the form so our user is ready to enter another
+                    $scope.userGrpsDetails = data; // 
+                    $("#grpnametaken").hide();
+            });
+        };
+	}]);
+</script>
+
+<script>
+angular.module('userGrpsDetailsService', [])
+
+.factory('userGrpsDetails', ['$http',function($http) {
+    return {
+        get : function() {
+            console.log("userGrpsDetailsA.ejs: service userGrpsDetails get");
+            return $http.get('/api/userGrpsDetails');
+        },
+        create : function(Data) {
+            console.log("userGrpsDetailsA.ejs: service userGrpsDetails create");
+            return $http.post('/api/userGrpDetailA', Data);
+            //return $http.get('/api/users/' + Data.grp);
+        },
+        delete : function(id) {
+            console.log("userGrpsDetailsA.ejs: service userGrps delete");
+            return $http.delete('/api/userGrps/' + id);
+        } ,
+        change : function(id) {
+            console.log("userGrpsDetailsA.ejs: service userGrps change");
+            //return $http.get('/api/users/grp=' + id);
+            return $http.get('/api/users/' + id); // id is a grp name
+        },
+        test1 : function(id) {
+            console.log("userGrpsDetailsA.ejs: service userGrps test1");
+            //return $http.get('/api/users/grp=' + id);
+            return $http.get('/api/users/test1/' + id); // id is a grp name
+        },
+        test2 : function(id) {
+            console.log("userGrpsDetailsA.ejs: service userGrps test2");
+            //return $http.get('/api/users/grp=' + id);
+            return $http.get('/api/users/test2/' + id); // id is a grp name
+        },
+        deleteUserFromGrp : function(Data) {
+            return $http.post('/api/userGrpsDelUser', Data);
+        },
+        detOfGrp  : function(id) {
+            console.log("userGrpsDetails.ejs:  detOfGrp");
+            //return $http.get('/api/users/grp=' + id);
+            return $http.get('/api/userGrps/detOfGrp/' + id); // id is a grp name
+        },
+        ownersOfGrp : function(id) {
+            console.log("userGrpsDetails.ejs:  ownersOfGrp");
+            //return $http.get('/api/users/grp=' + id);
+            return $http.get('/api/userGrps/ownersOfGrp/' + id); // id is a grp name
+        },
+        delGrp : function(id) {
+            console.log("userGrpsDetails.ejs:  delGrp");
+            return $http.get('/api/userGrps/deleteGrp/' + id); // id is a grp name
+        },
+
+        delGrpDetail : function(id) {
+            console.log("userGrpsDetails.ejs:  delGrpDetail");
+            
+            if (confirm('Are you sure to delete this record ?') == true) {
+                console.log(" yes delete");
+                return $http.get('/api/userGrps/deleteGrpDetail/' + id); // id is a grp name
+                
+            } else {
+                console.log(" No delete");
+                $scope.loading = false;
+            }
+            //return $http.get('/api/userGrps/deleteGrpDetail/' + id); // id is a grp name
+        }
+    }
+}]);
+</script>
+
+<script>
+angular.module('scotchTodo', ['userGrpsDetailsController', 'userGrpsDetailsService', 'angular.filter']);
+</script>
+    <title>Lists </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <style>
+        body         { padding-top:80px; word-wrap:break-word; }
+    </style>
+</head>
+<body>
+    <div id='main' class="container-fluid">
+        <nav class="navbar-fluid navbar-default navbar-fixed-top">
+            <div class="container">
+                <% if (user.local.email == "admin") { %>
+                    <a class="navbar-brand" href="#"> User Groups Admin </a>
+                <% } else { %>
+                    <a class="navbar-brand" href="#"> User Groups </a>
+                <% } %>
+                <p class="navbar-text"> Lists your way! RG's List App!</p>
+
+                <% if (user.local.screenName) { %>
+                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
+                    <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
+                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
+                    <% if (user.local.email == "admin") { %>
+                        <p class="navbar-right navbar-text" ><a href="/admin" >Admin</a></p>
+                    <% } %> 
+                <% } else { %>
+                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
+                    <p class="navbar-right navbar-text">Guest User</p>
+                <% } %>
+            </div>
+        </nav>
+        <div ng-viewx>
+            <div ng-controller="mainController">
+                <div class="container">
+                    <table><tr><td>                    
+                    <div ng-viewyvx id=myUserList3x>
+                        <div class="text-centerx">
+                            <h2>Number of Group: <span class="labelx label-infox">{{ userGrpsDetails.length }}</span></h2>
+                        </div>
+                        <div id="userGrps-listx">
+                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                            <div>
+                                <table ng-table="myUserGrpsTableParams" border="1" cellspacing="0" cellpadding="4">
+                                    <tr>
+                                        <th>Operation</th>
+                                        <th>Group</th>
+                                        <th>Details</th>
+                                        <th>Public</th>
+                                    </tr>
+                                    <tbody class="problemcheckboxx" ng-repeat="userGrpD in userGrpsDetails">
+                                        <td>
+                                                <button type="submit" class="btn btn-primary btn-sm" ng-click="deleteGrpDetail(userGrpD.grp)">Del</button>
+                                        </td>
+                                        <td>{{ userGrpD.grp }}</td>
+                                        <td>{{ userGrpD.detail }}</td>
+                                        <td>{{ userGrpD.private }}</td>
+                                    </tbody>
+                                    <p class="text-center" ng-show="loading">
+                                        <span class="fa fa-spinner fa-spin fa-3x"></span>
+                                    </p> 
+                                </table>
+                            </div>
+                        </div>
+                        </td><td>
+                    </div>
+                    <!-- /td></tr></table -->
+                <!-- /div -->
+            <!-- /div -->
+        <!-- /div -->
+ 
+        <div class="alert alert-danger" id="grpnametaken">Group Name already taken!</div>
+
+        <% if (message.length > 0) { %>
+            <div class="alert alert-danger"><%= message %></div>
+        <% } %>
+   
+                <!-- form action="/api/userGrpDetail" method="post" --> <!-- name="myForm" ng-controller="ExampleController" -->
+               <form name="myForm">
+                    <div class="form-group">
+                        <label>*Group Name</label>
+                        <input type="text" class="form-control" name="grp" ng-model="formData.grp" required placeholder="Group Name"
+                         maxlength="16" [pattern]="emailRegex" [ngClass]="{'invalid-textbox' :myForm.submitted && !grp.valid }">
+                    </div>
+                    <div class="form-group">
+                        <label>*Details</label>
+                        <input type="text" class="form-control" name="detail" ng-model="formData.detail"  placeholder="About this group"
+                        required maxlength="64" [ngClass]="{'invalid-textbox' :myForm.submitted && !password.detail }">
+                    </div>
+                    <div class="form-group">
+                        <label>*Private Y/N</label>
+                        <select type="text" class="form-control" name="private" ng-model="formData.private" required placeholder="N">
+                            <option value="Y">Y</option>
+                            <option value="N" selected>N</option>
+                        </select>
+                    </div>              
+                     <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
+                     <button type="submit" class="btn btn-primary btn-lg" ng-click="createUserGrpDetail()"
+                     ng-disabled="!myForm.grp.$dirty || !myForm.detail.$dirty || !myForm.private.$dirty ||
+                     (myForm.grp.$dirty && myForm.grp.$invalid) || (myForm.detail.$dirty && myForm.detail.$invalid) ||
+                     (myForm.private.$dirty && myForm.private.$invalid)">Add</button>
+              
+                </form>
+                    </td></tr></table>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</body>
+</html>

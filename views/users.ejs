@@ -1,0 +1,144 @@
+<!doctype html>
+<html ng-app="scotchTodo">
+    
+<head X-Content-Type-Options: nosniff>
+        <base href="/" />
+         <!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <script>
+    angular.module('usersController', [])
+
+	// inject the Todo service factory into our controller
+	.controller('mainController', ['$scope','$http','users', function($scope, $http, users) {
+		console.log("usersController mainController reached");
+		$scope.formData = {};
+		$scope.loading = true;
+
+		// GET =====================================================================
+        users.get()
+			.success(function(data) {
+				console.log("mainController users.get success");
+                $scope.users = data;
+				$scope.loading = false;
+            });
+        // CREATE ==================================================================
+        // DELETE ==================================================================
+        // delete a todo after checking it
+        $scope.deleteUser = function(id) {
+            if (confirm('Are you sure to delete this record ?') == true) {
+                console.log(" yes delete");
+                $scope.loading = true;
+			    users.delete(id)
+				    .success(function(data) {
+					    $scope.loading = false;
+					    $scope.users = data; // assign our new list of users
+				});
+            } else {
+                console.log(" No delete");
+            }
+		};
+	}]);
+</script>
+
+<script>
+angular.module('usersService', [])
+
+// super simple service
+// each function returns a promise object 
+.factory('users', ['$http',function($http) {
+    return {
+        get : function() {
+            console.log("service users get");
+            return $http.get('/api/users');
+        },
+        //create : function(toDoGrpData) {
+          //  toDoGrpData.screenName = "<%= user.local.screenName %>";
+          //  toDoGrpData.ownerID = "<%= user.local.email %>";
+          //  return $http.post('/api/toDoGrps', toDoGrpData);
+        //},
+        delete : function(id) {
+            console.log("service user delete, id = " + id);
+            return $http.delete('/api/users/' + id);
+        }
+    }
+}]);
+</script>
+
+<script>
+angular.module('scotchTodo', ['usersController', 'usersService']);
+</script>
+    <title>Lists </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <style>
+        body         { padding-top:80px; word-wrap:break-word; }
+    </style>
+</head>
+<body>
+    <div id='main'>
+        <nav class="navbar-fluid navbar-default navbar-fixed-top">
+            <div class="container">
+                <% if (user.local.email== "admin") { %>
+                    <a class="navbar-brand" href="#"> Users Admin RG's List App! </a>
+                <% } else { %>
+                    <a class="navbar-brand" href="#"> Users RG's List App! </a>
+                <% } %>
+                <p class="navbar-text"> Lists your way!</p>
+
+                <% if (user.local.screenName) { %>
+                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
+                    <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
+                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
+                    <% if (user.local.email== "admin") { %>
+                        <p class="navbar-right navbar-text" ><a href="/admin" >Admin</a></p>
+                    <% } %> 
+                <% } else { %>
+                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
+                    <p class="navbar-right navbar-text">Guest User</p>
+                <% } %>
+
+            </div>
+        </nav>
+        <div ng-view>
+            <div ng-controller="mainController">
+                <div class="container">
+                    <div class="jumbotron text-center">
+                        <h1>RG's List App Users: <span class="label label-info">{{ users.length }}</span></h1>
+                    </div>
+                    
+                    <div id="users-list" class="problemrow">
+                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                        <div>
+                            <table border="1" cellspacing="0" cellpadding="4">
+                                <tr>
+                                        <th>Operations</th> 
+                                        <th>Email</th>
+                                        <th>Screen Name</th>
+                                        <th>Private</th>
+                                        <th>Details</th>
+                                        </tr>
+                    
+                            <tbody class="problemcheckbox" ng-repeat="user in users">
+                                <td> 
+                                        <button type="submit" class="btn btn-primary btn-sm" ng-click="deleteUser(user._id)">Del</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" ng-click="changeToDoGrp(toDoGrp._id)">Chg</button>
+                                </td>
+                                <td>{{ user.local.email }}</td>
+                                <td>{{ user.local.screenName }}</td>
+                                <td>{{ user.local.private }}</td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="detailsToDoGrp(toDoGrp._id)">Details</button>
+                                </td>
+                            </tbody>
+                            <p class="text-center" ng-show="loading">
+                                <span class="fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -53,12 +53,6 @@ module.exports = function(app, passport) {
         });
     });
 
-    app.get('/myGrps', isLoggedIn, function(req, res) {
-        res.render('myGrps.ejs', {
-            user : req.user
-        });
-    });
-
     // show no longer be used - 
     app.get('/appPageGrpAdmin', isLoggedIn, function(req, res) {
         res.render('appPageGrpAdmin.ejs', {
@@ -134,12 +128,6 @@ module.exports = function(app, passport) {
         // show the signup form
         app.get('/signup', function(req, res) {
             res.render('signup.ejs', { message: req.flash('signupMessage') });
-        });
-
-        app.get('/chgPassword', function(req, res) {
-            console.log("chgPassowrd req.user: " + JSON.stringify(req.user));
-            var user            = req.user;
-            res.render('chgPassword.ejs', { user: user, message: req.flash('chgPasswordMessage') });
         });
 
         // process the signup form
@@ -310,7 +298,6 @@ module.exports = function(app, passport) {
         var user            = req.user;
         //var user2            = req.user;
         user.local.screenName    = req.body.screenNameNew; //"newname";
-        user.local.private    = req.body.privateNew;
         user.save(function(err) {
             if (err) {
                 //res.send(err);
@@ -327,19 +314,6 @@ module.exports = function(app, passport) {
                     // Some other error
                     return res.status(500).send(err);
                   }
-            } else {
-                res.redirect('/appPage1');
-            }
-        });
-    });
-
-    app.post('/chgPassword', isLoggedIn, function(req, res) {
-        console.log("req.body: " + JSON.stringify(req.body));
-        var user            = req.user;
-        user.local.password    = user.generateHash(req.body.password); //"new password";
-        user.save(function(err) {
-            if (err) {
-                    return res.status(500).send(err);  
             } else {
                 res.redirect('/appPage1');
             }
@@ -409,34 +383,25 @@ module.exports = function(app, passport) {
     app.get('/api/userGrps/deleteGrp/:grp_id', function (req, res) {
         console.log("routes.js: app.get /api/users/deleteGrp/:grp_id called with grp_id = " + req.params.grp_id);
         var mygrp_id = req.params.grp_id;
-        deleteGrp(mygrp_id, req, res);
+        deleteGrp(mygrp_id, res);
     });
 
     app.get('/api/userGrps/deleteGrpDetail/:grp_id', function (req, res) {
         console.log("routes.js: app.get /api/users/deleteGrpDetail/:grp_id called with grp_id = " + req.params.grp_id);
         var mygrp_id = req.params.grp_id;
-        deleteGrpDetail(mygrp_id, req, res);
+        deleteGrpDetail(mygrp_id, res);
     });
 
     app.get('/api/userGrpsA', function (req, res) {
-        getUserGrpsA(req.user.local.email,res);
+        getUserGrpsA(res);
     });
 
     app.get('/api/userGrpsDetails', function (req, res) {
-        //getUserGrpsDetails(res);
-        getUserGrpsDetailsForUser(req.user.local.email, res);
-    });
-
-    app.get('/api/userGrpsDetailsForUser', function (req, res) {
-        //console.log("/api/userGrpsDetailsForUser req.body: " + JSON.stringify(req.body));
-        console.log("/api/userGrpsDetailsForUser req.user: " + JSON.stringify(req.user));
-        //var user            = req.user;
-        getUserGrpsDetailsForUser(req.user.local.email, res);
+        getUserGrpsDetails(res);
     });
 
     app.get('/api/userGrpsDetailsA', function (req, res) {
-        //getUserGrpsDetailsA(res);
-        getUserGrpsDetailsForUser(req.user.local.email, res);
+        getUserGrpsDetailsA(res);
     });
 
     app.get('/api/users', function (req, res) {
@@ -528,8 +493,7 @@ module.exports = function(app, passport) {
             if (err)
                 res.send(err);
             // get and return all the UserGrps after you create another
-            //getUserGrps(res);
-            getUserGrpsA(req.user.local.email, res);
+            getUserGrps(res);
         });
     });
 
@@ -576,19 +540,7 @@ module.exports = function(app, passport) {
             } else {
                 // get and return all the UserGrpsDetails after you create another
                 console.log(" getUserGrpsDetails - no dup or error in creation");
-                userGrp.create({
-                    grp: req.body.grp,
-                    email: req.user.local.email,
-                    grpOwner: 'Y', // req.body.grpOwner,
-                    done: false
-                 }, function (err, userGrp) {
-                     if (err)
-                         res.send(err);
-                     // get and return all the UserGrps after you create another
-                     //getUserGrpsDetails(res);  //getUserGrps(res);
-                     getUserGrpsDetailsForUser(req.user.local.email, res);
-                 });
-                //getUserGrpsDetails(res);
+                getUserGrpsDetails(res);
             }
          });
      });
@@ -631,8 +583,7 @@ module.exports = function(app, passport) {
                      if (err)
                          res.send(err);
                      // get and return all the UserGrps after you create another
-                     //getUserGrpsDetailsA(res);  //getUserGrps(res);
-                     getUserGrpsDetailsForUser(req.user.local.email, res);
+                     getUserGrpsDetailsA(res);  //getUserGrps(res);
                  });
             }
          });
@@ -653,8 +604,7 @@ module.exports = function(app, passport) {
             if (err)
                 res.send(err);
             // get and return all the Users in Grps after you delete a user from a grp
-            //getUserGrps(res);
-            getUserGrpsA(req.user.local.email, res);
+            getUserGrps(res);
         });
     });
 
@@ -735,9 +685,7 @@ function getUsers3(usersToExclude, res) {
             res.send(err);
         }
         res.json(users); // return all todos in JSON format
-    //}).sort( {"local.screenName" : 1} ).where ({"local.email": {$nin: usersToExclude}});
-    //}).sort( {"local.screenName" : 1} ).where ({"local.email": {$nin: usersToExclude} , "private" : {$ne : "Y"} });
-}).sort( {"local.screenName" : 1} ).where ({ "local.private" : "N" , "local.email": {$nin: usersToExclude} } );
+    }).sort( {"local.screenName" : 1} ).where ({"local.email": {$nin: usersToExclude}});
     // { field: { $nin: [ <value1>, <value2> ... <valueN> ]} }
 };
 
@@ -822,7 +770,7 @@ function getUsersForGrp4(mygrp_id, res) {
         if (err) return res.send(err);
         usersToExclude = userGrps;
         for (var i = 0; i < usersToExclude.length; i++ ) {
-            console.log("routes.js: getUsersForGrp4 usersToExclude[i] = " + usersToExclude[i] );
+            console.log("routes.js: getUsersForGrp3 usersToExclude[i] = " + usersToExclude[i] );
         }
         getUsers4(usersToExclude, res);
     });
@@ -838,65 +786,17 @@ function getUserGrps(res) {
     }).sort( {grp : 1, email : 1} ) ;
 };
 
-function getUserGrpsA(myEmail, res) {
-    console.log("getUserGrpsA reached myEmail: " + myEmail);
-    if (myEmail != "admin") {
-        userGrp.find(function (err, userGrps) {
-            if (err) {
-                res.send(err);
-            }
-            res.json(userGrps); 
-        }).sort( {grp : 1, email : 1} ).where ( {email : myEmail, grpOwner : 'Y' }); 
-    } else {
-        userGrp.find(function (err, userGrps) {
-            if (err) {
-                res.send(err);
-            }
-            res.json(userGrps); 
-        }).sort( {grp : 1, email : 1} ) ;
-    }
-};
-
-function getUserGrpsDetails(res) {
-    userGrpDetail.find(function (err, userGrpsDetails) {
+function getUserGrpsA(res) {
+    //userGrp.find(function (err, userGrps) {
+    userGrp.find(function (err, userGrps) {
         if (err) {
             res.send(err);
         }
-        res.json(userGrpsDetails); 
-    }).sort( {grp : 1} );
+        res.json(userGrps); 
+    }).sort( {grp : 1, email : 1} ) ;
 };
 
-function getUserGrpsDetailsForUser(myEmail, res) {
-    console.log("getUserGrpsDetailsForUser reached myEmail: " + myEmail);
-    if (myEmail != "admin") {
-        var grpsToInclude;
-        var criteria = {'email': myEmail, grpOwner : 'Y'};
-        userGrp.distinct('grp', criteria, function (err, userGrps) {
-            if (err) return res.send(err);
-            grpsToInclude = userGrps;
-            for (var i = 0; i < grpsToInclude.length; i++ ) {
-                console.log("routes.js: getUserGrpsDetailsForUser grpsToInclude[i] = " + grpsToInclude[i] );
-            }
-            userGrpDetail.find(function (err, userGrpsDetails) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    res.json(userGrpsDetails); 
-                }
-            }).sort( {grp : 1} ).where ({"grp": {$in: grpsToInclude}});
-        });
-    } else {
-        userGrpDetail.find(function (err, userGrpsDetails) {
-            if (err) {
-                res.send(err);
-            } else {
-                res.json(userGrpsDetails); 
-            }
-        }).sort( {grp : 1} );
-    }
-};
-
-function getUserGrpsDetails_saved(res) {
+function getUserGrpsDetails(res) {
     userGrpDetail.find(function (err, userGrpsDetails) {
         if (err) {
             res.send(err);
@@ -915,46 +815,13 @@ function getUserGrpsDetailsA(res) {
 };
 
 function getUserGrpsB(mygrp_id, res) {
-    var grpDetail = "";
-    var grpPrivate = "";
-    userGrpDetail.find(function (err, userGrpsDetailsX) {
-        if (err) {
-            return res.send(err);
-        }
-        //res.json(userGrpsDetailsA); 
-        console.log("getUerGrpsB userGrpsDetailsX " + JSON.stringify(userGrpsDetailsX));
-        grpDetail = userGrpsDetailsX[0].detail;
-        grpPrivate = userGrpsDetailsX[0].private;
-
-        userGrp.find(function (err, userGrps) {
-            if (err) {
-                res.send(err);
-            }
-            userGrps[userGrps.length] = grpDetail;
-            userGrps[userGrps.length] = grpPrivate;
-            console.log("getUerGrpsB " + JSON.stringify(userGrps));
-            res.json(userGrps); 
-        }).sort( {grp : 1, email : 1} ).where ( {grp : mygrp_id} ) ;
-     
-    }).where ( {grp : mygrp_id} ) ;
-    
     //var query = { grp: mygrp_id };
-    ////userGrp.find(function (err, userGrps) {
-        ////if (err) {
-            ////res.send(err);
-        ////}
-        //console.log("getUerGrpsB userGrps[0] " + JSON.stringify(userGrps[0]));
-        //userGrps[0].push = {"grpDetail" : "details of grp goes here" }; //, "grpPrivate" : "private goes here"};
-        //userGrps[userGrps.length] = "details of grp goes here";
-        //userGrps[userGrps.length] = "private or not of grp goes here";
-        ////userGrps[userGrps.length] = grpDetail;
-        ////userGrps[userGrps.length] = grpPrivate;
-        //userGrps[0].grpDetail = "details of grp goes here";
-        //userGrps[0].grpPrivate = "private goes here";
-        //console.log("getUerGrpsB userGrps[0] " + JSON.stringify(userGrps[0]));
-        ////console.log("getUerGrpsB " + JSON.stringify(userGrps));
-        ////res.json(userGrps); 
-    ////}).sort( {grp : 1, email : 1} ).where ( {grp : mygrp_id} ) ;
+    userGrp.find(function (err, userGrps) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(userGrps); 
+    }).sort( {grp : 1, email : 1} ).where ( {grp : mygrp_id} ) ;
 };
 
 function getUserGrpOwners(mygrp_id, res) {
@@ -966,39 +833,27 @@ function getUserGrpOwners(mygrp_id, res) {
     }).sort( {grp : 1, email : 1} ).where ( {grp : mygrp_id, grpOwner : "Y"} ) ;
 };
 
-function deleteGrp(grp, req, res) {
+function deleteGrp(grp, res) {
     userGrp.remove({ grp : grp }, function (err, user) {
-        if (err) {
+        if (err)
             res.send(err);
-        } else {
-            //getUserGrpsA(res);
-            userGrpDetail.remove({ grp : grp }, function (err, user) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    // getUserGrpsDetails(res);
-                    getUserGrpsA(req.user.local.email,res);
-                }
-            });
-        }
+        getUserGrpsA(res);
     });
 };
 
-function deleteGrpDetail(grp, req, res) {
+function deleteGrpDetail(grp, res) {
     userGrpDetail.remove({ grp : grp }, function (err, user) {
         if (err)
             res.send(err);
-        //getUserGrpsDetails(res);
-        getUserGrpsDetailsForUser(req.user.local.email, res);
+        getUserGrpsDetails(res);
     });
 };
 
-function deleteGrpDetailA(grp, req, res) {
+function deleteGrpDetailA(grp, res) {
     userGrpDetail.remove({ grp : grp }, function (err, user) {
         if (err)
             res.send(err);
-        //getUserGrpsDetailsA(res);
-        getUserGrpsDetailsForUser(req.user.local.email, res);
+        getUserGrpsDetailsA(res);
     });
 };
 

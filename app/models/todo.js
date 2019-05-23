@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
-    text: {
+    listItem: {
         type: String,
-        default: 'text'
+        default: 'listItem'
     },
     ownerID: {
         type: String,
@@ -16,6 +16,14 @@ var userSchema = mongoose.Schema({
     other: {
         type: String,
         default: 'other'
+    },
+    grp: {
+        type: String, 
+        default: 'grp'
+    },
+    listName: {
+        type: String, 
+        default: 'listName'
     }
 });
 

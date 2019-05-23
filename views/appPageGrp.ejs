@@ -4,7 +4,12 @@
 <head X-Content-Type-Options: nosniff>
         <base href="/" />
          <!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    
+    <!-- Seem to need these for dropdown in nav bar but there should be a better way this messes other things up -->
+    <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" -->
+  <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script -->
+  <!-- script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script -->
 
     <!-- script src="/js/controllers/main.js"></script --> <!-- load up our controller -->
     <script>
@@ -32,7 +37,7 @@
             console.log("mainController createToDoGrp ");
 			// validate the formData to make sure that something is there
 			// if form is empty, nothing will happen
-			if ($scope.formData.grpName != undefined) {
+			if ($scope.formData.listName != undefined) {
 				$scope.loading = true;
 
                 // call the create function from our service (returns a promise object)
@@ -43,7 +48,7 @@
 					.success(function(data) {
 						$scope.loading = false;
 						$scope.formData = {}; // clear the form so our user is ready to enter another
-						$scope.toDoGrps = data; // assign our new list of todos
+						$scope.toDoGrps = data; // 
 					});
 			}
 		};
@@ -52,9 +57,7 @@
 		// delete a todo after checking it
         $scope.deleteToDoGrp = function(id) {
 			$scope.loading = true;
-
 			toDoGrps.delete(id)
-				// if successful creation, call our get function to get all the new todos
 				.success(function(data) {
 					$scope.loading = false;
 					$scope.toDoGrps = data; // assign our new list of todos
@@ -76,8 +79,8 @@ angular.module('toDoGrpService', [])
             return $http.get('/api/toDoGrps');
         },
         create : function(toDoGrpData) {
-            console.log("appPageGrp.ejs: service toDoGrp create" + JSON.stringify(toDoGrpData) );
-            console.log("appPageGrp.ejs: service toDoGrp create" + JSON.stringify("<%= user.local.email %>") );
+            console.log("appPageGrp.ejs: service toDoGrp create: " + JSON.stringify(toDoGrpData) );
+            console.log("appPageGrp.ejs: service toDoGrp create: " + JSON.stringify("<%= user.local.email %>") );
             
             toDoGrpData.screenName = "<%= user.local.screenName %>";
             toDoGrpData.ownerID = "<%= user.local.email %>";
@@ -106,20 +109,37 @@ angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
    
 </head>
 <body>
-
-    <div id='main'>
+    <div id='main' >
         <nav class="navbar-fluid navbar-default navbar-fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="#"> appPageGrp RG's List App! </a>
+                <% if (user.local.email== "admin") { %>
+                    <a class="navbar-brand" href="#"> RG's List App! </a>
+                <% } else { %>
+                    <a class="navbar-brand" href="#"> RG's List App! </a>
+                <% } %>
                 <p class="navbar-text"> Lists your way!</p>
-                <!-- div id='userLogin' ng-controller="usercontroller" -->
 
                 <% if (user.local.screenName) { %>
                     <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
                     <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
-                    <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
+                    
+                    <% if (user.local.email== "admin") { %>
+                        <p class="navbar-right navbar-text" ><a href="/admin" >Admin</a></p>
+                    <% } else { %>
+                        
+                        <p class="navbar-right navbar-text" ><a href="/myGrps" >My Groups</a></p>
+                        <!-- See stuff above needed to make bootstrap nav bar dropdown work but messes other -->
+                        <!-- p class="navbar-right navbar-text" >
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown">My Groups <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                    <li><a href="/userGrpsDetails" >Manage My Groups</a></li>
+                                    <li><a href="/userGrpsA">Manage Users in My Groups</a></li>
+                            </ul>
+                        </div>
+                        </p -->
+                    <% } %> 
                     <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
-                                  
                 <% } else { %>
                     <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
                     <p class="navbar-right navbar-text">Guest User</p>
@@ -146,7 +166,7 @@ angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
                             <table border="1" cellspacing="0" cellpadding="4">
                                 <tr>
                                         <th>Operations</th> 
-                                        <th>Group Name</th>
+                                        <th>List Name</th>
                                         <th>Author</th>
                                         <th>ownerID</th>
                                         <th>Public</th>
@@ -165,7 +185,7 @@ angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
                                 </td>
                                 <!-- td><a href="deleteTodo(todo._id)">Del</a></td -->
                                 <!-- td><input type="checkbox" ng-click="deleteTodo(todo._id)"></td -->
-                                <td>{{ toDoGrp.grpName }}</td>
+                                <td>{{ toDoGrp.listName }}</td>
                                 <td>{{ toDoGrp.screenName }}</td>
                                 <td>{{ toDoGrp.ownerID }}</td>
                                 <td>{{ toDoGrp.public }}</td>
@@ -185,16 +205,15 @@ angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
 
                         </div>
                     </div>
-
-                        
-                    <!-- FORM TO CREATE TODOS -->
+                     
+                    <!-- FORM TO CREATE new list via listName  -->
                     <div id="toDoGrp-form" class="row">
                         <div class="col-sm-8 col-sm-offset-2 text-center">
                             <form>
                                 <div class="form-group">
                         
                                     <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                                    <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.grpName">
+                                    <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.listName">
                                 </div>
                         
                                 <!-- createToDo() WILL CREATE NEW TODOS -->
@@ -206,7 +225,5 @@ angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
             </div>
         </div>
     </div>
-<!-- /div -->
-        
 </body>
 </html>

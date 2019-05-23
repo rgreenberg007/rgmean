@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
-    grpName: {
+    listName: {
         type: String, 
         default: 'grpName'
     },

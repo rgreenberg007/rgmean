@@ -185,19 +185,14 @@ angular.module('scotchTodo', ['userGrpsDetailsController', 'userGrpsDetailsServi
 <script>
 function checkPasswords() {
     console.log("signup.ejs: checkPasswords reached ");
-    //console.log("passsword:: " + $scope.formData.password + " 2: " + $scope.formData.password2);
-    console.log("passsword:: " + document.forms["myForm"]["password"].value );
-    console.log("passsword2:: " + document.forms["myForm"]["password2"].value );
-    //return false;
-    //if ($scope.formData.password != $scope.formData.password2) {
-    if (document.forms["myForm"]["password"].value != document.forms["myForm"]["password2"].value) {
+    if ($scope.formData.password != $scope.formData.password2) {
         console.log("signup.ejs: checkPasswords dont match! ");
         $("#passwordmismatch").show();
         return false;
     } else {
         $("#passwordmismatch").hide();
         console.log("signup.ejs: checkPasswords  match! ");
-        return true;
+        return false; // true;
     }
 }
 </script>
@@ -225,58 +220,49 @@ function checkPasswords() {
                             
                         <!-- form action="/signup" method="post" -->
                         <!-- form action="/signup" method="post" name="myForm" ng-controller="ExampleController" -->
-                        <!-- form  name="myForm" action="/signup" onsubmit="return checkPasswords()"  method="post" -->
-                        <!-- form  name="myForm" action="/signup" onsubmit="return validateForm()"  method="post" -->
-                        <form name="myForm" action="/signup" onsubmit="return checkPasswords()" method="post">
+                        <form  name="myForm" action="/signup" onsubmit="return checkPasswords()"  method="post">
                         <!-- form  name="myForm" -->
                             <div class="form-group">
                                 <label>Email</label> 
-                                <!-- note need to use type="email" then browser checks for valid email entered -->
-                                 <input type="email" class="form-control" name="email" placeholder="enter email" 
+                                 <input type="text" class="form-control" name="email" placeholder="enter email" 
                                 ng-model="formData.email"
-                                required  minlength="5" [pattern]="emailRegex" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !email.valid }">                                
+                                required  [pattern]="emailRegex" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !email.valid }">                                
                             </div>
                             <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" class="form-control" name="password" 
-                                    ng-model="formData.password"
-                                    required minlength="3" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !password.valid }">
+                                <label>Password</label>
+                                <input type="password" class="form-control" name="password" 
+                                ng-model="formData.password"
+                                required minlength="3" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !password.valid }">
                             </div>
                             <div class="form-group">
-                                    <label>Confirm Password</label>
-                                    <input type="password" class="form-control" name="password2" 
-                                    ng-model="formData.password2"
-                                    required minlength="3" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !password2.valid }">
+                                <label>Confirm Password</label>
+                                <input type="password" class="form-control" name="password2" 
+                                ng-model="formData.password2"
+                                required minlength="3" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !password2.valid }">
                             </div>
                             <div class="form-group">
-                                    <label>Screen Name</label>
-                                    <input type="text" class="form-control" name="screenName" placeholder="Screen Name" 
-                                    ng-model="formData.screenName"
-                                    required  [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !screenName.valid }">
-                            </div>
-                            <div class="form-group">
-                                <label>*Private Y/N</label>
-                                <select type="text" class="form-control" name="private" ng-model="formData.private" required placeholder="Y">
-                                <option value="Y" selected>Y</option>
-                                <option value="N" >N</option>
-                                </select>
+                                <label>Screen Name</label>
+                                <input type="text" class="form-control" name="screenName" placeholder="Screen Name" 
+                                ng-model="formData.screenName"
+                                required  [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !screenName.valid }">
                             </div>
                             <!-- button type="submit" class="btn btn-warning btn-lg">Signup</ -->
                             <!-- button type="submit" class="btn btn-primary btn-lg"
                             ng-disabled="!myForm.screenName.$dirty">Signup</button ng-click="createUser()" -->
-                            <!-- button type="submit" >Signup</button -->
                             <button type="submit" class="btn btn-warning btn-lg"  
                             ng-disabled="!myForm.email.$dirty
                             || !myForm.password.$dirty || !myForm.password2.$dirty
-                            || !myForm.screenName.$dirty || !myForm.private.$dirty ||
+                            || !myForm.screenName.$dirty ||
                             (myForm.email.$dirty && myForm.email.$invalid) || (myForm.password.$dirty && myForm.password.$invalid) ||
                             (myForm.password2.$dirty && myForm.password2.$invalid) ||
                             (myForm.screenName.$dirty && myForm.screenName.$invalid)"
                             >Signup</button>
-                        </form>   
+                        </form>
+                                    
                         <hr>
                         <p>Already have an account? <a href="/login">Login</a></p>
                         <p>Or go <a href="/">home</a>.</p>
+                            
                     </div>
                 </div>
             </div>

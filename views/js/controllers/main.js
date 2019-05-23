@@ -2,7 +2,7 @@ angular.module('todoController', [])
 
 	// inject the Todo service factory into our controller
 	.controller('mainController', ['$scope','$http','Todos', function($scope, $http, Todos) {
-		console.log("mainController reached");
+		console.log("under views mainController reached");
 		$scope.formData = {};
 		$scope.loading = true;
 
@@ -11,7 +11,7 @@ angular.module('todoController', [])
 		// use the service to get all the todos
 		Todos.get()
 			.success(function(data) {
-				console.log("mainController Todos.get success");
+				console.log("under views mainController Todos.get success");
 				$scope.todos = data;
 				$scope.loading = false;
 			});
@@ -19,7 +19,7 @@ angular.module('todoController', [])
 		// CREATE ==================================================================
 		// when submitting the add form, send the text to the node API
 		$scope.createTodo = function() {
-			console.log("mainController createTodos ");
+			console.log("under views mainController createTodos ");
 			// validate the formData to make sure that something is there
 			// if form is empty, nothing will happen
 			if ($scope.formData.text != undefined) {

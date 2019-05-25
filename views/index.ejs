@@ -1,43 +1,164 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <title>RG's List App</title>
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" -->
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style>
-        body         { padding-top:80px; word-wrap:break-word; }
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
     </style>
 </head>
-<body>
 
-        <div id='main'>
-                <nav class="navbar-fluid navbar-default navbar-fixed-top">
-                    <div class="container">
-                            <a class="navbar-brand" href="#"> RG's List App! </a>
-                            <p class="navbar-text"> Lists your way!</p>
-                            <!-- div id='userLogin' ng-controller="usercontroller" -->
-                            <% if (typeof(user) == 'undefined') { %>
-                                <p class="navbar-right navbar-text" ><a href="/login">Login</a> or <a href="/signup">Register</a></p>
-                                <p class="navbar-right navbar-text">User: Guest</p>
-                                <% } else { %>
-                            <% if (user.local.email) { %>
-                                <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
-                                <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
-                                <p class="navbar-right navbar-text">Logged in as: <%= user.local.email %></p>
-                                  
-                            <% } else { %>
-                                <p class="navbar-right navbar-text" ><a href="/login">Login</a> or <a href="/signup">Register</a></p>
-                                <p class="navbar-right navbar-text">Guest User</p>
-                            <% } %>
-                            <% } %>
-
-                    </div>
-                </nav>
-                <div ng-view>
-                    <p>Gets replaced - with general stuff and guest stuff because user just reached the site or just logged out</p>
-                    
-                </div>
+<body class="bg-secondary text-white">
+    <!-- div id='main' -->
+    <div id='main' class="container-fluid">
+        <!-- </div> bg-primary text-white" -->
+        <!-- nav class="navbar-fluid navbar-default navbar-fixed-top" -->
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top sticky-top">
+            <div class="container">
+                <!-- a class="navbar-brand" href="#"> RG's List App! </a -->
+                <p class="navbar-left navbar-text"> RG's List App! </p>
+                <p class="navbar-left navbar-text"> Lists your way!</p>
+                <!-- div id='userLogin' ng-controller="usercontroller" -->
+                <% if (typeof(user) == 'undefined') { %>
+                <p class="navbar-right navbar-text">User: Guest</p>
+                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                <% } else { %>
+                <% if (user.local.email) { %>
+                <p class="navbar-right navbar-text"><a href="/logout">Logout</a></p>
+                <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
+                <p class="navbar-right navbar-text">Logged in as: <%= user.local.email %></p>
+                <% } else { %>
+                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                <p class="navbar-right navbar-text">Guest User</p>
+                <% } %>
+                <% } %>
             </div>
+        </nav>
+        <div ng-view>
+            <h1>RG's List Application</h1>
+            <h3>Welcome to RG's MEAN Stack Application running on Heroku.</h3>
+            <p></p>
+            <p>This application is currently under development.</p>
+            <p>Features of this application are subject to change until a final release is made.</p>
+            <p>Basically this application allow users to create and manage lists.</p>
+            <p>This includes ranked lists such as top ten lists.</p>
+
+            <dl>
+                <dt>The Plan</dt>
+                <dd> - Anyone Registered can create a List.</dd>
+                <dd> - The Registered User that creates a List is the Owner of the List.</dd>
+                <dd> - List Owners have full control over their Lists.</dd>
+                <dd> - List Owners can change the Options for their Lists.</dd>
+                <dd> - List Owners can modify their Lists and Delete their Lists.</dd>
+                <dd>&nbsp</dd>
+                <dd> - Each List has the following Options.</dd>
+                <dd> - The Options control how the List works.</dd>
+                <dd>&nbsp</dd>
+                <dd> - Each List can be Public or Private.</dd>
+                <dd> - Public Lists can be seen by everyone.</dd>
+                <dd> - Each Private List is associated with one Group.</dd>
+                <dd> - Each Private List can only be seen by members of its associated Group.</dd>
+                <dd>&nbsp</dd>
+                <dd> - Each List has an Edit Control of Owner, Group or Anyone.</dd>
+                <dd> - A List with Edit Control set to Owner can only be edited by the Owner of the List.</dd>
+                <dd> - A List with Edit Control set to Group can only be edited by the members of the Group associated
+                    with the List.</dd>
+                <dd> - Anyone can edit a List when its Edit Control is set to Anyone.</dd>
+                <dd>&nbsp</dd>
+                <dd> - Each List has a Suggestion Control of Owner, Group, Anyone or None.</dd>
+                <dd> - A List with Suggestion Control set to Owner allows the Owner to suggest a new entry for the List.
+                </dd>
+                <dd> - A List with Suggestion Control set to Group allows the members of the Group associated with the
+                    List to suggest a new entry for the List.</dd>
+                <dd> - Anyone can suggest a new entry for a List when its Suggestion Control is set to Anyone.</dd>
+                <dd> - New entry suggestions are not available for a List when its Suggestion Control is set to None.
+                </dd>
+                <dd> - A User with Edit Control over a List can Promote a Suggestion to the List or Delete the
+                    Suggestion.</dd>
+                <dd>&nbsp</dd>
+                <dd> - Each List has a Vote Control of Owner, Group, Anyone or None.</dd>
+                <dd> - A List with Vote Control set to Owner allows the Owner to Vote on (or rank) the items of the
+                    List.</dd>
+                <dd> - A List with Vote Control set to Group allows the members of the Group associated with the List to
+                    Vote on (or rank) the items of the List.</dd>
+                <dd> - Anyone can Vote on the items of a List when its Vote Control is set to Anyone.</dd>
+                <dd> - Voting is not available for a List when its Vote Control is set to None.</dd>
+                <dd>&nbsp</dd>
+                <dd>About Users and Groups.</dd>
+                <dd> - Anyone can become a registered User.</dd>
+                <dd> - Each User is set to either Private or Public.</dd>
+                <dd> - Public Users can be placed into Groups by Group Owners.</dd>
+                <dd> - Private Users can only be placed into Groups by the User themsleves.</dd>
+                <dd> - Users can create Lists and Groups.</dd>
+                <dd> - When a User creates a new List, the User is set to the Owner of the List. </dd>
+                <dd> - (See above for more information concerning Lists.)</dd>
+                <dd> - When a User creates a new Group, the User is set to the Owner of the Group.</dd>
+                <dd> - Each Group is set to either Private or Public.</dd>
+                <dd> - The Group Owner of a given Group can Add (Public) Users to and Delete Users from the Group.</dd>
+                <dd> - Users can Add themselves into and Delete themselves from Public Groups.</dd>
+                <dd>&nbsp</dd>
+                <dd>Features.</dd>
+                <dd> - Create a New List.</dd>
+                <dd> - Suggest a new List Entry.</dd>
+                <dd> - Rank a List.</dd>
+                <dd>&nbsp</dd>
+            </dl>
+            <h2>Current features include the following.</h2>
+            <p></p>
+            <dl>
+                <dt>Register</dt>
+                <dd> - Allows set up of a new account. Email is the login. Email must be unique.</dd>
+                <dd> - ScreenName must also be unique.</dd>
+                <dd> - Private = Y means you control which groups you are in. </dd>
+                <dd> - Private = N means other users see you and can place you in their groups. </dd>
+                <dd> - Passwords are encrypted.</dd>
+                <dd> - No email is sent and the email field is only checked for valid formatting based on the Browser
+                    being used.</dd>
+            </dl>
+            <dl>
+                <dt>Login</dt>
+                <dd> - Username and Password must be entered to Login.</dd>
+            </dl>
+            <dl>
+                <dt>Profile</dt>
+                <dd> - From here the User can change their ScreenName, their Privacy setting and their Password.</dd>
+                <dd> - The User can also Remove themselves from the application (set of Registered Users.)</dd>
+            </dl>
+            <dl>
+                <dt>Logout</dt>
+                <dd> - Logs the User out and returns to the launch page as a Guest User.</dd>
+            </dl>
+            <dl>
+                <dt>My Groups</dt>
+                <dd> - Manage My Groups.</dd>
+                <dd> - Here you can see your Groups and Add new Groups.</dd>
+                <dd> - Manage Users in My Groups.</dd>
+                <dd> - Here the User can see the Details of a selected Group.</dd>
+                <dd> - The User can also Edit a selected Group.</dd>
+                <dd> - Editing allows for Add and Removing Users to/from the Group.</dd>
+                <dd> - Editing allows for Deleting the Group if it contains no users except for the Owner of the Group.</dd>
+            </dl>
+
+            <h2>Development information follows.</h2>
+            <p></p>
+            <p>Developed using Windows 10 - Visual Studio Code</p>
+            <p>MEAN Stack: MongoDB, Express, Angular, NodeJS </p>
+            <p>JQuery</p>
+            <p>Bootstrap 4</p>
+            <p></p>
         </div>
+    </div>
 </body>
+
 </html>

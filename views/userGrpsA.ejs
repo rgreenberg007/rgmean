@@ -426,10 +426,20 @@ angular.module('scotchTodo', ['userGrpsController', 'userGrpsService', 'angular.
                     
                     <div ng-viewyvx id=myUserList3>
                         <div class="text-centerx">
-                                <h2>Group Name: <span class="labelx label-infox">{{ userGrps2[0].grp }} </span></h2>
-                                <h2>Group Detail: <span class="labelx label-infox">{{ grpDetail }}</span></h2>
-                                <h2>Group Private: <span class="labelx label-infox">{{ grpPrivate }}</span></h2>
-                            <h2>Number of Users in Group: <span class="labelx label-infox">{{ userGrps2.length }}</span></h2>
+                            <!-- % if (grpPrivate == "Y") { % -->
+                            <span ng-if="grpPrivate == 'Y' ">
+                                <p>Group: <span class="labelx label-infox">{{ userGrps2[0].grp }} - {{ grpDetail }} (Private)</span></p>
+                            </span>
+                            <span ng-if="grpPrivate == 'N' ">
+                                <p>Group: <span class="labelx label-infox">{{ userGrps2[0].grp }} - {{ grpDetail }} (Public)</span></p>
+                            </span>
+                                <!-- % } else { % -->
+                                <!-- p>Group: <span class="labelx label-infox">{{ userGrps2[0].grp }} - {{ grpDetail }} (Public)</span></p -->
+                            <!-- % } % -->
+                                <!-- p>Group Name: <span class="labelx label-infox">{{ userGrps2[0].grp }} </span></p -->
+                                <!-- p>Group Detail: <span class="labelx label-infox">{{ grpDetail }}</span></p -->
+                                <!-- p>Group Private: <span class="labelx label-infox">{{ grpPrivate }}</span></p -->
+                            <p>Number of Users in Group: <span class="labelx label-infox">{{ userGrps2.length }}</span></p>
                         </div>
                         <div id="userGrps-listx">
                         <!-- div class="col-sm-4 col-sm-offset-4" -->

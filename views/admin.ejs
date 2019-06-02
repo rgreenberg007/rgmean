@@ -1,75 +1,94 @@
 <!doctype html>
-<html ng-app="scotchTodo">
-    
+<html ng-app="scotchTodo" lang="en">
+
 <head X-Content-Type-Options: nosniff>
-        <base href="/" />
+    <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
-    
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+
     <title>Lists </title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
     <style>
-        body         { padding-top:80px; word-wrap:break-word; }
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
     </style>
 </head>
-<body>
-    <div id='main'>
-        <nav class="navbar-fluid navbar-default navbar-fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="#"> Admin - RG's List App! </a>
-                <p class="navbar-text"> Lists your way!</p>
-
-                <% if (user.local.screenName) { %>
-                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
-                    <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
-                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
-                <% } else { %>
-                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
-                    <p class="navbar-right navbar-text">Guest User</p>
-                <% } %>
-
-            </div>
-        </nav>
+<body class="bg-secondary text-white">
+        <div id='mainx' class="container-fluid">
+            <% include myNavBar %>
         <div ng-view>
             <div ng-controller="mainController">
                 <div class="container">
-                        
-                    <!-- HEADER AND TODO COUNT -->
-                    <div class="jumbotron text-center">
-                        <h1>RG's List App - Admin</span></h1>
+                    <div> <!-- div> class="jumbotron text-center" -->
+                        <h3>RG's List App - Admin</span></h3>
                     </div>
                     <div id="admin-list" class="problemrow">
                         <div>
                             <table border="1" cellspacing="0" cellpadding="4">
-                            <tbody class="problemcheckbox" >
-                                <tr> <td>
-                                    <a href="/appPageGrp" >All Lists</a>
-                                </td></tr>
-                                <tr> <td>
-                                    <a href="/userGrps" >All User Groups</a>
-                                </td></tr>
-                                <tr> <td>
-                                    <a href="/userGrpsA" >All User Groups A</a>
-                                </td></tr>
-                                <tr> <td>
-                                    <a href="/userGrpsDetails" >All User Groups Details</a>
-                                </td></tr>
-                                <!-- tr> <td>
+                                <tbody class="problemcheckbox">
+                                    <tr>
+                                        <td>
+                                            <!-- a href="/appPageGrp">All Lists</a -->
+                                            <a href="/myAdminLists">All Lists</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/userGrps">All User Groups</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/userGrpsA">All User Groups A</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/userGrpsDetails">All User Groups Details</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/meInGrps">Manage Me in Other Groups</a>
+                                        </td>
+                                    </tr>
+                                    <!-- tr> <td>
                                     <a href="/userGrpsDetailsA" >All User Groups Details A</a>
                                 </td></tr -->
-                                <tr> <td>
-                                    <a href="/users" >All Users</a>
-                                </td></tr>
-                                <tr> <td>
-                                        <a href="/signupB" >signupB</a>
-                                </td></tr>
-                            </tbody>
+                                    <tr>
+                                        <td>
+                                            <a href="/users">All Users</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/signupB">signupB</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>        
+    </div>
 </body>
+
 </html>

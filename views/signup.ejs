@@ -1,9 +1,6 @@
 <!doctype html>
 <html ng-app="scotchTodo" lang="en">
 <head X-Content-Type-Options: nosniff>
-    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" -->
-
-    <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
     <!-- ??? Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -30,10 +27,7 @@
         $scope.myUserGrpsTableParams = {};
         $("#grpnametaken").hide();
         $("#passwordmismatch").hide();
-        //var userEmail = "<!-- %= user.local.email % -->";
-        //console.log("userGrpsDetails.ejs: userEmail: ", userEmail);
 
-		// GET =====================================================================
         userGrpsDetails.get()
 			.success(function(data) {
 				console.log("userGrpsDetails.ejs: mainController userGrpsDetails.get success");
@@ -41,7 +35,7 @@
                 $scope.loading = false;
                 $("#grpnametaken").hide();
             });
-        // CREATE ==================================================================
+            
         $scope.checkPasswords = function() {
             console.log("signup.ejs: checkPasswords reached ");
             if ($scope.formData.password != $scope.formData.password2) {
@@ -216,19 +210,14 @@ function checkPasswords() {
                 <div class="container">
                     <div class="col-sm-6 col-sm-offset-3">
 
-                        <h1><span class="fa fa-sign-in"></span> Signup</h1>
+                        <h1><span class="fa fa-sign-in"></span> RG's List App - Signup</h1>
                             
                         <div class="alert alert-danger" id="passwordmismatch">Passwords do not match!</div>
                         <% if (message.length > 0) { %>
                             <div class="alert alert-danger"><%= message %></div>
                         <% } %>
                             
-                        <!-- form action="/signup" method="post" -->
-                        <!-- form action="/signup" method="post" name="myForm" ng-controller="ExampleController" -->
-                        <!-- form  name="myForm" action="/signup" onsubmit="return checkPasswords()"  method="post" -->
-                        <!-- form  name="myForm" action="/signup" onsubmit="return validateForm()"  method="post" -->
                         <form name="myForm" action="/signup" onsubmit="return checkPasswords()" method="post">
-                        <!-- form  name="myForm" -->
                             <div class="form-group">
                                 <label>Email</label> 
                                 <!-- note need to use type="email" then browser checks for valid email entered -->
@@ -261,10 +250,6 @@ function checkPasswords() {
                                 <option value="N" >N</option>
                                 </select>
                             </div>
-                            <!-- button type="submit" class="btn btn-warning btn-lg">Signup</ -->
-                            <!-- button type="submit" class="btn btn-primary btn-lg"
-                            ng-disabled="!myForm.screenName.$dirty">Signup</button ng-click="createUser()" -->
-                            <!-- button type="submit" >Signup</button -->
                             <button type="submit" class="btn btn-warning btn-lg"  
                             ng-disabled="!myForm.email.$dirty
                             || !myForm.password.$dirty || !myForm.password2.$dirty

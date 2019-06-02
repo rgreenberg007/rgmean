@@ -1,56 +1,34 @@
 <!doctype html>
-<html lang="en">
+<html ng-app="scotchTodo" lang="en">
 
-<head>
-    <title>RG's List App</title>
-    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" -->
-    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" -->
+<head X-Content-Type-Options: nosniff>
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <base href="/" />
     <style>
         body {
-            padding-top: 0px;
+            padding-top: 80px;
             word-wrap: break-word;
         }
     </style>
 </head>
 
 <body class="bg-secondary text-white">
-    <!-- div id='main' -->
     <div id='main' class="container-fluid">
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top sticky-top">
-            <div class="container">
-                <p class="navbar-left navbar-text"> RG's List App! </p>
-                <p class="navbar-left navbar-text"> Lists your way!</p>
-                <p class="navbar-right navbar-text"><a href="/myPublicLists">Lists</a></p>
-                <% if (typeof(user) == 'undefined') { %>
-                <p class="navbar-right navbar-text">User: Guest</p>
-                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
-                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
-                <% } else { %>
-                <% if (user.local.email) { %>
-                    <p class="navbar-right navbar-text"><a href="/myLists">My Lists</a></p>
-                <% if (user.local.email == "admin") { %>
-                <p class="navbar-right navbar-text"><a href="/admin">Admin</a></p>
-                <% } else { %>
-                <p class="navbar-right navbar-text"><a href="/myGrps">My Groups</a></p>
-                <% } %>
-                <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
-                <p class="navbar-right navbar-text"><a href="/profile">Profile</a></p>
-                <p class="navbar-right navbar-text"><a href="/logout">Logout</a></p>
-                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
-                <% } else { %>
-                <p class="navbar-right navbar-text">Guest User</p>
-                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
-                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
-                <% } %>
-                <% } %>
-            </div>
-        </nav>
+        <% include myNavBar %>
         <div ng-view>
             <h1>RG's List Application</h1>
             <h3>Welcome to RG's MEAN Stack Application running on Heroku.</h3>

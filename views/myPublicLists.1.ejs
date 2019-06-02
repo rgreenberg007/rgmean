@@ -164,11 +164,34 @@
         }
     </style>
 </head>
+
 <body class="bg-secondary text-white">
     <div id='mainx' class="container-fluid">
-        <% include myNavBar %>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top sticky-top">
+            <div class="container">
+                <!-- a class="navbar-brand" href="#"> RG's List App! </a -->
+                <p class="navbar-left navbar-text"> RG's List App! </p>
+                <p class="navbar-left navbar-text"> Lists your way!</p>
+                <!-- div id='userLogin' ng-controller="usercontroller" -->
+                <p class="navbar-right navbar-text"><a href="/">About</a></p>
+                <% if (typeof(user) == 'undefined') { %>
+                <p class="navbar-right navbar-text">User: Guest</p>
+                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                <% } else { %>
+                <% if (user.local.email) { %>
+                <p class="navbar-right navbar-text"><a href="/logout">Logout</a></p>
+                <!-- p class="navbar-right navbar-text" ><a href="#" ng-click="signout()">Logout</a></p -->
+                <p class="navbar-right navbar-text">Logged in as: <%= user.local.email %></p>
+                <% } else { %>
+                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                <p class="navbar-right navbar-text">Guest User</p>
+                <% } %>
+                <% } %>
+            </div>
+        </nav>
+
         <div ng-viewx>
-            <h3><span class="fa fa-sign-in"></span> RG's List App - Manage My Groups </h3>
+            <h3><span class="fa fa-sign-in"></span> RG's List App - Lists </h3>
             <div ng-controller="mainController">
                 <div class="container">
                     <table>

@@ -1,40 +1,37 @@
 <!doctype html>
-<html ng-app="scotchTodo">
-    
+<html ng-app="scotchTodo" lang="en">
+
 <head X-Content-Type-Options: nosniff>
-        <base href="/" />
+    <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
-    
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+
     <title>Lists </title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
     <style>
-        body         { padding-top:80px; word-wrap:break-word; }
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
     </style>
 </head>
-<body>
-    <div id='main'>
-        <nav class="navbar-fluid navbar-default navbar-fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="#"> RG's List App! </a>
-                <p class="navbar-text"> Lists your way!</p>
-
-                <% if (user.local.screenName) { %>
-                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
-                    <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
-                    <% if (user.local.email == "admin") { %>
-                        <p class="navbar-right navbar-text" ><a href="/admin" >Admin</a></p>
-                    <% } else { %>
-                        <p class="navbar-right navbar-text" ><a href="/myGrps" >My Groups</a></p>
-                    <% } %> 
-                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
-                <% } else { %>
-                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
-                    <p class="navbar-right navbar-text">Guest User</p>
-                <% } %>
-
-            </div>
-        </nav>
+<body class="bg-secondary text-white">
+        <div id='mainx' class="container-fluid">
+            <% include myNavBar %>
         <div ng-view>
             <div ng-controller="mainController">
                 <div class="container">
@@ -44,21 +41,31 @@
                     <div id="admin-list" class="problemrow">
                         <div>
                             <table border="1" cellspacing="0" cellpadding="4">
-                            <tbody class="problemcheckbox" >
-                                <tr> <td>
-                                    <a href="/userGrpsA" >Manage Users in My Groups</a>
-                                </td></tr>
-                                <tr> <td>
-                                    <a href="/userGrpsDetails" >Manage My Groups</a>
-                                </td></tr>
+                                <tbody class="problemcheckbox">
+                                    <tr>
+                                        <td>
+                                            <a href="/userGrpsA" style="color : white; " >Manage Users in My Groups</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/userGrpsDetails" style="color : white; ">Manage My Groups</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/meInGrps" style="color : white; ">Manage Me in Other Groups</a>
+                                        </td>
+                                    </tr>
 
-                            </tbody>
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>        
+    </div>
 </body>
+
 </html>

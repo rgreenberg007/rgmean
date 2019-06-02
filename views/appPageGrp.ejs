@@ -1,17 +1,31 @@
 <!doctype html>
-<html ng-app="scotchTodo">
+<html ng-app="scotchTodo" lang="en">
     
 <head X-Content-Type-Options: nosniff>
-        <base href="/" />
          <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
-    
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+
     <!-- Seem to need these for dropdown in nav bar but there should be a better way this messes other things up -->
     <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" -->
   <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script -->
   <!-- script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script -->
 
     <!-- script src="/js/controllers/main.js"></script --> <!-- load up our controller -->
+
     <script>
     angular.module('toDoGrpController', [])
 
@@ -97,56 +111,20 @@ angular.module('toDoGrpService', [])
 
     <!-- script src="/js/core.js/"></script --> <!-- load our main application -->
 <script>
-angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
+angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService', 'angular.filter']);
 </script>
 
     <title>Lists </title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
     <style>
-        body         { padding-top:80px; word-wrap:break-word; }
+        body         { padding-top:0px; word-wrap:break-word; }
     </style>
    
 </head>
-<body>
-    <div id='main' >
-        <nav class="navbar-fluid navbar-default navbar-fixed-top">
-            <div class="container">
-                <% if (user.local.email== "admin") { %>
-                    <a class="navbar-brand" href="#"> RG's List App! </a>
-                <% } else { %>
-                    <a class="navbar-brand" href="#"> RG's List App! </a>
-                <% } %>
-                <p class="navbar-text"> Lists your way!</p>
-
-                <% if (user.local.screenName) { %>
-                    <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
-                    <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
-                    
-                    <% if (user.local.email== "admin") { %>
-                        <p class="navbar-right navbar-text" ><a href="/admin" >Admin</a></p>
-                    <% } else { %>
-                        
-                        <p class="navbar-right navbar-text" ><a href="/myGrps" >My Groups</a></p>
-                        <!-- See stuff above needed to make bootstrap nav bar dropdown work but messes other -->
-                        <!-- p class="navbar-right navbar-text" >
-                        <div class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown">My Groups <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                    <li><a href="/userGrpsDetails" >Manage My Groups</a></li>
-                                    <li><a href="/userGrpsA">Manage Users in My Groups</a></li>
-                            </ul>
-                        </div>
-                        </p -->
-                    <% } %> 
-                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
-                <% } else { %>
-                    <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
-                    <p class="navbar-right navbar-text">Guest User</p>
-                <% } %>
-
-            </div>
-        </nav>
+<body class="bg-secondary text-white">
+    <div id='mainx' class="container-fluid">
+        <% include myNavBar %>
         <div ng-view>
 
             <div ng-controller="mainController">
@@ -154,7 +132,7 @@ angular.module('scotchTodo', ['toDoGrpController', 'toDoGrpService']);
                         
                     <!-- HEADER AND TODO COUNT -->
                     <div class="jumbotron text-center">
-                        <h1>In-Work :: Lists <span class="label label-info">{{ toDoGrps.length }}</span></h1>
+                        <h1>In-Work ::: Lists <span class="label label-info">{{ toDoGrps.length }}</span></h1>
                     </div>
                                   
                     <!-- TODO LIST -->

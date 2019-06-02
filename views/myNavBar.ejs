@@ -1,0 +1,28 @@
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top sticky-           <div class="container">
+                <p class="navbar-left navbar-text"> RG's List App! </p>
+                <p class="navbar-left navbar-text"> Lists your way!</p>
+                <p class="navbar-right navbar-text"><a href="/myPublicLists">Lists</a></p>
+                <% if (typeof(user) == 'undefined') { %>
+                <p class="navbar-right navbar-text">User: Guest</p>
+                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
+                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
+                <% } else { %>
+                <% if (user.local.email) { %>
+                <p class="navbar-right navbar-text"><a href="/myLists">My Lists</a></p>
+                <% if (user.local.email == "admin") { %>
+                <p class="navbar-right navbar-text"><a href="/admin">Admin</a></p>
+                <% } else { %>
+                <p class="navbar-right navbar-text"><a href="/myGrps">My Groups</a></p>
+                <% } %>
+                <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
+                <p class="navbar-right navbar-text"><a href="/profile">Profile</a></p>
+                <p class="navbar-right navbar-text"><a href="/logout">Logout</a></p>
+                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
+                <% } else { %>
+                <p class="navbar-right navbar-text">Guest User</p>
+                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>    
+                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
+                <% } %>
+                <% } %>
+            </div>
+        </nav>

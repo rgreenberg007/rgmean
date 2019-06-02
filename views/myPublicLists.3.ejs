@@ -1,0 +1,237 @@
+<!doctype html>
+<html ng-app="scotchTodo" lang="en">
+
+<head X-Content-Type-Options: nosniff>
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+
+    <script>
+        angular.module('myListsController', [])
+
+            .controller('mainController', ['$scope', '$http', 'myLists', function ($scope, $http, myLists) {
+                console.log("myPublicLists.ejs: myListsController mainController reached");
+                $scope.formData = {};
+                $scope.loading = true;
+                $scope.myListsTableParams = {};
+                $("#listnametaken").hide();
+
+                // GET =====================================================================
+                myLists.get()
+                    .success(function (data) {
+                        console.log("myPublicLists.ejs: mainController myLists.get success");
+                        $scope.myLists = data;
+                        $scope.loading = false;
+                        $("#listnametaken").hide();
+                    });
+
+                // CREATE ==================================================================
+                $scope.createMyList = function () {
+                    console.log("myPublicLists.ejs:  mainController createMyList ");
+                    if ($scope.formData.name != undefined) {
+                        $scope.loading = true;
+
+                        console.log("myPublicLists.ejs: $scope.formData: " + JSON.stringify($scope.formData));
+                        myLists.create($scope.formData)
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myPublicLists.ejs: createMyList ERROR data: " + JSON.stringify(data));
+                                console.log("myPublicLists.ejs: createMyList ERROR data.message: " + data.message);
+                                message = data.message;
+                                $("#listnametaken").show();
+
+                            })
+                            .success(function (data) {
+                                $scope.loading = false;
+                                $scope.formData = {}; // clear the form so our user is ready to enter another
+                                $scope.myLists = data; // 
+                                $("#listnametaken").hide();
+                                console.log("myPublicLists.ejs: createMyList $scope.myLists: " + JSON.stringify($scope.myLists));
+                            });
+                    }
+                };
+
+                $scope.deleteMyList = function (listName) {
+                    console.log("myPublicLists.ejs:  mainController deleteMyList listName: " + listName);
+                    //$scope.loading = true;
+
+                    if (confirm('Are you sure you want to delete this record ?') == true) {
+                        console.log(" yes delete");
+                        $scope.loading = true;
+                        myLists.delMyList(listName)
+                            .success(function (data) {
+                                $scope.loading = false;
+                                $scope.formData = {}; // clear the form so our user is ready to enter another
+                                $scope.myLists = data; // 
+                                $("#listnametaken").hide();
+                            });
+                    } else {
+                        console.log(" No delete");
+                    }
+                };
+
+                $scope.itemsOfList = function (listName) {
+                    console.log("myPublicLists.ejs:  mainController itemsOfList listName: " + listName);
+                    //$("#addListForm").hide();
+                    $scope.currentListName = listName;
+                    myLists.getItems(listName)
+                        .success(function (data) {
+                            $scope.loading = false;
+                            //$scope.formData = {}; // clear the form so our user is ready to enter another
+                            $scope.myItems = data; // 
+                            //$("#listnametaken").hide();
+                            //$("#itemnametaken").hide();
+                            $("#myItemsTable").show();
+                            //$("#addItemForm").show();
+                        });
+                };
+
+            }]);
+    </script>
+
+    <script>
+        angular.module('myListsService', [])
+
+            .factory('myLists', ['$http', function ($http) {
+                return {
+                    get: function () {
+                        console.log("myPublicLists.ejs: service myLists get");
+                        return $http.get('/api/myLists');
+                    },
+                    create: function (Data) {
+                        console.log("myPublicLists.ejs: service myLists create");
+                        return $http.post('/api/myLists', Data);
+                    },
+                    delete: function (id) {
+                        console.log("myPublicLists.ejs: service myLists delete");
+                        return $http.delete('/api/myLists/' + id);
+                    },
+                    change: function (id) {
+                        console.log("myPublicLists.ejs: service myLists change");
+                        return $http.get('/api/myLists/' + id);
+                    },
+                    getItems: function () {
+                        console.log("myPublicLists.ejs: service myLists getItems");
+                        return $http.get('/api/myPublicItems');
+                        //return $http.get('/api/myItems');
+                    }
+                }
+            }]);
+    </script>
+
+    <script>
+        angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter']);
+    </script>
+    <title>Lists </title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <style>
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body class="bg-secondary text-white">
+    <div id='mainx' class="container-fluid">
+        <% include myNavBar %>
+        <div ng-viewx>
+                <p>Number of Items in List ({{ currentListName }}): <span
+                    class="labelx label-infox">{{ myItems.length }}</span></p>
+
+            <h3><span class="fa fa-sign-in"></span> RG's List App - Lists - Under Development</h3>
+            <div ng-controller="mainController">
+                <div class="container">
+                    <table>
+                        <tr>
+                            <td>
+                                <div ng-viewyvx id=myUserList3x>
+                                    <div class="text-centerx">
+                                        <h3>Number of Lists: <span
+                                                class="labelx label-infox">({{ myLists.length }})</span>
+                                        </h3>
+                                    </div>
+                                    <div id="myLists-listx">
+                                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                                        <div>
+                                            <table ng-table="myListsTableParams" border="1" cellspacing="0"
+                                                cellpadding="4">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Description</th>
+                                                    <th>Operations</th>
+                                                </tr>
+                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists">
+                            <td>{{ aList.name }}</td>
+                            <td>{{ aList.description }}</td>
+                            <td>
+                                <button type="submit" class="btn btn-primary btn-sm"
+                                    ng-click="itemsOfList(aList.name)">Items</button>
+                            </td>
+                            </tbody>
+                            <p class="text-center" ng-show="loading">
+                                <span class="fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                    </table>
+                </div>
+            </div>
+            </td>
+            <td>
+        </div>
+        </td>
+        </tr>
+        </table>
+    <!-- /div -->
+    <!-- /div -->
+
+    <div ng-viewyvx id=myItemsTable>
+        <div class="text-centerx">
+            <p>Number of Items in List ({{ currentListName }}): <span
+                    class="labelx label-infox">{{ myItems.length }}</span></p>
+        </div>
+        <div>
+            <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Owner</th>
+                    <th>List</th>
+                    <th>Suggestion</th>
+                    <th>Rank</th>
+                </tr>
+                <tbody class="problemcheckboxx" ng-repeat="aItem in myItems">
+
+                    <td>{{ aItem.name }}</td>
+                    <td>{{ aItem.description }}</td>
+                    <td>{{ aItem.owner }}</td>
+                    <td>{{ aItem.list }}</td>
+                    <td>{{ aItem.suggestion }}</td>
+                    <td>{{ aItem.rank }}</td>
+
+                </tbody>
+                <p class="text-center" ng-show="loading">
+                    <span class="fa fa-spinner fa-spin fa-3x"></span>
+                </p>
+            </table>
+        </div>
+    </div>
+
+    </div>
+    </div>
+</body>
+
+</html>

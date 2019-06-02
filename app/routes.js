@@ -10,6 +10,8 @@ var toDoGrp = require('./models/toDoGrp');
 var user = require('./models/user');
 var userGrp = require('./models/userGrp');
 var userGrpDetail = require('./models/userGrpDetail');
+var myList = require('./models/myList');
+var myItem = require('./models/myItem');
 
 module.exports = function(app, passport) {
 
@@ -79,8 +81,45 @@ module.exports = function(app, passport) {
     });
 
     app.get('/userGrpsDetails', isLoggedIn, function(req, res) {
+        console.log("routes.js /userGrpsDetails reached.")
         failureFlash : true;
         res.render('userGrpsDetails.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/myPublicLists', isLoggedInDontCare, function(req, res) {
+        console.log("routes.js /myPublicLists reached.")
+        failureFlash : true;
+        res.render('myPublicLists.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/myLists', isLoggedIn, function(req, res) {
+        console.log("routes.js /myLists reached.")
+        failureFlash : true;
+        res.render('myLists.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/myAdminLists', isLoggedIn, function(req, res) {
+        console.log("routes.js /myAdminLists reached.")
+        failureFlash : true;
+        res.render('myAdminLists.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/index', isLoggedInDontCare, function(req, res) {
+        console.log("routes.js /index reached.")
+        failureFlash : true;
+        res.render('index.ejs', {
             user : req.user,
             message: "" //req.flash('grpsDetailsMessage')
         });
@@ -96,6 +135,12 @@ module.exports = function(app, passport) {
 
     app.get('/userGrpsA', isLoggedIn, function(req, res) {
         res.render('userGrpsA.ejs', {
+            user : req.user
+        });
+    });
+
+    app.get('/meInGrps', isLoggedIn, function(req, res) {
+        res.render('meInGrps.ejs', {
             user : req.user
         });
     });
@@ -125,7 +170,7 @@ module.exports = function(app, passport) {
 
         // process the login form
         app.post('/login', passport.authenticate('local-login', {
-            successRedirect : '/appPageGrp', // '/appPage1', // '/profile', // redirect to the secure profile section
+            successRedirect : '/myPublicLists', //'/appPageGrp', // '/appPage1', // '/profile', // redirect to the secure profile section
             failureRedirect : '/login', // redirect back to the login page if there is an error
             failureFlash : true // allow flash messages
         }));
@@ -144,7 +189,7 @@ module.exports = function(app, passport) {
 
         // process the signup form
         app.post('/signup', passport.authenticate('local-signup', {
-            successRedirect : '/appPage1', // '/profile', // redirect to the secure profile section
+            successRedirect : '/myPublicLists', // '/appPage1', // '/profile', // redirect to the secure profile section
             failureRedirect : '/signup', // redirect back to the signup page if there is an error
             failureFlash : true // allow flash messages
         }));
@@ -328,7 +373,8 @@ module.exports = function(app, passport) {
                     return res.status(500).send(err);
                   }
             } else {
-                res.redirect('/appPage1');
+                //res.redirect('/appPage1');
+                res.redirect('/myPublicLists');
             }
         });
     });
@@ -341,7 +387,8 @@ module.exports = function(app, passport) {
             if (err) {
                     return res.status(500).send(err);  
             } else {
-                res.redirect('/appPage1');
+                //res.redirect('/appPage1');
+                res.redirect('/myPublicLists');
             }
         });
     });
@@ -422,9 +469,52 @@ module.exports = function(app, passport) {
         getUserGrpsA(req.user.local.email,res);
     });
 
+    app.get('/api/getPubGrps', function (req, res) {
+        getPubGrps(req.user.local.email,res);
+    });
+
+    app.get('/api/getPubGrpsIn', function (req, res) {
+        getPubGrpsIn(req.user.local.email,res);
+    });
+
+    app.get('/api/getPubGrpsOut', function (req, res) {
+        getPubGrpsOut(req.user.local.email,res);
+    });
+
     app.get('/api/userGrpsDetails', function (req, res) {
         //getUserGrpsDetails(res);
         getUserGrpsDetailsForUser(req.user.local.email, res);
+    });
+
+    app.get('/api/myPublicLists', function (req, res) {
+        getMyPublicLists(res);
+    });
+
+    app.get('/api/myLists', function (req, res) {
+        getMyLists(res);
+    });
+
+    app.get('/api/myListsOwner/:owner', function (req, res) {
+        getMyListsOwner(req.params.owner, res);
+    });
+    
+    app.get('/api/myAdminLists', function (req, res) {
+        getMyAdminLists(res);
+    });
+
+    app.get('/api/myPublicItems/:listName', function (req, res) {
+        //console.log("/api/myPublicItems req.body: " + JSON.stringify(req.body));
+        //console.log("/api/myPublicItems req.user: " + JSON.stringify(req.user));
+        console.log("routes.js: app.get /api/myPublicItems:listName called with listName = " + req.params.listName);
+        getMyPublicItems( req.params.listName, res);
+    });
+
+    app.get('/api/myItems/:listName', function (req, res) {
+        getMyItems(req.params.listName, res);
+    });
+
+    app.get('/api/myAdminItems', function (req, res) {
+        getMyAdminItems(res);
     });
 
     app.get('/api/userGrpsDetailsForUser', function (req, res) {
@@ -669,21 +759,96 @@ module.exports = function(app, passport) {
         });
     });
 
-    //app.change('/api/userGrps/:userGrp_id', function (req, res) {
-      //  userGrp.change({
-      //      _id: req.params.userGrp_id
-      //  }, function (err, userGrp) {
-      //      if (err)
-      //          res.send(err);
-      //      getUsers(res);
-      //  });
-    //});
+    app.post('/api/removeUserFromGrp', function (req, res) {
+        console.log("routes.js: app.delete /api/removeUserFromGrp");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        userGrp.remove({
+            grp: req.body.grp,
+            email: req.body.email
+        }, function (err, userGrp) {
+            if (err)
+                res.send(err);
+            getUserGrps(res);
+        });
+    });
 
-    // application -------------------------------------------------------------
-    //??? ??? 
-    //app.get('*', function (req, res) {
-      //  res.sendFile(__dirname + '../views/toDoView.ejs'); // 
-    //});
+    app.post('/api/createUserInGrp', function (req, res) {
+        console.log("routes.js: app.post /api/createUserInGrp");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        userGrp.create({
+            grp: req.body.grp,
+            email: req.body.email,
+            grpOwner: req.body.grpOwner
+        }, function (err, userGrp) {
+            if (err)
+                res.send(err);
+            getUserGrps(res);
+        });
+    });
+
+    app.post('/api/myLists', function (req, res) {
+        console.log("routes.js: app.post /api/myLists");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        myList.create({
+            name: req.body.name,
+            description: req.body.description,
+            owner: req.body.owner
+        }, function (err, myList) {
+            if (err)
+                res.send(err);
+            //getMyLists(res);
+            getMyListsOwner(req.body.owner, res);
+
+        });
+    });
+
+    app.post('/api/myAdminLists', function (req, res) {
+        console.log("routes.js: app.post /api/myAdminLists");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        myList.create({
+            name: req.body.name,
+            description: req.body.description
+        }, function (err, myList) {
+            if (err)
+                res.send(err);
+            getMyAdminLists(res);
+        });
+    });
+
+    app.post('/api/myItems', function (req, res) {
+        console.log("routes.js: app.post /api/myItems");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        myItem.create({
+            name: req.body.name,
+            description: req.body.description,
+            list: req.body.list,
+            owner: req.body.owner
+        }, function (err, myList) {
+            if (err)
+                res.send(err);
+            getMyItems(req.body.list, res);
+        });
+    });
+
+    app.post('/api/myAdminItems', function (req, res) {
+        console.log("routes.js: app.post /api/myAdminItems");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        myItem.create({
+            name: req.body.name,
+            description: req.body.description,
+            list: req.body.list
+        }, function (err, myList) {
+            if (err)
+                res.send(err);
+            getMyAdminItems(res);
+        });
+    });
 
 };
 
@@ -693,6 +858,14 @@ function isLoggedIn(req, res, next) {
         return next();
 
     res.redirect('/');
+}
+
+// route middleware to ensure user is logged in
+function isLoggedInDontCare(req, res, next) {
+    //if (req.isAuthenticated())
+        return next();
+
+    //res.redirect('/');
 }
 
 
@@ -857,6 +1030,112 @@ function getUserGrpsA(myEmail, res) {
     }
 };
 
+function getPubGrps(myEmail, res) {
+    console.log("getPubGrps reached myEmail: " + myEmail);
+    var grpsToExclude;
+    var criteria = {'email': myEmail};
+    userGrp.distinct('grp', criteria, function (err, userGrps) {
+        if (err) {
+            return res.send(err);
+        } else {
+            grpsToExclude = userGrps;
+            if (myEmail != "admin") {
+                userGrpDetail.find(function (err, userGrpsDetails) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(userGrpsDetails); 
+                }).sort( {grp : 1} ).where ( {private : 'N', "grp": {$nin: grpsToExclude} }); 
+            } else {
+                userGrpDetail.find(function (err, userGrpsDetails) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(userGrpsDetails); 
+                }).sort( {grp : 1} ).where ( { "grp": {$nin: grpsToExclude} } ) ;
+            }
+        }
+    });
+};
+
+
+function getPubGrpsIn(myEmail, res) {
+    console.log("getPubGrpsIn reached myEmail: " + myEmail);
+    var grpsToInclude;
+    var criteria = {'email': myEmail , 'grpOwner' : 'N' };
+    userGrp.distinct('grp', criteria, function (err, userGrps) {
+        if (err) {
+            return res.send(err);
+        } else {
+            grpsToInclude = userGrps;
+            if (myEmail != "admin") {
+                userGrpDetail.find(function (err, userGrpsDetails) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(userGrpsDetails); 
+                }).sort( {grp : 1} ).where ( {"grp": {$in: grpsToInclude} }); 
+            } else {
+                userGrpDetail.find(function (err, userGrpsDetails) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(userGrpsDetails); 
+                }).sort( {grp : 1} ).where ( { "grp": {$in: grpsToInclude} } ) ;
+            }
+        }
+    });
+};
+
+
+function getPubGrpsOut(myEmail, res) {
+    console.log("getPubGrpsOut reached myEmail: " + myEmail);
+    var grpsToExclude;
+    var criteria = {'email': myEmail};
+    userGrp.distinct('grp', criteria, function (err, userGrps) {
+        if (err) {
+            return res.send(err);
+        } else {
+            grpsToExclude = userGrps;
+            if (myEmail != "admin") {
+                userGrpDetail.find(function (err, userGrpsDetails) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(userGrpsDetails); 
+                }).sort( {grp : 1} ).where ( {private : 'N', "grp": {$nin: grpsToExclude} }); 
+            } else {
+                userGrpDetail.find(function (err, userGrpsDetails) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(userGrpsDetails); 
+                }).sort( {grp : 1} ).where ( { "grp": {$nin: grpsToExclude} } ) ;
+            }
+        }
+    });
+};
+
+function getPubGrpsAll(myEmail, res) {
+    console.log("getPubGrps reached myEmail: " + myEmail);
+    if (myEmail != "admin") {
+        userGrpDetail.find(function (err, userGrpsDetails) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(userGrpsDetails); 
+        }).sort( {grp : 1} ).where ( {private : 'N' }); 
+    } else {
+        userGrpDetail.find(function (err, userGrpsDetails) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(userGrpsDetails); 
+        }).sort( {grp : 1} ) ;
+    }
+};
+
+
 function getUserGrpsDetails(res) {
     userGrpDetail.find(function (err, userGrpsDetails) {
         if (err) {
@@ -864,6 +1143,69 @@ function getUserGrpsDetails(res) {
         }
         res.json(userGrpsDetails); 
     }).sort( {grp : 1} );
+};
+
+function getMyPublicLists(res) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myLists); 
+    });
+};
+
+function getMyLists(res) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myLists); 
+    });
+};
+
+function getMyListsOwner(owner,res) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myLists); 
+    }).where ( { "owner" : owner } ) ;
+};
+
+function getMyAdminLists(res) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myLists); 
+    });
+};
+
+function getMyPublicItems(listName, res) {
+    myItem.find(function (err, myItems) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myItems); 
+    }).where ( { "list": listName } ) ;
+};
+
+function getMyItems(listName, res) {
+    myItem.find(function (err, myItems) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myItems); 
+    }).where ( { "list": listName } ) ;
+};
+
+function getMyAdminItems(res) {
+    myItem.find(function (err, myItems) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myItems); 
+    });
 };
 
 function getUserGrpsDetailsForUser(myEmail, res) {

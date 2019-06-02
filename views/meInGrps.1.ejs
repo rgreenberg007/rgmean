@@ -31,24 +31,33 @@
 
 	// inject the Todo service factory into our controller
 	.controller('mainController', ['$scope','$http','userGrps', function($scope, $http, userGrps) {
-		console.log("userGrpsA.ejs: userGrpsController mainController reached");
+		console.log("meInGrps.ejs: userGrpsController mainController reached");
 		$scope.formData = {};
         $scope.loading = true;
         $scope.myUserGrpsTableParams = {};
         var userEmail = "<%= user.local.email %>";
-        console.log("userGrpsA.ejs: userEmail: ", userEmail);
+        console.log("meInGrps.ejs: userEmail: ", userEmail);
 
         $("#myUserList").hide();
         $("#myUserList2").hide();
         $("#myUserList3").hide();
 
 		// GET =====================================================================
-        userGrps.get()
+        userGrps.getPubGrpsOut()
 			.success(function(data) {
-				console.log("userGrpsA.ejs: mainController userGrps.get success");
-                $scope.userGrps = data;
+				console.log("meInGrps.ejs: mainController userGrps.getPubGrpsOut success");
+                $scope.userGrpsOut = data;
 				$scope.loading = false;
             });
+
+        userGrps.getPubGrpsIn()
+			.success(function(data) {
+				console.log("meInGrps.ejs: mainController userGrps.getPubGrpsIn success");
+                $scope.userGrpsIn = data;
+				$scope.loading = false;
+            });
+
+        
         // CREATE ==================================================================
         $scope.createUserGrp = function(emailx) {
             console.log("userGrpsA.ejs:  mainController createUserGrp ");
@@ -159,6 +168,60 @@
             });
         };
 
+        $scope.removeUsrFromGrp = function(grpx) {
+            console.log("meInGrps.ejs:  mainController removeUsrFromGrp ");
+            console.log("meInGrps.ejs: grpx: ", grpx, " userEmail: ",  userEmail);
+            $scope.loading = true;
+
+            $scope.info = {"email" : userEmail, "grp" : grpx};
+            userGrps.deleteUsrFromGrp($scope.info )
+                .success(function(data) {
+					//$scope.loading = false;
+                    $scope.userGrps = data; // 
+
+                    userGrps.getPubGrpsOut()
+		            	.success(function(data) {
+				            console.log("meInGrps.ejs: mainController userGrps.getPubGrpsOut success");
+                            $scope.userGrpsOut = data;
+				            //$scope.loading = false;
+                    });
+
+                    userGrps.getPubGrpsIn()
+			            .success(function(data) {
+				            console.log("meInGrps.ejs: mainController userGrps.getPubGrpsIn success");
+                            $scope.userGrpsIn = data;
+				            $scope.loading = false;
+                    });
+            });
+        };
+
+        $scope.addUsrToGrp = function(grpx) {
+            console.log("meInGrps.ejs:  mainController addUsrToGrp ");
+            console.log("meInGrps.ejs: grpx: ", grpx, " userEmail: ",  userEmail);
+            $scope.loading = true;
+
+            $scope.info = {"email" : userEmail, "grp" : grpx, "grpOwner" : "N"};
+            userGrps.createUsrInGrp($scope.info )
+                .success(function(data) {
+					//$scope.loading = false;
+                    $scope.userGrps = data; // 
+
+                    userGrps.getPubGrpsOut()
+		            	.success(function(data) {
+				            console.log("meInGrps.ejs: mainController userGrps.getPubGrpsOut success");
+                            $scope.userGrpsOut = data;
+				            //$scope.loading = false;
+                    });
+
+                    userGrps.getPubGrpsIn()
+			            .success(function(data) {
+				            console.log("meInGrps.ejs: mainController userGrps.getPubGrpsIn success");
+                            $scope.userGrpsIn = data;
+				            $scope.loading = false;
+                    });
+            });
+        };
+
         $scope.removeUserFromGrp = function(emailx) {
             console.log("userGrpsA.ejs:  mainController removeUserFromGrp ");
             console.log("userGrpsA.ejs: emailx: " , emailx);
@@ -176,13 +239,13 @@
 						$scope.loading = false;
 						$scope.formData = {}; // clear the form so our user is ready to enter another
                         $scope.userGrps = data; // 
-                        console.log("userGrpsA.ejs: createUserGrp3 $scope.userGrps: " + JSON.stringify($scope.userGrps) );
+                        console.log("userGrpsA.ejs: deleteUserFromGrp $scope.userGrps: " + JSON.stringify($scope.userGrps) );
                         $scope.loading = true;
 			            userGrps.test2($scope.userGrpName)
 				            .success(function(data) {
 					            $scope.loading = false; 
                                 $scope.users = data; 
-                                console.log("userGrpsA.ejs: createUserGrp3 test2 $scope.users: " + JSON.stringify($scope.users) );
+                                console.log("userGrpsA.ejs: deleteUserFromGrp test2 $scope.users: " + JSON.stringify($scope.users) );
                                 
                                 userGrps.test1($scope.userGrpName)
 				                    .success(function(data) {
@@ -258,7 +321,7 @@
 				        .success(function(data) {
 					    $scope.loading = false;
                         $scope.users2 = data; 
-                        console.log("userGrpsA.ejs: test1UserGrp $scope.users2: " + JSON.stringify($scope.users2) );
+                        console.log("userGrpsA.ejs: test2UserGrp $scope.users2: " + JSON.stringify($scope.users2) );
                         $("#myUserList2").show();
 				    });
 				});
@@ -274,9 +337,16 @@
             userGrps.detOfGrp(id)
 				.success(function(data) {
 					$scope.loading = false;
-                    $scope.userGrps2 = data; 
+                    //$scope.userGrps2 = data; 
                     $("#myUserList3").show();
-                   console.log("userGrpsA.ejs: deleteUserGrp detOfGrp $scope.users: " + JSON.stringify($scope.users) );
+                   //console.log("userGrpsA.ejs: deleteUserGrp detOfGrp $scope.users: " + JSON.stringify($scope.userGrps2) );
+                   $scope.grpDetail = data[data.length - 2];
+                   $scope.grpPrivate = data[data.length - 1];
+                   data.pop();
+                   data.pop();
+                   $scope.userGrps2 = data; 
+                   //console.log("userGrpsA.ejs: " + JSON.stringify($scope.grpDetail) + " " + JSON.stringify($scope.grpPrivate));
+                   //console.log("userGrpsA.ejs: deleteUserGrp detOfGrp $scope.users: " + JSON.stringify($scope.userGrps2) );
 				});
         };
 	}]);
@@ -291,15 +361,35 @@ angular.module('userGrpsService', [])
             console.log("userGrpsA.ejs: service userGrps get");
             return $http.get('/api/userGrpsA');
         },
+        getPubGrps : function() {
+            console.log("meInGrpsejs: service userGrps getPubGrps");
+            return $http.get('/api/getPubGrps');
+        },
+        getPubGrpsOut : function() {
+            console.log("meInGrpsejs: service userGrps getPubGrpsOut");
+            return $http.get('/api/getPubGrpsOut');
+        },
+        getPubGrpsIn : function() {
+            console.log("meInGrpsejs: service userGrps getPubGrpsIn");
+            return $http.get('/api/getPubGrpsIn');
+        },
         create : function(Data) {
             //Data.email = "<%= user.local.email %>";
             //Data.grpOwner = "Y";
             return $http.post('/api/userGrps', Data);
             //return $http.get('/api/users/' + Data.grp);
         },
+        createUsrInGrp : function(Data) {
+            return $http.post('/api/createUserInGrp', Data);
+        },
         delete : function(id) {
             console.log("userGrpsA.ejs: service userGrps delete");
             return $http.delete('/api/userGrps/' + id);
+        } ,
+        deleteUsrFromGrp : function(Data) {
+            console.log("meInGrps.ejs: service userGrps deleteUsrFromGrp");
+            //return $http.delete('/api/removeUserFromGrp/' + info );
+            return $http.post('/api/removeUserFromGrp', Data);
         } ,
         change : function(id) {
             console.log("userGrpsA.ejs: service userGrps change");
@@ -352,19 +442,21 @@ angular.module('scotchTodo', ['userGrpsController', 'userGrpsService', 'angular.
         <nav class="navbar-fluid navbar-default navbar-fixed-top">
             <div class="containerx">
                 <% if (user.local.email == "admin") { %>
-                    <a class="navbar-brand" href="#"> User Groups Admin </a>
+                    <a class="navbar-brand" href="#">  RG's List App!</a>
                 <% } else { %>
-                    <a class="navbar-brand" href="#"> User Groups </a>
+                    <a class="navbar-brand" href="#">  RG's List App! </a>
                 <% } %>
-                <p class="navbar-text"> Lists your way! RG's List App!</p>
+                <p class="navbar-text"> Lists your way!</p>
 
                 <% if (user.local.screenName) { %>
                     <p class="navbar-right navbar-text" ><a href="/logout" >Logout</a></p>
                     <p class="navbar-right navbar-text" ><a href="/profile" >Profile</a></p>
-                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
                     <% if (user.local.email == "admin") { %>
                         <p class="navbar-right navbar-text" ><a href="/admin" >Admin</a></p>
+                    <% } else { %>
+                        <p class="navbar-right navbar-text" ><a href="/myGrps" >My Groups</a></p>
                     <% } %> 
+                    <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
                 <% } else { %>
                     <p class="navbar-right navbar-text" ><a href="#/login">Login</a> or <a href="#/signup">Register</a></p>
                     <p class="navbar-right navbar-text">Guest User</p>
@@ -389,35 +481,58 @@ angular.module('scotchTodo', ['userGrpsController', 'userGrpsService', 'angular.
                                         <th>Group</th>
                                         <th>Details</th>
                                 </tr>
-                            <tbody class="problemcheckboxx" ng-repeat="userGrp in userGrps | unique: 'grp'">
+                            <tbody class="problemcheckboxx" ng-repeat="userGrp in userGrpsIn | unique: 'grp'">
                                 <td> 
-                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="test2UserGrp(userGrp)">Edit</button>
+                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="removeUsrFromGrp(userGrp.grp)">Remove</button> 
                                 </td>
                                 <td>{{ userGrp.grp }}</td>
-                                <td>
-                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="detailsOfGrp(userGrp.grp)">Details</button>
-                                </td>
+                                <td>{{ userGrp.detail }}</td>
                             </tbody>
                             <p class="text-center" ng-show="loading">
                                 <span class="fa fa-spinner fa-spin fa-3x"></span>
                             </p>
-                            <form>
-                                <tr><td colspan=4>
-                                <div class="form-groupx">
-                                    <input type="text" class="form-control input-lg text-center" placeholder="Enter new Group Name" ng-model="formData.grp">
-                                </div>
-                                </td><td>
-                                <button type="submit" class="btn btn-primary btn-lg" ng-click="createUserGrp()">Add</button>
-                                </td></tr>
-                            </form>
                             </table>
                         </div>
                     </div>
                     </td><td>
-                    
+                            <div id="userGrps-listxx">
+                                    <div>
+                                        <table ng-table="myUserGrpsTableParams" border="1" cellspacing="0" cellpadding="4">
+                                            <tr>
+                                                    <th>Operations</th> 
+                                                    <th>Group</th>
+                                                    <th>Details</th>
+                                            </tr>
+                                        <tbody class="problemcheckboxx" ng-repeat="userGrp in userGrpsOut | unique: 'grp'">
+                                            <td> 
+                                                <button type="submit" class="btn btn-primary btn-sm" ng-click="addUsrToGrp(userGrp.grp)">Add</button>
+                                            </td>
+                                            <td>{{ userGrp.grp }}</td>
+                                            <td>{{ userGrp.detail }}</td>
+                                        </tbody>
+                                        <p class="text-center" ng-show="loading">
+                                            <span class="fa fa-spinner fa-spin fa-3x"></span>
+                                        </p>
+                                        </table>
+                                    </div>
+                                </div>
+                                </td><td>
                     <div ng-viewyvx id=myUserList3>
                         <div class="text-centerx">
-                            <h2>Number of Users in Group: <span class="labelx label-infox">{{ userGrps2.length }}</span></h2>
+                            <!-- % if (grpPrivate == "Y") { % -->
+                            <span ng-if="grpPrivate == 'Y' ">
+                                <p>Group: <span class="labelx label-infox">{{ userGrps2[0].grp }} - {{ grpDetail }} (Private)</span></p>
+                            </span>
+                            <span ng-if="grpPrivate == 'N' ">
+                                <p>Group: <span class="labelx label-infox">{{ userGrps2[0].grp }} - {{ grpDetail }} (Public)</span></p>
+                            </span>
+                                <!-- % } else { % -->
+                                <!-- p>Group: <span class="labelx label-infox">{{ userGrps2[0].grp }} - {{ grpDetail }} (Public)</span></p -->
+                            <!-- % } % -->
+                                <!-- p>Group Name: <span class="labelx label-infox">{{ userGrps2[0].grp }} </span></p -->
+                                <!-- p>Group Detail: <span class="labelx label-infox">{{ grpDetail }}</span></p -->
+                                <!-- p>Group Private: <span class="labelx label-infox">{{ grpPrivate }}</span></p -->
+                            <p>Number of Users in Group: <span class="labelx label-infox">{{ userGrps2.length }}</span></p>
                         </div>
                         <div id="userGrps-listx">
                         <!-- div class="col-sm-4 col-sm-offset-4" -->
@@ -548,10 +663,10 @@ angular.module('scotchTodo', ['userGrpsController', 'userGrpsService', 'angular.
             </div>
         </div>
     </div>
-    <div>
+    <!-- div>
         <button id="mybutton" >Toggle</button>
         <p id="myp">Some text that will be hidden/shown ( toggle ) when the above toggle button is clicked. 
             This is based on the id of the element being myp</p>
-    </div>
+    </div -->
 </body>
 </html>

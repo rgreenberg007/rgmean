@@ -5,40 +5,9 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 
-        <!-- SPELLS -->
-        <!-- script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script --><!-- load angular -->
-        <!-- ??? Latest compiled and minified CSS -->
-        <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" -->
-        <!-- jQuery library -->
-        <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script -->
-        <!-- Popper JS -->
-        <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script -->
-        <!-- ??? Latest compiled JavaScript -->
-        <!-- script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script -->
     <style>
         body         { padding-top:80px; word-wrap:break-word; }
     </style>
-    <script>
-        //function onSelfDelete() {
-          //  if (confirm('Are you sure to delete this record ?') == true) {
-            //    console.log("onSelfDelete yes delete");
-            //} else {
-              //  console.log("onSelfDelete No delete");
-            //}
-        //};
-    </script>
-    <script>
-            $(document).ready(function(){
-              $("#mybutton").click(function(){
-                if (confirm('Are you sure to delete this record ?') == true) {
-                    console.log(" yes delete");
-                } else {
-                    console.log(" No delete");
-                }
-                $("#myp").toggle();
-              });
-            });
-    </script>
 
 </head>
 <body>
@@ -47,32 +16,31 @@
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
 
-    <div class="page-header text-center">
-        <h1><span class="fa fa-anchor"></span> Your Profile</h1>
+    <!-- div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> RG's List App - Your Profile</h1>
         <a href="javascript:history.go(-1)" class="btn btn-default btn-sm">Close Your Profile</a>
-    </div>
+    </div -->
 
     <div class="row">
         <!-- LOCAL INFORMATION -->
         <div class="col-sm-6">
             <div class="well">
-                <h3><span class="fa fa-user"></span> Local</h3>
+                <h3><span class="fa fa-user"></span> RG's List App - Your Profile </h3>
                 <% if (user.local.email) { %>
                     <p>
-                        <strong>email</strong>: <%= user.local.email %><br>
-                        <strong>screenName</strong>: <%= user.local.screenName %><br>
-                        <!-- strong>private</strong>: <%= user.local.private %><br -->
+                        <strong>Email</strong>: <%= user.local.email %><br>
+                        <strong>Screen Name</strong>: <%= user.local.screenName %><br>
+                        <strong>Private</strong>: <%= user.local.private %><br>
                         
                         <form action="/changeProfile" method="post">
                             <div class="form-group">
-                                <label>Screen Name</label>
+                                <label>On Save Change Screen Name to: </label>
                                 <input type="text" class="form-control" name="screenNameNew"  value="<%= user.local.screenName %>">
                             </div>
                             <div class="form-group">
-                                <label>*Private Y/N</label>
-                                <!-- ng-model="formData.privateNew" -->
+                                <label>On Save change Private (Y/N) to: </label>
                                 <select type="text" class="form-control" name="privateNew"  
-                                value="<%= user.local.private %>" > <!-- required -->
+                                value="<%= user.local.private %>" > 
                                 <% if (user.local.private == "N") { %>
                                     <option value="Y" >Y</option>
                                     <option value="N" selected>N</option>
@@ -90,15 +58,12 @@
                     <!-- a href="/unlink/local" class="btn btn-default">Unlink</a -->
                     <a href="/unlink/local" class="btn btn-default"  onclick="return confirm('Are you sure you want to be removed completely from this app?')">Remove Me!</a>
                    
+                    <a href="javascript:history.go(-1)" class="btn btn-default btn-sm">Close Your Profile</a>
                 <% } else { %>
                     <a href="/connect/local" class="btn btn-default">Connect Local</a>
                 <% } %>
             </div>
-            <!-- div>
-                    <button id="mybutton" >Toggle</button>
-                    <p id="myp">Some text that will be hidden/shown ( toggle ) when the above toggle button is clicked. 
-                        This is based on the id of the element being myp</p>
-            </div -->
+
         </div>       
     </div>
 </div>

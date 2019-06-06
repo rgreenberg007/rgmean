@@ -469,6 +469,11 @@ module.exports = function(app, passport) {
         getUserGrpsA(req.user.local.email,res);
     });
 
+    app.get('/api/getAllMyGrps', function (req, res) {
+        //getUserGrpsA(req.user.local.email,res);
+        getAllMyGrps(req.user.local.email,res);
+    });
+
     app.get('/api/getPubGrps', function (req, res) {
         getPubGrps(req.user.local.email,res);
     });
@@ -494,8 +499,22 @@ module.exports = function(app, passport) {
         getMyLists(res);
     });
 
+    app.delete('/api/myLists/:id', function (req, res) {
+        myList.remove({
+            _id: req.params.id
+        }, function (err, myLists) {
+            if (err)
+                res.send(err);
+            getMyLists(res);
+        });
+    });
+
     app.get('/api/myListsOwner/:owner', function (req, res) {
         getMyListsOwner(req.params.owner, res);
+    });
+
+    app.get('/api/myAdminListsOwner/:owner', function (req, res) {
+        getMyAdminListsOwner(req.params.owner, res);
     });
     
     app.get('/api/myAdminLists', function (req, res) {
@@ -513,8 +532,22 @@ module.exports = function(app, passport) {
         getMyItems(req.params.listName, res);
     });
 
-    app.get('/api/myAdminItems', function (req, res) {
-        getMyAdminItems(res);
+    app.get('/api/myAdminItems:listName', function (req, res) {
+        getMyAdminItems(req.params.listName, res);
+    });
+
+    app.post('/api/myItemsRemove', function (req, res) {
+        console.log("/api/myItems req.body: " + JSON.stringify(req.body));
+        console.log("/api/myItems req.user: " + JSON.stringify(req.user));
+        console.log("/api/myItems req.params: " + JSON.stringify(req.params));
+        myItem.remove({
+            _id: req.body.id
+        }, function (err, user) {
+            if (err)
+                res.send(err);
+            myListItemCntMinus(req.body.listName);
+            getMyItems(req.body.listName, res);
+        });
     });
 
     app.get('/api/userGrpsDetailsForUser', function (req, res) {
@@ -791,31 +824,56 @@ module.exports = function(app, passport) {
     app.post('/api/myLists', function (req, res) {
         console.log("routes.js: app.post /api/myLists");
         console.log("req.body: " + JSON.stringify(req.body));
-        
+        var myPrivate = "Y";      
+        if (req.body.grp == "Everyone") {
+            myPrivate = "N";
+        }  
         myList.create({
             name: req.body.name,
             description: req.body.description,
-            owner: req.body.owner
+            owner: req.body.owner,
+            grp: req.body.grp,
+            private: myPrivate
         }, function (err, myList) {
-            if (err)
-                res.send(err);
-            //getMyLists(res);
-            getMyListsOwner(req.body.owner, res);
-
+            if (err) {
+                if (err.name === 'MongoError' && err.code === 11000) {
+                   console.log("dup list name found!");
+                   return res.status(500).send({ user : req.user, message : "List Name already taken!" });
+                } else {
+                    console.log("Some other error found!");
+                    return res.status(500).send(err);
+                }
+            } else {
+                getMyListsOwner(req.body.owner, res);
+            }
         });
     });
 
     app.post('/api/myAdminLists', function (req, res) {
         console.log("routes.js: app.post /api/myAdminLists");
         console.log("req.body: " + JSON.stringify(req.body));
-        
+        var myPrivate = "Y";
+        //if (req.body.grp == "Everyone" || req.body.grp == "Just Me")
+        if (req.body.grp == "Everyone") {
+            myPrivate = "N";
+        }
         myList.create({
             name: req.body.name,
-            description: req.body.description
+            description: req.body.description,
+            grp: req.body.grp,
+            private: myPrivate
         }, function (err, myList) {
-            if (err)
-                res.send(err);
-            getMyAdminLists(res);
+            if (err) {
+                if (err.name === 'MongoError' && err.code === 11000) {
+                   console.log("dup list name found!");
+                   return res.status(500).send({ user : req.user, message : "List Name already taken!" });
+                } else {
+                    console.log("Some other error found!");
+                    return res.status(500).send(err);
+                }
+            } else {
+                getMyAdminLists(res);
+            }
         });
     });
 
@@ -831,6 +889,7 @@ module.exports = function(app, passport) {
         }, function (err, myList) {
             if (err)
                 res.send(err);
+            myListItemCntPlus(req.body.list);
             getMyItems(req.body.list, res);
         });
     });
@@ -842,11 +901,13 @@ module.exports = function(app, passport) {
         myItem.create({
             name: req.body.name,
             description: req.body.description,
-            list: req.body.list
+            list: req.body.list,
+            owner: req.body.owner
         }, function (err, myList) {
             if (err)
                 res.send(err);
-            getMyAdminItems(res);
+            myListItemCntPlus(req.body.list);
+            getMyAdminItems(req.body.list, res);
         });
     });
 
@@ -1030,6 +1091,27 @@ function getUserGrpsA(myEmail, res) {
     }
 };
 
+function getAllMyGrps(myEmail,res) {
+    console.log("getAllMyGrps reached myEmail: " + myEmail);
+    if (myEmail != "admin") {
+        var criteria = {'email': myEmail};
+        userGrp.distinct('grp', criteria, function (err, userGrps) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(userGrps); 
+        }); 
+    } else {
+        var criteria = {};
+        userGrp.distinct('grp', criteria, function (err, userGrps) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(userGrps); 
+        });
+    }
+};
+
 function getPubGrps(myEmail, res) {
     console.log("getPubGrps reached myEmail: " + myEmail);
     var grpsToExclude;
@@ -1151,7 +1233,7 @@ function getMyPublicLists(res) {
             res.send(err);
         }
         res.json(myLists); 
-    });
+    }).sort({name : 1}).where({private : "N"});
 };
 
 function getMyLists(res) {
@@ -1164,6 +1246,24 @@ function getMyLists(res) {
 };
 
 function getMyListsOwner(owner,res) {
+    // get all grps owner is in and use this and owner in where
+    var criteria = {'email': owner};
+    userGrp.distinct('grp', criteria, function (err, userGrps) {
+        if (err) {
+               return res.send(err);
+        }
+            //res.json(userGrps); 
+            myList.find(function (err, myLists) {
+                if (err) {
+                    return res.send(err);
+                }
+                res.json(myLists); 
+            }).sort({name : 1}).where ( { $or: [{"owner" : owner}, {grp : {$in : userGrps}  } ] } ) ;
+        }
+    );
+};
+
+function getMyAdminListsOwner(owner,res) {
     myList.find(function (err, myLists) {
         if (err) {
             res.send(err);
@@ -1199,13 +1299,13 @@ function getMyItems(listName, res) {
     }).where ( { "list": listName } ) ;
 };
 
-function getMyAdminItems(res) {
+function getMyAdminItems(listName, res) {
     myItem.find(function (err, myItems) {
         if (err) {
             res.send(err);
         }
         res.json(myItems); 
-    });
+    }).where ( { "list": listName } ) ;
 };
 
 function getUserGrpsDetailsForUser(myEmail, res) {
@@ -1351,6 +1451,47 @@ function onSelfDelete() {
         console.log("onSelfDelete No delete");
     }
 };
+
+function myListItemCntPlus(listName) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        console.log("myListItemCntPlus " + JSON.stringify(myLists));
+        console.log("itemCnt = " + myLists[0].itemCnt)
+        var itemCnt = parseInt(myLists[0].itemCnt, 10) + 1;
+        console.log("listName = " + listName + " itemCnt = " + itemCnt);
+        
+        myList.findByIdAndUpdate(myLists[0]._id,   { itemCnt: itemCnt} , function (err, myLists) {
+              if (err) {
+                  console.log("error");
+              //    //res.send(err);
+              } else {
+                  console.log("no error");
+              } } ) ;
+    }).where ( { "name": listName } ) ;
+};
+
+function myListItemCntMinus(listName) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        console.log("myListItemCntMinus " + JSON.stringify(myLists));
+        console.log("itemCnt = " + myLists[0].itemCnt)
+        var itemCnt = parseInt(myLists[0].itemCnt, 10) - 1;
+        console.log("listName = " + listName + " itemCnt = " + itemCnt);
+        
+        myList.findByIdAndUpdate(myLists[0]._id,   { itemCnt: itemCnt} , function (err, myLists) {
+              if (err) {
+                  console.log("error");
+              //    //res.send(err);
+              } else {
+                  console.log("no error");
+              } } ) ;
+    }).where ( { "name": listName } ) ;
+};
+
 // After adding user to group want to reload page to get all users in all groups '
 // and also users still in selected group
 // This loads the usergrps.ejs page from the Admin screen

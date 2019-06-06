@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 var userSchema = mongoose.Schema({
     name: {
-        type: String
+        type: String,
+        unique : true
     },
     description: {
         type: String
@@ -30,6 +31,10 @@ var userSchema = mongoose.Schema({
     vote : {
         type: String,
         default: "none"
+    },
+    itemCnt : {
+        type: String,
+        default: "0"
     }
 });
 

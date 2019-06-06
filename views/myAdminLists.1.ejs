@@ -23,7 +23,7 @@
         angular.module('myListsController', [])
 
             .controller('mainController', ['$scope', '$http', 'myLists', function ($scope, $http, myLists) {
-                console.log("myLists.ejs: myListsController mainController reached");
+                console.log("myPublicLists.ejs: myListsController mainController reached");
                 $scope.formData = {};
                 $scope.loading = true;
                 $scope.myListsTableParams = {};
@@ -36,7 +36,7 @@
                 // GET =====================================================================
                 myLists.get(userEmail)
                     .success(function (data) {
-                        console.log("myLists.ejs: mainController myLists.get success");
+                        console.log("myPublicLists.ejs: mainController myLists.get success");
                         $scope.myLists = data;
                         $scope.loading = false;
                         $("#listnametaken").hide();
@@ -45,28 +45,18 @@
                         $("#addItemForm").hide();
                     });
 
-                myLists.getAllGrps()
-                    .success(function (grpdata) {
-                        console.log("myAdminLists.ejs: mainController myLists.getAllGrps success");
-                        $scope.myGrps = grpdata;
-                        $scope.myGrps.unshift("Everyone" , "Just Me");
-                        console.log("myAdminLists.ejs: myLists.getAllGrps: $scope.myGrps: " + JSON.stringify($scope.myGrps));
-                        for (var i = 0; i < $scope.myGrps.length; i++) {
-                            console.log("$scope.myGrps[i] = " + $scope.myGrps[i]);
-                        }
-                });
                 // CREATE ==================================================================
                 $scope.createMyList = function () {
-                    console.log("myLists.ejs:  mainController createMyList ");
+                    console.log("myPublicLists.ejs:  mainController createMyList ");
                     if ($scope.formData.name != undefined) {
                         $scope.loading = true;
-                        $scope.formData.owner = userEmail;
-                        console.log("myLists.ejs: $scope.formData: " + JSON.stringify($scope.formData));
+
+                        console.log("myPublicLists.ejs: $scope.formData: " + JSON.stringify($scope.formData));
                         myLists.create($scope.formData)
                             .error(function (data) {
                                 $scope.loading = false;
-                                console.log("myLists.ejs: createMyList ERROR data: " + JSON.stringify(data));
-                                console.log("myLists.ejs: createMyList ERROR data.message: " + data.message);
+                                console.log("myPublicLists.ejs: createMyList ERROR data: " + JSON.stringify(data));
+                                console.log("myPublicLists.ejs: createMyList ERROR data.message: " + data.message);
                                 message = data.message;
                                 $("#listnametaken").show();
 
@@ -76,19 +66,19 @@
                                 $scope.formData = {}; // clear the form so our user is ready to enter another
                                 $scope.myLists = data; // 
                                 $("#listnametaken").hide();
-                                console.log("myLists.ejs: createMyList $scope.myLists: " + JSON.stringify($scope.myLists));
+                                console.log("myPublicLists.ejs: createMyList $scope.myLists: " + JSON.stringify($scope.myLists));
                             });
                     }
                 };
 
-                $scope.deleteMyList = function (id) {
-                    console.log("myLists.ejs:  mainController deleteMyList id: " + id);
+                $scope.deleteMyList = function (listName) {
+                    console.log("myPublicLists.ejs:  mainController deleteMyList listName: " + listName);
                     //$scope.loading = true;
 
-                    if (confirm('Are you sure you want to delete this list ?') == true) {
+                    if (confirm('Are you sure you want to delete this record ?') == true) {
                         console.log(" yes delete");
                         $scope.loading = true;
-                        myLists.delMyList(id)
+                        myLists.delMyList(listName)
                             .success(function (data) {
                                 $scope.loading = false;
                                 $scope.formData = {}; // clear the form so our user is ready to enter another
@@ -121,15 +111,9 @@
 
                 $scope.createMyItem = function () {
                     console.log("myLists.ejs:  mainController createMyItem ");
-                    console.log("myLists.ejs: $scope.myItems: " + JSON.stringify($scope.myItems));
                     if ($scope.formItemData.name != undefined) {
-                        if (checkForDupItem()) {
-                            $("#itemnametaken").show();
-                            return;
-                        }
                         $scope.loading = true;
                         $scope.formItemData.list = $scope.currentListName;
-                        $scope.formItemData.owner = userEmail;
                         console.log("myLists.ejs: $scope.formItemData: " + JSON.stringify($scope.formItemData));
                         myLists.createItem($scope.formItemData)
                             .error(function (data) {
@@ -140,69 +124,15 @@
                                 $("#itemnametaken").show();
                             })
                             .success(function (data) {
-                                //$scope.loading = false;
-                                $scope.formItemData = {}; // clear the form so our user is ready to enter another
-                                $scope.myItems = data; // 
-
-                                myLists.get(userEmail)
-                                    .success(function (dataX) {
-                                    //console.log("myLists.ejs: mainController myLists.get success");
-                                    $scope.myLists = dataX;
-                                    $scope.loading = false;
-                                    $("#itemnametaken").hide();
-                                    //console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
-                                });
-                            });
-                    };
-                };
-                
-
-                $scope.myRemoveItem = function (id) {
-                    console.log("myLists.ejs:  mainController myRemoveItem ");
-                    if(confirm("Really remove this item from the list?")) { 
-                        console.log(" yes delete");
-                        $scope.loading = true;
-                        myLists.deleteItem({ "listName" : $scope.currentListName, "id" : id })
-                            .error(function (data) {
                                 $scope.loading = false;
-                                console.log("myLists.ejs: myRemoveItem ERROR data: " + JSON.stringify(data));
-                                console.log("myLists.ejs: myRemoveItem ERROR data.message: " + data.message);
-                                //messageItem = data.message;
-                                $("#itemnametaken").show(); // FIX this
-                            })
-				            .success(function(data) {
-					            //$scope.loading = false;
+                                $scope.formItemData = {}; // clear the form so our user is ready to enter another
                                 $scope.myItems = data; // 
                                 $("#itemnametaken").hide();
                                 console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
-
-                                myLists.get(userEmail)
-                                    .success(function (dataX) {
-                                    $scope.myLists = dataX;
-                                    $scope.loading = false;
-                                });
-				        });
-                    }; 
-		        };
-
-                $scope.myEditItem = function () {
-                    console.log("myLists.ejs:  mainController myEditItem ");
-                    alert("Not yet implemented!");
-                    //if(confirm("Not yet implemented")) {   
-                      //  console.log("Yes"); 
-                    //} else {
-                      //  console.log("No");
-                    //}
+                            });
+                    }
                 };
 
-                function checkForDupItem() {
-                    for (var i = 0; i < $scope.myItems.length; i++ ) {
-                        if ($scope.myItems[i].name == $scope.formItemData.name) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
             }]);
     </script>
 
@@ -211,42 +141,29 @@
 
             .factory('myLists', ['$http', function ($http) {
                 return {
-                    get: function (owner) {
-                        console.log("myLists.ejs: service myLists get");
-                        //return $http.get('/api/myLists');
-                        return $http.get('/api/myListsOwner/' + owner);
+                    get: function () {
+                        console.log("myPublicLists.ejs: service myLists get");
+                        return $http.get('/api/myAdminLists');
                     },
                     create: function (Data) {
-                        console.log("myLists.ejs: service myLists create");
-                        return $http.post('/api/myLists', Data);
+                        console.log("myPublicLists.ejs: service myLists create");
+                        return $http.post('/api/myAdminLists', Data);
                     },
                     delete: function (id) {
-                        console.log("myLists.ejs: service myLists delete");
-                        return $http.delete('/api/myLists/' + id);
-                    },
-                    delMyList: function (id) {
-                        console.log("myLists.ejs: service myLists delMyList");
+                        console.log("myPublicLists.ejs: service myLists delete");
                         return $http.delete('/api/myLists/' + id);
                     },
                     change: function (id) {
-                        console.log("myLists.ejs: service myLists change");
+                        console.log("myPublicLists.ejs: service myLists change");
                         return $http.get('/api/myLists/' + id);
                     },
-                    getItems: function (listName) {
+                    getItems: function () {
                         console.log("myLists.ejs: service myLists getItems");
-                        return $http.get('/api/myItems/' + listName);
+                        return $http.get('/api/myAdminItems');
                     },
                     createItem: function (Data) {
                         console.log("myLists.ejs: service myLists createItem");
-                        return $http.post('/api/myItems', Data);
-                    },
-                    deleteItem: function (Data) {
-                        console.log("myLists.ejs: service myLists deleteItem");
-                        return $http.post('/api/myItemsRemove' , Data); // + {"listName" : listName, "id" : id});
-                    },
-                    getAllGrps: function () {
-                        console.log("myAdminLists.ejs: service myLists getAllGrps");
-                        return $http.get('/api/getAllMyGrps');
+                        return $http.post('/api/myAdminItems', Data);
                     }
                 }
             }]);
@@ -297,6 +214,7 @@
                                                     <th>Edit</th>
                                                     <th>Suggestion</th>
                                                     <th>Vote</th>
+                                                    <th>ItemCnt</th>
                                                     <th>Items</th>
                                                 </tr>
                                                 <tbody class="problemcheckboxx" ng-repeat="aList in myLists">
@@ -309,14 +227,11 @@
                             <td>{{ aList.edit }}</td>
                             <td>{{ aList.suggestion }}</td>
                             <td>{{ aList.vote }}</td>
+                            <td>{{ aList.itemCnt }}</td>
 
                             <td>
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="itemsOfList(aList.name)">Items</button>
-                                <span ng-if="aList.itemCnt == '0' ">
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="deleteMyList(aList._id)">Delete</button>
-                                </span>
                             </td>
                             </tbody>
                             <p class="text-center" ng-show="loading">
@@ -352,21 +267,11 @@
                         [ngClass]="{'invalid-textbox' :myForm.submitted && !description.detail }" data-toggle="tooltip"
                         title="Describe the List.">
                 </div>
-                <div class="form-group">
-                    <label>Who can see this List</label>
-                    <select class="form-control" name="grp" ng-model="formData.grp"
-                    ng-options="grp for grp in myGrps"
-                        placeholder="Select Group" required 
-                        [ngClass]="{'invalid-textbox' :myForm.submitted && !grp.valid }" data-toggle="tooltip"
-                        title="Enter the Group that can see this List." >
-                    </select>
-                    
-                </div>
+                <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
                 <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyList()"
-                     ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || !myForm.grp.$dirty || 
-                      (myForm.name.$dirty && myForm.name.$invalid) || (myForm.description.$dirty && myForm.description.$invalid) 
-                      || (myForm.grp.$dirty && myForm.grp.$invalid)" 
-                      data-toggle="tooltip" title="Add this new List!">Add</button>
+                    ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || 
+                     (myForm.name.$dirty && myForm.name.$invalid) || (myForm.description.$dirty && myForm.description.$invalid) " data-toggle="tooltip" title="Add this new List!">Add</button>
+
             </form>
         </span>
         </td>
@@ -398,8 +303,8 @@
 <td>{{ aItem.rank }}</td>
 
 <td>
-    <button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">Edit</button>    
-    <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">Remove</button>
+    <button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aList.name)">Edit</button>
+    <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aList.name)">Remove</button>
 </td>
 </tbody>
 <p class="text-center" ng-show="loading">

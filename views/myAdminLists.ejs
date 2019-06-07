@@ -315,7 +315,7 @@
                             <td>
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="itemsOfList(aList.name)">Items</button>
-                                <span ng-if="aList.itemCnt == '0' ">
+                                <span ng-if="aList.itemCnt == '0' ||  aList.itemCnt == '-1' || aList.itemCnt == '-2' ">
                                     <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="deleteMyList(aList._id)">Delete</button>
                                 </span>

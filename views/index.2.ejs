@@ -20,35 +20,38 @@
 </head>
 
 <body class="bg-secondary text-white">
-    <!-- div id='main' -->
     <div id='main' class="container-fluid">
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top sticky-top">
-            <div class="container">
-                <p class="navbar-left navbar-text"> RG's List App! </p>
-                <p class="navbar-left navbar-text"> Lists your way!</p>
-                <p class="navbar-right navbar-text"><a href="/myPublicLists">Lists</a></p>
+        <nav class="navbar navbar-expand-md bg-dark navbar-dark fixed-top sticky-top">
+            <a class="navbar-brand" href="#">RG's List App!</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item  "><span class="nav-link"><a href="/myPublicLists">Lists</a></span></li>                       
                 <% if (typeof(user) == 'undefined') { %>
-                <p class="navbar-right navbar-text">User: Guest</p>
-                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
-                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
+                <li class="nav-item "><span class="nav-link">User: Guest</span></li>
+                <li class="nav-item "><span class="nav-link"><a href="/login">Login</a> or <a href="/signup">Register</a></span></li>
+                <li class="nav-item "><span class="nav-link"><a href="/index">About</a></span></li>
                 <% } else { %>
                 <% if (user.local.email) { %>
-                    <p class="navbar-right navbar-text"><a href="/myLists">My Lists</a></p>
+                <li class="nav-item"><span class="nav-link"><a href="/myLists">My Lists</a></span></li>
                 <% if (user.local.email == "admin") { %>
-                <p class="navbar-right navbar-text"><a href="/admin">Admin</a></p>
+                <li class="nav-item"><span class="nav-link"><a href="/admin">Admin</a></span></li>
                 <% } else { %>
-                <p class="navbar-right navbar-text"><a href="/myGrps">My Groups</a></p>
+                <li class="nav-item"><span class="nav-link"><a href="/myGrps">My Groups</a></span></li>
                 <% } %>
-                <p class="navbar-right navbar-text">Logged in as: <%= user.local.screenName %></p>
-                <p class="navbar-right navbar-text"><a href="/profile">Profile</a></p>
-                <p class="navbar-right navbar-text"><a href="/logout">Logout</a></p>
-                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
+                <li class="nav-item"><span class="nav-link">Logged in as: <%= user.local.screenName %></span></li>
+                <li class="nav-item"><span class="nav-link"><a href="/profile">Profile</a></span></li>
+                <li class="nav-item"><span class="nav-link"><a href="/logout">Logout</a></span></li>
+                <li class="nav-item"><span class="nav-link"><a href="/index">About</a></span></li>
                 <% } else { %>
-                <p class="navbar-right navbar-text">Guest User</p>
-                <p class="navbar-right navbar-text"><a href="/login">Login</a> or <a href="/signup">Register</a></p>
-                <p class="navbar-right navbar-text"><a href="/index">About</a></p>
+                <li class="nav-item"><span class="nav-link">Guest User</p>
+                <li class="nav-item"><span class="nav-link"><a href="/login">Login</a> or <a href="/signup">Register</a></span></li>
+                <li class="nav-item"><span class="nav-link"><a href="/index">About</a></span></li>
                 <% } %>
                 <% } %>
+                </ul>
             </div>
         </nav>
         <div ng-view>
@@ -71,9 +74,9 @@
                 <dd> - Each List has the following Options.</dd>
                 <dd> - The Options control how the List works.</dd>
                 <dd>&nbsp</dd>
-                <dd> - Each List can be Public or Private.</dd>
+                <dd> - Each List can be Public (seen by Everyone) or Private.</dd>
                 <dd> - Public Lists can be seen by everyone.</dd>
-                <dd> - Each Private List is associated with one Group.</dd>
+                <dd> - Each Private List is associated with one Group or just the owner</dd>
                 <dd> - Each Private List can only be seen by members of its associated Group.</dd>
                 <dd>&nbsp</dd>
                 <dd> - Each List has an Edit Control of Owner, Group or Anyone.</dd>
@@ -160,6 +163,18 @@
                 <dd> -- The User can add themselves to public groups. </dd>
                 <dd> -- The User can remove themselves from public groups they are in. </dd>
             </dl>
+            <dl>
+                <dt>My Lists</dt>
+                <dd> - This shows the Lists the Owners and the Lists that are set to be seen by Groups the User is in.
+                </dd>
+                <dd> - Register Users can create new Lists.</dd>
+                <dd> - List names must be unique in the system. </dd>
+                <dd> - Lists can be set to be seen by Everyone, Just the Author (Just Me) or member of a Group the author
+                    is in.</dd>
+                <dd> - The Items in each List can be seen by selecting Items.</dd>
+                <dd> - Items can also be added to a List when selecting Items. </dd>
+                <dd> - Item names must be unique within the given List.</dd>
+            </dl>
 
             <h2>Development information follows.</h2>
             <p></p>
@@ -167,6 +182,7 @@
             <p>MEAN Stack: MongoDB, Express, Angular, NodeJS </p>
             <p>JQuery</p>
             <p>Bootstrap 4</p>
+            <p>Plan to implement some featues using React </p>
             <p></p>
         </div>
     </div>

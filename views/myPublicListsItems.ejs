@@ -36,17 +36,22 @@
                 $("#addItemForm").hide();
 
                 // GET =====================================================================
-                myLists.get()
-                    .success(function (data) {
-                        console.log("myPublicLists.ejs: mainController myLists.get success");
-                        $scope.myLists = data;
-                        $scope.loading = false;
-                        $("#listnametaken").hide();
-                        $("#itemnametaken").hide();
-                        $("#myItemsTable").hide();
-                        $("#addItemForm").hide();
-                    });
+                
 
+                    <% if (typeof(myListItems) != 'undefined') { %>
+                        $scope.currentListName = "<%= myListItems %>";
+                    myLists.getItems("<%= myListItems %>")
+                        .success(function (data) {
+                            $scope.loading = false;
+                            $scope.formData = {}; // clear the form so our user is ready to enter another
+                            $scope.myItems = data; // 
+                            $("#listnametaken").hide();
+                            $("#itemnametaken").hide();
+                            $("#myListsTable").hide();
+                            $("#myItemsTable").show();
+                            $("#addItemForm").show();
+                        });
+                        <% } %>
                 // CREATE ==================================================================
                 $scope.createMyList = function () {
                     console.log("myPublicLists.ejs:  mainController createMyList ");
@@ -112,23 +117,6 @@
                         });
                 };
 
-                $scope.myCopyLink = function (listName) {
-                    console.log("myCopyLink call with $scope.currentListName = " +  $scope.currentListName);
-                    console.log("window.location.href: " + window.location.href);
-                    var selBox = document.createElement('textarea');
-                    selBox.style.position = 'fixed';
-                    selBox.style.left = '0';
-                    selBox.style.top = '0';
-                    selBox.style.opacity = '0';
-                    //selBox.value = "http://localhost:8080/myPublicListsItems/" + $scope.currentListName;
-                    selBox.value =  window.location.href + "Items/" + $scope.currentListName;
-                    document.body.appendChild(selBox);
-                    selBox.focus();
-                    selBox.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(selBox);
-                }
-
                 $scope.createMyItem = function () {
                     console.log("myLists.ejs:  mainController createMyItem ");
                     if ($scope.formItemData.name != undefined) {
@@ -191,8 +179,7 @@
 
     <script>
         angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter']);
-    </script>  
-
+    </script>
     <title>Lists </title>
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" / -->
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" / -->
@@ -209,20 +196,14 @@
     <div id='main' class="container-fluid">
         <% include myNavBar %>
 
-        <% if (typeof(myListItems) != 'undefined') { %>
-            <div><p class="alert alert-danger"><%= myListItems %></p></div>
-            {{ $scope.itemsOfList(myListItems) }}
-        <% } %>
-
         <div ng-viewx>
-            <!-- h3><span class="fa fa-sign-in"></span>The Lists</h3 -->
+            <h3><span class="fa fa-sign-in"></span>The Lists</h3>
             <div ng-controller="mainController">
                 <div class="container">
                     <table>
                         <tr>
                             <td>
                                 <div ng-viewyvx id=myListsTable>
-                                    <h3><span class="fa fa-sign-in"></span>The Lists</h3>
                                     <div class="text-centerx">
                                         <!-- h3>Number of Lists: <span
                                                 class="labelx label-infox">({{ myLists.length }})</span>
@@ -265,10 +246,8 @@
 
         <div ng-viewyvx id=myItemsTable>
             <div class="text-centerx">
-                <p>{{ currentListName }}: <span
-                        class="labelx label-infox">(Items: {{ myItems.length }})</span>
-                <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="myCopyLink()">Copy Link to List</button></p>
+                <p>Number of Items in List ({{ currentListName }}): <span
+                        class="labelx label-infox">{{ myItems.length }}</span></p>
             </div>
             <div>
                 <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">

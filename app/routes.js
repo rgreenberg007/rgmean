@@ -12,6 +12,7 @@ var userGrp = require('./models/userGrp');
 var userGrpDetail = require('./models/userGrpDetail');
 var myList = require('./models/myList');
 var myItem = require('./models/myItem');
+var myItemRank = require('./models/myItemRank');
 
 module.exports = function(app, passport) {
 
@@ -90,10 +91,22 @@ module.exports = function(app, passport) {
     });
 
     app.get('/myPublicLists', isLoggedInDontCare, function(req, res) {
-        console.log("routes.js /myPublicLists reached.")
+        console.log("routes.js /myPublicLists reached.");
         failureFlash : true;
         res.render('myPublicLists.ejs', {
             user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/myPublicListsItems/:myListItems', isLoggedInDontCare, function(req, res) {
+        console.log("routes.js /myPublicListsItems reached.");
+        var myListItems = req.params.myListItems;
+        console.log("routes.js myListItems: " + myListItems);
+        failureFlash : true;
+        res.render('myPublicListsItems.ejs', {
+            user : req.user,
+            myListItems : myListItems,
             message: "" //req.flash('grpsDetailsMessage')
         });
     });
@@ -111,6 +124,15 @@ module.exports = function(app, passport) {
         console.log("routes.js /myAdminLists reached.")
         failureFlash : true;
         res.render('myAdminLists.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/myAdminListsRank', isLoggedIn, function(req, res) {
+        console.log("routes.js /myAdminListsRank reached.")
+        failureFlash : true;
+        res.render('myAdminListsRank.ejs', {
             user : req.user,
             message: "" //req.flash('grpsDetailsMessage')
         });
@@ -911,6 +933,47 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.post('/api/myItemsRank', function (req, res) {
+        console.log("routes.js: app.post /api/myItemsRank");
+        console.log("req.body: " + JSON.stringify(req.body));
+        console.log("req.user: " + JSON.stringify(req.user));
+        // req.body is array of objects.
+        // save each items in the array the fields item._id, item.name, item.list and req.user.local.email
+        // and a number representing the index or rather 10 for 0, 9 for 1, etc.
+        var j = 1;
+        for (var i = 0; i < req.body.length; i++) {
+            console.log("save: " + req.user.local.email + ":" + req.body[i]._id + ":" + req.body[i].name + ":" + 
+            req.body[i].list + ":" + j);
+            var savedId = req.body[i]._id;
+            myItemRank.create({
+                email: req.user.local.email,
+                itemId: req.body[i]._id,
+                itemName: req.body[i].name,
+                listName: req.body[i].list,
+                rank: j
+            }, function (err, myItemRank) {
+                if (err) {
+                    res.send(err);
+                    return;
+                } //else {
+                    //console.log("save2: " + savedId + ":" + j);
+                    //myItemRankAddMinus(savedId, j, true );
+                //}
+            });
+            j++;
+        }
+        j = 1;
+        for (var i = 0; i < req.body.length; i++) {
+            console.log("save: " + req.user.local.email + ":" + req.body[i]._id + ":" + req.body[i].name + ":" + 
+            req.body[i].list + ":" + j);
+            var savedId = req.body[i]._id;
+            console.log("save3: " + savedId + ":" + j);
+            myItemRankAddMinus(savedId, j, true );
+            j++;
+        }
+        getMyAdminLists(res);
+    });
+
 };
 
 // route middleware to ensure user is logged in
@@ -1490,6 +1553,32 @@ function myListItemCntMinus(listName) {
                   console.log("no error");
               } } ) ;
     }).where ( { "name": listName } ) ;
+};
+
+function myItemRankAddMinus(myItemId, myRank, AddOrMinus ) {
+    console.log("myItemRankAddMinus myItemId: " + myItemId + " myRank: " + myRank + " AddOrMinus: " + AddOrMinus);
+     myItem.find(function (err, myItems) {
+        if (err) {
+            res.send(err);
+        }
+        console.log("myItemRankAddMinus " + JSON.stringify(myItems));
+        console.log("rank = " + myItems[0].rank)
+        var newRank = 0;
+        //if (addOrMinus) {
+            newRank = parseInt(myItems[0].rank, 10) + myRank;
+        //} else {
+          //  newRank = parseInt(myItems[0].rank, 10) - myRank;
+        //}
+        console.log("myItemId = " + myItemId + " newRank = " + newRank );
+        
+        myItem.findByIdAndUpdate(myItemId,   { rank: newRank} , function (err, myLists) {
+              if (err) {
+                  console.log("error");
+              //    //res.send(err);
+              } else {
+                  console.log("no error");
+              } } ) ;
+    }).where ( { "_id": myItemId } ) ;
 };
 
 // After adding user to group want to reload page to get all users in all groups '

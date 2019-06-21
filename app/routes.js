@@ -138,6 +138,15 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.get('/myAdminListsRankForAdmin', isLoggedIn, function(req, res) {
+        console.log("routes.js /myAdminListsRankForAdmin reached.")
+        failureFlash : true;
+        res.render('myAdminListsRankForAdmin.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
     app.get('/index', isLoggedInDontCare, function(req, res) {
         console.log("routes.js /index reached.")
         failureFlash : true;
@@ -500,6 +509,10 @@ module.exports = function(app, passport) {
         getPubGrps(req.user.local.email,res);
     });
 
+    app.get('/api/getAllPublicGrps', function (req, res) {
+        getAllPublicGrps(res);
+    });
+
     app.get('/api/getPubGrpsIn', function (req, res) {
         getPubGrpsIn(req.user.local.email,res);
     });
@@ -518,28 +531,50 @@ module.exports = function(app, passport) {
     });
 
     app.get('/api/myLists', function (req, res) {
-        getMyLists(res);
+        console.log("routes.js get /api/myLists " + JSON.stringify(req.params));
+        getMyListsOwner(req.params.owner, res);
+        //getMyLists(res);
     });
 
     app.delete('/api/myLists/:id', function (req, res) {
+        console.log("routes.js delete /api/myLists/:id " + JSON.stringify(req.params));
+        console.log("routes.js delete /api/myLists/:id req.body: " + JSON.stringify(req.body));
         myList.remove({
             _id: req.params.id
         }, function (err, myLists) {
             if (err)
                 res.send(err);
-            getMyLists(res);
+            getMyListsOwner(req.params.owner, res);
+            //getMyLists(res);
+        });
+    });
+
+    app.post('/api/delMyList/', function (req, res) {
+        console.log("routes.js post /api/delMyList req.params: " + JSON.stringify(req.params));
+        console.log("routes.js post /api/delMyList req.body: " + JSON.stringify(req.body));
+        console.log("routes.js post /api/delMyList req.user: " + JSON.stringify(req.user));
+        myList.remove({
+            _id: req.body.id
+        }, function (err, myLists) {
+            if (err)
+                res.send(err);
+            getMyListsOwner(req.body.owner, res);
+            //getMyLists(res);
         });
     });
 
     app.get('/api/myListsOwner/:owner', function (req, res) {
+        console.log("routes.js get /api/myListsOwner/:owner " + JSON.stringify(req.params));
         getMyListsOwner(req.params.owner, res);
     });
 
     app.get('/api/myAdminListsOwner/:owner', function (req, res) {
+        console.log("routes.js get /api/myAdminListsOwner/:owner " + JSON.stringify(req.params));
         getMyAdminListsOwner(req.params.owner, res);
     });
     
     app.get('/api/myAdminLists', function (req, res) {
+        console.log("routes.js get /api/myAdminLists " + JSON.stringify(req.params));
         getMyAdminLists(res);
     });
 
@@ -568,6 +603,7 @@ module.exports = function(app, passport) {
             if (err)
                 res.send(err);
             myListItemCntMinus(req.body.listName);
+            myItemRankRemove(req.body.id, req.body.listName );
             getMyItems(req.body.listName, res);
         });
     });
@@ -847,15 +883,18 @@ module.exports = function(app, passport) {
         console.log("routes.js: app.post /api/myLists");
         console.log("req.body: " + JSON.stringify(req.body));
         var myPrivate = "Y";      
-        if (req.body.grp == "Everyone") {
+        if (req.body.view == "Everyone") {
             myPrivate = "N";
         }  
         myList.create({
             name: req.body.name,
             description: req.body.description,
             owner: req.body.owner,
-            grp: req.body.grp,
-            private: myPrivate
+            grp: req.body.view,
+            view: req.body.view,
+            private: myPrivate,
+            edit: req.body.edit,
+            rank: req.body.rank
         }, function (err, myList) {
             if (err) {
                 if (err.name === 'MongoError' && err.code === 11000) {
@@ -968,10 +1007,64 @@ module.exports = function(app, passport) {
             req.body[i].list + ":" + j);
             var savedId = req.body[i]._id;
             console.log("save3: " + savedId + ":" + j);
-            myItemRankAddMinus(savedId, j, true );
+            myItemRankAddMinus(savedId, j, "Add" );
             j++;
         }
         getMyAdminLists(res);
+    });
+
+    app.post('/api/myItemsRankGet', function (req, res) {
+        console.log("routes.js: app.post /api/myItemsRankGet");
+        //console.log("req.body: " + JSON.stringify(req.body));
+        console.log("req.user: " + JSON.stringify(req.user));
+        myItemRank.find({
+            email: req.user.local.email
+        }, function (err, myItemRanks) {
+            if (err) {
+                res.send(err);
+                return;
+            } else {
+                //console.log("/api/myItemsRankGet " + JSON.stringify(myItemRanks));
+                res.json(myItemRanks);
+            }
+        });
+    });
+
+    app.post('/api/myItemsRankRemove', function (req, res) {
+        console.log("routes.js: app.post /api/myItemsRankRemove");
+        console.log("req.body: " + JSON.stringify(req.body));
+        console.log("req.user: " + JSON.stringify(req.user));
+        
+        myItemRank.find({
+            email: req.user.local.email,
+            listName : req.body.listName
+        }, function (err, myItemRanks) {
+            if (err) {
+                res.send(err);
+                return;
+            } else {
+                console.log("myItemRanks: " + JSON.stringify(myItemRanks));
+                for (var i = 0; i < myItemRanks.length; i++) {
+                    console.log("myItemRanks[i].listName: " + myItemRanks[i].listName);
+                    console.log("myItemRanks[i].rank: " + myItemRanks[i].rank);
+                    console.log("myItemRanks[i].itemName: " + myItemRanks[i].itemName);
+                    console.log("myItemRanks[i].itemId: " + myItemRanks[i].itemId);
+                    myItemRankAddMinus(myItemRanks[i].itemId, myItemRanks[i].rank, "Remove" );
+                }
+                myItemRank.remove({
+                    email: req.user.local.email,
+                    listName : req.body.listName
+                }, function (err, myItemRanks) {
+                    if (err) {
+                        res.send(err);
+                        return;
+                    } else {
+                        //res.json(myItemRanks);
+                        getMyAdminLists(res);
+                    }
+                });
+            }
+        });
     });
 
 };
@@ -1133,6 +1226,16 @@ function getUserGrps(res) {
         }
         res.json(userGrps); 
     }).sort( {grp : 1, email : 1} ) ;
+};
+
+function getAllPublicGrps(res) {
+    //userGrp.find(function (err, userGrps) {
+    userGrpDetail.find(function (err, userGrps) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(userGrps); 
+    }).sort( {grp : 1, email : 1} ).where ( { private : "N"}) ;
 };
 
 function getUserGrpsA(myEmail, res) {
@@ -1309,6 +1412,7 @@ function getMyLists(res) {
 };
 
 function getMyListsOwner(owner,res) {
+    console.log("route.js getMyListsOwner owner = " + owner);
     // get all grps owner is in and use this and owner in where
     var criteria = {'email': owner};
     userGrp.distinct('grp', criteria, function (err, userGrps) {
@@ -1321,7 +1425,8 @@ function getMyListsOwner(owner,res) {
                     return res.send(err);
                 }
                 res.json(myLists); 
-            }).sort({name : 1}).where ( { $or: [{"owner" : owner}, {grp : {$in : userGrps}  } ] } ) ;
+            }).sort({name : 1}).where ( { $or: [{owner : owner}, {view : "Everyone"}, {grp : {$in : userGrps} }, 
+            {view : {$in : userGrps} }, {edit : {$in : userGrps} }, {rank : {$in : userGrps} } ] } ) ;
         }
     );
 };
@@ -1522,7 +1627,8 @@ function myListItemCntPlus(listName) {
         }
         console.log("myListItemCntPlus " + JSON.stringify(myLists));
         console.log("itemCnt = " + myLists[0].itemCnt)
-        var itemCnt = parseInt(myLists[0].itemCnt, 10) + 1;
+        //var itemCnt = parseInt(myLists[0].itemCnt, 10) + 1;
+        var itemCnt = myLists[0].itemCnt + 1;
         console.log("listName = " + listName + " itemCnt = " + itemCnt);
         
         myList.findByIdAndUpdate(myLists[0]._id,   { itemCnt: itemCnt} , function (err, myLists) {
@@ -1542,7 +1648,8 @@ function myListItemCntMinus(listName) {
         }
         console.log("myListItemCntMinus " + JSON.stringify(myLists));
         console.log("itemCnt = " + myLists[0].itemCnt)
-        var itemCnt = parseInt(myLists[0].itemCnt, 10) - 1;
+        //var itemCnt = parseInt(myLists[0].itemCnt, 10) - 1;
+        var itemCnt = myLists[0].itemCnt - 1;
         console.log("listName = " + listName + " itemCnt = " + itemCnt);
         
         myList.findByIdAndUpdate(myLists[0]._id,   { itemCnt: itemCnt} , function (err, myLists) {
@@ -1555,32 +1662,67 @@ function myListItemCntMinus(listName) {
     }).where ( { "name": listName } ) ;
 };
 
-function myItemRankAddMinus(myItemId, myRank, AddOrMinus ) {
-    console.log("myItemRankAddMinus myItemId: " + myItemId + " myRank: " + myRank + " AddOrMinus: " + AddOrMinus);
-     myItem.find(function (err, myItems) {
+function myRankAlgorithm(myRank) {
+    if (myRank == 1) { return 10; };
+    if (myRank == 2) { return 9; };
+    if (myRank == 3) { return 8; };
+    if (myRank == 4) { return 7; };
+    if (myRank == 5) { return 6; };
+    if (myRank == 6) { return 5; };
+    if (myRank == 7) { return 4; };
+    if (myRank == 8) { return 3; };
+    if (myRank == 9) { return 2; };
+    if (myRank == 10) { return 1; };
+}
+
+function myItemRankAddMinus(myItemId, myRank, addOrMinus ) {
+    console.log("myItemRankAddMinus myItemId: " + myItemId + " myRank: " + myRank + " AddOrMinus: " + addOrMinus);
+    myItem.find(function (err, myItems) {
         if (err) {
             res.send(err);
+            return;
         }
         console.log("myItemRankAddMinus " + JSON.stringify(myItems));
-        console.log("rank = " + myItems[0].rank)
-        var newRank = 0;
-        //if (addOrMinus) {
-            newRank = parseInt(myItems[0].rank, 10) + myRank;
-        //} else {
-          //  newRank = parseInt(myItems[0].rank, 10) - myRank;
-        //}
-        console.log("myItemId = " + myItemId + " newRank = " + newRank );
+        if (myItems.length > 0) {
+            console.log("rank = " + myItems[0].rank)
+            var newRank = 0;
+            if (addOrMinus == "Add") {
+                //newRank = parseInt(myItems[0].rank, 10) + myRankAlgorithm(myRank);
+                newRank = myItems[0].rank + myRankAlgorithm(myRank);
+            } else {
+                //newRank = parseInt(myItems[0].rank, 10) - myRankAlgorithm(myRank);
+                newRank = myItems[0].rank - myRankAlgorithm(myRank);
+            }
+            console.log("myItemId = " + myItemId + " newRank = " + newRank );
         
-        myItem.findByIdAndUpdate(myItemId,   { rank: newRank} , function (err, myLists) {
-              if (err) {
-                  console.log("error");
+            myItem.findByIdAndUpdate(myItemId,   { rank: newRank} , function (err, myLists) {
+                if (err) {
+                    console.log("error");
+                    return;
               //    //res.send(err);
-              } else {
-                  console.log("no error");
-              } } ) ;
+                } else {
+                    console.log("no error");
+                } } ) ;
+        }
     }).where ( { "_id": myItemId } ) ;
 };
 
+function myItemRankRemove(myItemId, myListName ) {
+    myItemRank.remove({
+        //email: req.user.local.email,
+        itemId : myItemId,
+        listName : myListName
+    }, function (err, myItemRanks) {
+        if (err) {
+            res.send(err);
+            return;
+        } else {
+            //res.json(myItemRanks);
+            //getMyAdminLists(res);
+            return;
+        }
+    });
+};
 // After adding user to group want to reload page to get all users in all groups '
 // and also users still in selected group
 // This loads the usergrps.ejs page from the Admin screen

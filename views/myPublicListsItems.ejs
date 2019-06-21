@@ -197,7 +197,7 @@
         <% include myNavBar %>
 
         <div ng-viewx>
-            <h3><span class="fa fa-sign-in"></span>The Lists</h3>
+            <!-- h3><span class="fa fa-sign-in"></span>The Lists</h3 -->
             <div ng-controller="mainController">
                 <div class="container">
                     <table>
@@ -246,8 +246,9 @@
 
         <div ng-viewyvx id=myItemsTable>
             <div class="text-centerx">
-                <p>Number of Items in List ({{ currentListName }}): <span
-                        class="labelx label-infox">{{ myItems.length }}</span></p>
+                <p>{{ currentListName }}: <span
+                            class="labelx label-infox">(Items: {{ myItems.length }})</span>
+                </p>
             </div>
             <div>
                 <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">

@@ -30,6 +30,7 @@
                 $scope.formData = {};
                 $scope.loading = true;
                 $scope.myListsTableParams = {};
+                $scope.myPublicGrps = [];
                 $("#listnametaken").hide();
                 $("#itemnametaken").hide();
                 $("#myItemsTable").hide();
@@ -46,6 +47,15 @@
                         $("#myItemsTable").hide();
                         $("#addItemForm").hide();
                     });
+                
+                myLists.getAllPublicGrps()
+                    .success(function (pubgrpdata) {
+                        console.log("myAdminLists.ejs: mainController myLists.getAllPublicGrps success");
+                        $scope.myPublicGrps = pubgrpdata;
+                        for (var i = 0; i < $scope.myPublicGrps.length; i++) {
+                            console.log("$scope.myPublicGrps[i].grp = " + $scope.myPublicGrps[i].grp);
+                        }
+                });
 
                 // CREATE ==================================================================
                 $scope.createMyList = function () {
@@ -94,6 +104,26 @@
                         console.log(" No delete");
                     }
                 };
+
+                $scope.itemsOfList2 = function (listName, editGrp, rankGrp) {
+                    console.log("myLists.ejs:  mainController itemsOfList2 listName: " + listName + " editGrp: " + 
+                    editGrp + " rankGrp: " + rankGrp);
+                    $("#addListForm").hide();
+                    $scope.currentListName = listName;
+                    $scope.editGrp = editGrp;
+                    $scope.rankGrp = rankGrp;
+                    myLists.getItems(listName)
+                        .success(function (data) {
+                            $scope.loading = false;
+                            $scope.formData = {}; // clear the form so our user is ready to enter another
+                            $scope.myItems = data; // 
+                            $("#listnametaken").hide();
+                            $("#itemnametaken").hide();
+                            $("#myListsTable").hide();
+                            $("#myItemsTable").show();
+                            $("#addItemForm").show();
+                        });
+                }
 
                 $scope.itemsOfList = function (listName) {
                     console.log("myLists.ejs:  mainController itemsOfList listName: " + listName);
@@ -153,6 +183,13 @@
                     }
                 };
 
+                $scope.inPublicGroups = function (tmpGrp) {
+                    console.log("myPublicLists.ejs:  mainController inPublicGroups  tmpGrp: " + tmpGrp);
+                    //return $scope.myPublicGrps.includes(tmpGrp); // this is an array of objects so this doesnt work!
+                    return $scope.myPublicGrps.some(item => item.grp === tmpGrp);
+                    //return true;
+                };
+
             }]);
     </script>
 
@@ -184,9 +221,14 @@
                     createItem: function (Data) {
                         console.log("myLists.ejs: service myLists createItem");
                         return $http.post('/api/myItems', Data);
+                    },
+                    getAllPublicGrps: function () {
+                        console.log("myAdminLists.ejs: service myLists getAllPublicGrps");
+                        return $http.get('/api/getAllPublicGrps');
                     }
                 }
             }]);
+
     </script>
 
     <script>
@@ -239,14 +281,14 @@
                                                     <th>Description</th>
                                                     <th>Items</th>
                                                 </tr>
-                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists">
+                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'">
 
                             <td>{{ aList.name }}</td>
                             <td>{{ aList.description }}</td>
 
                             <td>
-                                <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="itemsOfList(aList.name)">Items</button>
+                            <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
+                            <button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList2(aList.name, aList.edit, aList.rank)">Items</button>
                             </td>
                             </tbody>
                             <p class="text-center" ng-show="loading">
@@ -269,17 +311,25 @@
                         class="labelx label-infox">(Items: {{ myItems.length }})</span>
                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="myCopyLink()">Copy Link to List</button></p>
+                <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' " >
+                <p> Join the group: {{ editGrp }}, to Edit this List</p>
+                </span>
+                <span ng-if=" inPublicGroups(rankGrp) && rankGrp != 'Just Me' " >
+                <p> Join the group: {{ rankGrp }}, to Rank this List</p>
+                </span>
             </div>
             <div>
                 <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
+                        <th>Points</th>
                     </tr>
-                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItems">
+                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] ">
 
                         <td>{{ aItem.name }}</td>
                         <td>{{ aItem.description }}</td>
+                        <td>{{ aItem.rank }}</td>
 
                     </tbody>
                     <p class="text-center" ng-show="loading">

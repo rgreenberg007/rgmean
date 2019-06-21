@@ -19,8 +19,8 @@ var userSchema = mongoose.Schema({
         default: "N"
     },
     rank : {
-        type: String,
-        default: "0"
+        type: Number,
+        default: 0
     }
 });
 

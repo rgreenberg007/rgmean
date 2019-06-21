@@ -186,6 +186,8 @@
                 }
 
                 $scope.moreListsAllowed = function() {
+                    console.log("moreListsAllowed reached" );
+                    if ($scope.myLists == undefined) return true;
                     console.log("moreListsAllowed $scope.myLists.length : " + $scope.myLists.length);
                     //$("#itemnametaken").hide();
                     var tmpLists =  $scope.myLists.filter(function(myList) {
@@ -572,11 +574,11 @@
                             <td>
                                 <div ng-view id=myListsTable>
                                     <h3><span class="fa "></span> My Lists ({{ myLists.length }}) 
-                                    <span ng-if="myLists.length > 0 && moreListsAllowed()">
+                                    <span ng-if="moreListsAllowed()">
                                     <button type="submit" class="btn btn-primary btn-sm" ng-click="showNewListForm()">New List</button>
                                     
                                     </span>
-                                    <span ng-if="myLists.length > 0 && !moreListsAllowed()">
+                                    <span ng-if="!moreListsAllowed()">
                                        <p>  Maximum number of Lists allowed reached. </p>
                                     </span>
                                     </h3>

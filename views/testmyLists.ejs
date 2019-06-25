@@ -8,7 +8,7 @@
     <!-- script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script -->
     <!-- load angular -->
     <!-- ??? Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Popper JS -->
@@ -149,13 +149,13 @@
                     return Math.ceil($scope.getData().length / $scope.pageSize);
                 };
 
-                $scope.$watch('q', function (newValue, oldValue) {
-                    console.log("$scope.$watch(q) reached");
-                    if (oldValue != newValue) {
-                        $scope.currentPage = 0;
-                    }
-                }, true
-                );
+                //$scope.$watch('q', function (newValue, oldValue) {
+                  //  console.log("$scope.$watch(q) reached");
+                  //  if (oldValue != newValue) {
+                  //      $scope.currentPage = 0;
+                  //  }
+                //}, true
+                //);
 
                 $scope.getData2 = function () {
                     //return $filter('filter')($scope.data, $scope.q)
@@ -173,13 +173,13 @@
                     return Math.ceil($scope.getData2().length / $scope.pageSize2);
                 };
 
-                $scope.$watch('q2', function (newValue, oldValue) {
-                    console.log("$scope.$watch(q2) reached");
-                    if (oldValue != newValue) {
-                        $scope.currentPage2 = 0;
-                    }
-                }, true
-                );
+                //$scope.$watch('q2', function (newValue, oldValue) {
+                  //  console.log("$scope.$watch(q2) reached");
+                  //  if (oldValue != newValue) {
+                  //      $scope.currentPage2 = 0;
+                  //  }
+                //}, true
+                //);
 
                 // CREATE ==================================================================
                 $scope.createMyList = function () {
@@ -468,7 +468,7 @@
                         const tmp = this.myItems2[index - 1];
                         this.myItems2[index - 1] = this.myItems2[index];
                         this.myItems2[index] = tmp;
-                    }
+                    };
                 };
 
                 $scope.moveDown = function (value, index) {
@@ -477,7 +477,7 @@
                         const tmp = this.myItems2[index + 1];
                         this.myItems2[index + 1] = this.myItems2[index];
                         this.myItems2[index] = tmp;
-                    }
+                    };
                 };
 
                 $scope.RemoveMyRankings = function (listName) {
@@ -558,7 +558,7 @@
             return function (input, start) {
                 start = +start;
                 return input.slice(start);
-            }
+            };
         });
 
     </script>
@@ -620,7 +620,7 @@
                         console.log("myAdminListsRank.ejs: service myLists rankItemsGet");
                         return $http.post('/api/myItemsRankGet', Data);
                     }
-                }
+                };
             }]);
     </script>
 
@@ -631,7 +631,7 @@
     <title>Top 10 Lists</title>
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" / -->
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" / -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <style>
         body {
             padding-top: 0px;

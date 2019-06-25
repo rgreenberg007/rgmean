@@ -467,7 +467,7 @@
                         const tmp = this.myItems2[index - 1];
                         this.myItems2[index - 1] = this.myItems2[index];
                         this.myItems2[index] = tmp;
-                    }
+                    };
                 };
 
                 $scope.moveDown = function (value, index) {
@@ -476,7 +476,7 @@
                         const tmp = this.myItems2[index + 1];
                         this.myItems2[index + 1] = this.myItems2[index];
                         this.myItems2[index] = tmp;
-                    }
+                    };
                 };
 
                 $scope.RemoveMyRankings = function (listName) {
@@ -511,7 +511,7 @@
                             $scope.itemsOfListRank($scope.currentListName);
                         });
                 };
-                
+
             }]);
     </script>
 

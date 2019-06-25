@@ -452,7 +452,8 @@
                     //console.log("myAdminLists.ejs: mySelectItem $scope.myItems: " + JSON.stringify($scope.myItems));
                     $scope.myItems2.push(myItem);
                     // Adjust this for Ipad IOS 9
-                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
+                    //$scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
+                    $scope.myItems = $scope.myItems.filter(function(item) {return item._id !== myItem._id; });
                     //console.log("myAdminLists.ejs: mySelectItem $scope.myItems2: " + JSON.stringify($scope.myItems2));
                 };
 
@@ -461,7 +462,8 @@
                     console.log("myAdminLists.ejs: myRemoveItem2 $scope.myItems: " + JSON.stringify($scope.myItems));
                     $scope.myItems.push(myItem);
                     // Adjust this for Ipad IOS 9
-                    $scope.myItems2 = $scope.myItems2.filter(item => item._id !== myItem._id);
+                    //$scope.myItems2 = $scope.myItems2.filter(item => item._id !== myItem._id);
+                    $scope.myItems2 = $scope.myItems2.filter(function(item) {return item._id !== myItem._id; });
                     console.log("myAdminLists.ejs: myRemoveItem2 $scope.myItems2: " + JSON.stringify($scope.myItems2));
                 };
 

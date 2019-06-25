@@ -436,12 +436,10 @@
 
                 $scope.mySelectItem = function (myItem) {
                     console.log("myAdminListsRank.ejs:  mainController mySelectItem ");
-                    //console.log("myAdminLists.ejs: mySelectItem $scope.myItems: " + JSON.stringify($scope.myItems));
                     $scope.myItems2.push(myItem);
-                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
-                    //console.log("myAdminLists.ejs: mySelectItem $scope.myItems2: " + JSON.stringify($scope.myItems2));
+                //    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
                 };
-                
+
                 function checkForDupItem() {
                     for (var i = 0; i < $scope.myItems.length; i++) {
                         if ($scope.myItems[i].name == $scope.formItemData.name) {

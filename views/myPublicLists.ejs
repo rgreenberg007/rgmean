@@ -199,6 +199,7 @@
                 $scope.myCopyLink = function (listName) {
                     console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
                     console.log("window.location.href: " + window.location.href);
+                    var range = document.createRange();
                     var selBox = document.createElement('textarea');
                     selBox.contentEditable = true;
                     selBox.readOnly = false;
@@ -211,6 +212,11 @@
                     document.body.appendChild(selBox);
                     selBox.focus();
                     selBox.select();
+                    range.selectNodeContents(selBox);
+                    var s = window.getSelection();
+                    s.removeAllRanges();
+                    s.addRange(range);
+                    selBox.setSelectionRange(0, 999999);
                     document.execCommand('copy');
                     ////document.body.removeChild(selBox);
                 }

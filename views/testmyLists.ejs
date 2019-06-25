@@ -434,6 +434,84 @@
                     //}
                 };
 
+                function checkForDupItem() {
+                    for (var i = 0; i < $scope.myItems.length; i++) {
+                        if ($scope.myItems[i].name == $scope.formItemData.name) {
+                            $scope.myItemNameTaken = true;
+                            return true;
+                        };
+                    };
+                    return false;
+                    $scope.myItemNameTaken = false;
+                };
+
+                $scope.mySelectItem = function (myItem) {
+                    console.log("myAdminListsRank.ejs:  mainController mySelectItem ");
+                    //console.log("myAdminLists.ejs: mySelectItem $scope.myItems: " + JSON.stringify($scope.myItems));
+                    $scope.myItems2.push(myItem);
+                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
+                    //console.log("myAdminLists.ejs: mySelectItem $scope.myItems2: " + JSON.stringify($scope.myItems2));
+                };
+
+                $scope.myRemoveItem2 = function (myItem) {
+                    console.log("myAdminListsRank.ejs:  mainController myRemoveItem2 ");
+                    console.log("myAdminLists.ejs: myRemoveItem2 $scope.myItems: " + JSON.stringify($scope.myItems));
+                    $scope.myItems.push(myItem);
+                    $scope.myItems2 = $scope.myItems2.filter(item => item._id !== myItem._id);
+                    console.log("myAdminLists.ejs: myRemoveItem2 $scope.myItems2: " + JSON.stringify($scope.myItems2));
+                };
+
+                $scope.moveUp = function (value, index) {
+                    console.log("moveUp reached");
+                    if (index > 0) {
+                        const tmp = this.myItems2[index - 1];
+                        this.myItems2[index - 1] = this.myItems2[index];
+                        this.myItems2[index] = tmp;
+                    }
+                };
+
+                $scope.moveDown = function (value, index) {
+                    console.log("moveDown reached");
+                    if (index + 1 < this.myItems2.length) {
+                        const tmp = this.myItems2[index + 1];
+                        this.myItems2[index + 1] = this.myItems2[index];
+                        this.myItems2[index] = tmp;
+                    }
+                };
+
+                $scope.RemoveMyRankings = function (listName) {
+                    console.log("myAdminListsRank.ejs:  mainController RemoveMyRankings listName: " + listName);
+                    if (confirm("Really remove your rankings of the items of this list?")) {
+                        myLists.rankItemsRemove({ "listName": listName })
+                            .error(function (data) {
+                                $scope.loading = false;
+                                //console.log("myAdminListsRank.ejs: RemoveMyRankings ERROR data: " + JSON.stringify(data));
+                            })
+                            .success(function (data) {
+                                location.reload();
+                            });
+                    };
+                };
+
+                $scope.saveMyRanking = function () {
+                    console.log("myAdminListsRank.ejs: saveMyRanking $scope.myItems2: " + JSON.stringify($scope.myItems2));
+                    //for (var i = 0; i < $scope.myItems2.length; i++ ) {
+                    //}
+                    $scope.loading = true;
+                    console.log("A");
+                    $scope.myRankingDone = true;
+                    myLists.rankItems($scope.myItems2)
+                        .error(function (data) {
+                            $scope.loading = false;
+                            console.log("myAdminLists.ejs: saveMyRanking ERROR data: " + JSON.stringify(data));
+                        })
+                        .success(function (data) {
+                            console.log("B");
+                            $scope.myRankingDone = true;
+                            $scope.itemsOfListRank($scope.currentListName);
+                        });
+                };
+                
             }]);
     </script>
 

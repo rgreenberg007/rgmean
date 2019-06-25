@@ -320,8 +320,46 @@
                         });
                 };
 
+                $scope.itemsOfListRank = function (listName) {
+                    console.log("myLists.ejs:  mainController itemsOfListRank listName: " + listName);
+                    $("#addListForm").hide();
+                    $scope.currentListName = listName;
+                    //$scope.myRankingDone = false;
+                    myLists.getItems(listName)
+                        .success(function (data) {
+                            $scope.loading = false;
+                            $scope.formData = {}; // clear the form so our user is ready to enter another
+                            $scope.myItems = data; // 
+                            $scope.myItems2 = [];
+                            $("#listnametaken").hide();
+                            //$("#itemnametaken").hide();
+                            $("#myListsTable").hide();
+                            $("#myItemsTable").show();
+                            $("#addItemForm").show();
+                        });
+                };
 
+                $scope.myCopyLink = function (listName) {
+                    console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
+                    console.log("window.location.href: " + window.location.href);
+                    var selBox = document.createElement('textarea');
+                    selBox.style.position = 'fixed';
+                    selBox.style.left = '0';
+                    selBox.style.top = '0';
+                    selBox.style.opacity = '0';
+                    //selBox.value = "http://localhost:8080/myPublicListsItems/" + $scope.currentListName; /myPublicListsItems
+                    var tmpURLx = window.location.href;
+                    tmpURLx = tmpURLx.replace("myLists", "myPublicLists");
+                    //selBox.value =  window.location.href + "Items/" + $scope.currentListName;
+                    selBox.value = tmpURLx + "Items/" + $scope.currentListName;
+                    document.body.appendChild(selBox);
+                    selBox.focus();
+                    selBox.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(selBox);
+                }
             
+                
             }]);
     </script>
 

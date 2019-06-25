@@ -648,13 +648,13 @@
                             <td>
                                 <div ng-view id=myListsTable>
                                     <h3><span class="fa "></span> My Lists ({{ myLists.length }})
-                                        <span ng-if="moreListsAllowed()">
+                                        <!-- span ng-if="moreListsAllowed()">
                                             <button type="submit" class="btn btn-primary btn-sm"
                                                 ng-click="showNewListForm()">New List</button>
                                         </span>
                                         <span ng-if="!moreListsAllowed()">
                                             <p> Maximum number of Lists allowed reached. </p>
-                                        </span>
+                                        </span -->
                                     </h3>
                                     <div id="myLists-listx">
                                         <!-- div class="col-sm-4 col-sm-offset-4" -->
@@ -685,7 +685,7 @@
                                                     <td>{{ aList.rank }}</td>
                                                     <!-- td>{{ aList.suggestion }}</td -->
                                                     <!-- td>{{ aList.vote }}</td -->
-                                                    <td>
+                                                    <!-- td>
                                                         <button type="submit" class="btn btn-primary btn-sm"
                                                         ng-click="itemsOfList2(aList.name, aList.edit, aList.owner)">Items</button>
                                                         <span ng-if="aList.itemCnt == '0' ">
@@ -704,7 +704,7 @@
                                                             ng-click="RemoveMyRankings(aList.name)">Remove My Rank </button>
                                                         </span>
                                                         </span>
-                                                    </td>
+                                                    </td -->
                                                 </tbody>
                                                 <p class="text-center" ng-show="loading">
                                                     <span class="fa fa-spinner fa-spin fa-3x"></span>

@@ -437,7 +437,7 @@
                 $scope.mySelectItem = function (myItem) {
                     console.log("myAdminListsRank.ejs:  mainController mySelectItem ");
                     $scope.myItems2.push(myItem);
-                //    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
+                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
                 };
 
                 function checkForDupItem() {

@@ -204,7 +204,7 @@
                                 $("#addListForm").hide();
                                 $("#myListsTable").show();
                             });
-                    }
+                    };
                 };
 
                 $scope.deleteMyList = function (id) {
@@ -225,7 +225,7 @@
                             });
                     } else {
                         console.log(" No delete");
-                    }
+                    };
                 };
 
                 $scope.showNewListForm = function () {
@@ -246,8 +246,8 @@
                         return true;
                     } else {
                         return false;
-                    }
-                }
+                    };
+                };
 
                 $scope.moreListsAllowed = function () {
                     console.log("moreListsAllowed reached");
@@ -262,8 +262,8 @@
                         return true;
                     } else {
                         return false;
-                    }
-                }
+                    };
+                };
 
                 $scope.moreItemsAllowed = function () {
                     console.log("moreItemsAllowed reached");
@@ -273,8 +273,8 @@
                         return true;
                     } else {
                         return false;
-                    }
-                }
+                    };
+                };
 
                 $scope.itemsOfList = function (listName) {
                     console.log("myLists.ejs:  mainController itemsOfList listName: " + listName);
@@ -302,7 +302,7 @@
                     $scope.allowEdit = false;
                     if ($scope.inMyGroups(editGrp) || $scope.isMyOwner(myOwner)) {
                         $scope.allowEdit = true;
-                    }
+                    };
                     console.log("myLists.ejs:  mainController itemsOfList2 $scope.allowEdit: " + $scope.allowEdit);
                     myLists.getItems(listName)
                         .success(function (data) {
@@ -357,7 +357,7 @@
                     selBox.select();
                     document.execCommand('copy');
                     document.body.removeChild(selBox);
-                }
+                };
 
                 $scope.createMyItem = function () {
                     console.log("myLists.ejs:  mainController createMyItem ");
@@ -366,7 +366,7 @@
                         if (checkForDupItem()) {
                             //$("#itemnametaken").show();
                             return;
-                        }
+                        };
                         $scope.loading = true;
                         $scope.formItemData.list = $scope.currentListName;
                         $scope.formItemData.owner = userEmail;
@@ -439,8 +439,8 @@
                         if ($scope.myItems[i].name == $scope.formItemData.name) {
                             $scope.myItemNameTaken = true;
                             return true;
-                        }
-                    }
+                        };
+                    };
                     return false;
                     $scope.myItemNameTaken = false;
                 };
@@ -467,7 +467,7 @@
                         const tmp = this.myItems2[index - 1];
                         this.myItems2[index - 1] = this.myItems2[index];
                         this.myItems2[index] = tmp;
-                    }
+                    };
                 };
 
                 $scope.moveDown = function (value, index) {
@@ -476,7 +476,7 @@
                         const tmp = this.myItems2[index + 1];
                         this.myItems2[index + 1] = this.myItems2[index];
                         this.myItems2[index] = tmp;
-                    }
+                    };
                 };
 
                 $scope.RemoveMyRankings = function (listName) {

@@ -359,7 +359,81 @@
                     document.body.removeChild(selBox);
                 }
             
-                
+                $scope.createMyItem = function () {
+                    console.log("myLists.ejs:  mainController createMyItem ");
+                    //console.log("myLists.ejs: $scope.myItems: " + JSON.stringify($scope.myItems));
+                    if ($scope.formItemData.name != undefined) {
+                        if (checkForDupItem()) {
+                            //$("#itemnametaken").show();
+                            return;
+                        }
+                        $scope.loading = true;
+                        $scope.formItemData.list = $scope.currentListName;
+                        $scope.formItemData.owner = userEmail;
+                        console.log("myLists.ejs: $scope.formItemData: " + JSON.stringify($scope.formItemData));
+                        myLists.createItem($scope.formItemData)
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myLists.ejs: createMyItem ERROR data: " + JSON.stringify(data));
+                                console.log("myLists.ejs: createMyItem ERROR data.message: " + data.message);
+                                //messageItem = data.message;
+                                //$("#itemnametaken").show();
+                            })
+                            .success(function (data) {
+                                //$scope.loading = false;
+                                $scope.formItemData = {}; // clear the form so our user is ready to enter another
+                                //$("#itemnametaken").hide();
+                                $scope.myItems = data; // 
+
+                                myLists.get(userEmail)
+                                    .success(function (dataX) {
+                                        //console.log("myLists.ejs: mainController myLists.get success");
+                                        $scope.myLists = dataX;
+                                        $scope.loading = false;
+                                        //console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
+                                    });
+                            });
+                    };
+                };
+
+                $scope.myRemoveItem = function (id) {
+                    console.log("myLists.ejs:  mainController myRemoveItem ");
+                    if (confirm("Really remove this item from the list?")) {
+                        console.log(" yes delete");
+                        $scope.loading = true;
+                        myLists.deleteItem({ "listName": $scope.currentListName, "id": id })
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myLists.ejs: myRemoveItem ERROR data: " + JSON.stringify(data));
+                                console.log("myLists.ejs: myRemoveItem ERROR data.message: " + data.message);
+                                //messageItem = data.message;
+                                //$("#itemnametaken").show(); // FIX this
+                            })
+                            .success(function (data) {
+                                //$scope.loading = false;
+                                $scope.myItems = data; // 
+                                //$("#itemnametaken").hide();
+                                console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
+                                // ??? Is this needed ???
+                                myLists.get(userEmail)
+                                    .success(function (dataX) {
+                                        $scope.myLists = dataX;
+                                        $scope.loading = false;
+                                    });
+                            });
+                    };
+                };
+
+                $scope.myEditItem = function () {
+                    console.log("myLists.ejs:  mainController myEditItem ");
+                    alert("Not yet implemented!");
+                    //if(confirm("Not yet implemented")) {   
+                    //  console.log("Yes"); 
+                    //} else {
+                    //  console.log("No");
+                    //}
+                };
+
             }]);
     </script>
 

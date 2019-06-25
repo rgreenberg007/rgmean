@@ -99,6 +99,15 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.get('/testmyLists', isLoggedInDontCare, function(req, res) {
+        console.log("routes.js /testmyLists reached.");
+        failureFlash : true;
+        res.render('testmyLists.ejs', {
+            user : req.user,
+            message: "" 
+        });
+    });
+
     app.get('/myPublicLists', isLoggedInDontCare, function(req, res) {
         console.log("routes.js /myPublicLists reached.");
         failureFlash : true;

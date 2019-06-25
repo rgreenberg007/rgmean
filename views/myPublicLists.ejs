@@ -199,26 +199,26 @@
                 $scope.myCopyLink = function (listName) {
                     console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
                     console.log("window.location.href: " + window.location.href);
-                    var range = document.createRange();
+                    ////var range = document.createRange();
                     var selBox = document.createElement('textarea');
-                    selBox.contentEditable = true;
-                    selBox.readOnly = false;
-                    ////selBox.style.position = 'fixed';
-                    ////selBox.style.left = '0';
-                    ////selBox.style.top = '0';
-                    ////selBox.style.opacity = '0';
+                    ////selBox.contentEditable = true;
+                    ////selBox.readOnly = false;
+                    selBox.style.position = 'fixed';
+                    selBox.style.left = '0';
+                    selBox.style.top = '0';
+                    selBox.style.opacity = '0';
                     //selBox.value = "http://localhost:8080/myPublicListsItems/" + $scope.currentListName;
                     selBox.value = window.location.href + "Items/" + $scope.currentListName;
                     document.body.appendChild(selBox);
                     selBox.focus();
-                    ////selBox.select();
-                    range.selectNodeContents(selBox);
-                    var s = window.getSelection();
-                    s.removeAllRanges();
-                    s.addRange(range);
-                    selBox.setSelectionRange(0, 999999);
+                    selBox.select();
+                    ////range.selectNodeContents(selBox);
+                    ////var s = window.getSelection();
+                    ////s.removeAllRanges();
+                    ////s.addRange(range);
+                    ////selBox.setSelectionRange(0, 999999);
                     document.execCommand('copy');
-                    ////document.body.removeChild(selBox);
+                    document.body.removeChild(selBox);
                 }
 
                 $scope.createMyItem = function () {

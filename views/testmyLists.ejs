@@ -676,8 +676,9 @@
                                                     <!-- th>Vote</th -->
                                                     <th>Items</th>
                                                 </tr>
-                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
-                                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                                <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
+                                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" -->
+                                        <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name' ">
                                                     <td>{{ aList.name }}</td>
                                                     <td>{{ aList.description }}</td>
                                                     <td>{{ aList.owner }}</td>

@@ -437,7 +437,7 @@
                 $scope.mySelectItem = function (myItem) {
                     console.log("myAdminListsRank.ejs:  mainController mySelectItem ");
                     $scope.myItems2.push(myItem);
-                    // this line
+                    // this line // Adjust this for Ipad IOS 9
                     $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
                 };
 

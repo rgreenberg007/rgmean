@@ -518,27 +518,6 @@
                         });
                 };
 
-                $scope.myCopyLink = function (listName) {
-                    console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
-                    console.log("window.location.href: " + window.location.href);
-                    var selBox = document.createElement('textarea');
-                    selBox.style.position = 'fixed';
-                    selBox.style.left = '0';
-                    selBox.style.top = '0';
-                    selBox.style.opacity = '0';
-                    //selBox.value = "http://localhost:8080/myPublicListsItems/" + $scope.currentListName; /myPublicListsItems
-                    //http://localhost:8080/myAdminListsRankItems/list%201%20for%20rg21
-                    var tmpURLx = window.location.href;
-                    tmpURLx = tmpURLx.replace("myAdminListsRank", "myPublicLists");
-                    //selBox.value =  window.location.href + "Items/" + $scope.currentListName;
-                    selBox.value = tmpURLx + "Items/" + $scope.currentListName;
-                    document.body.appendChild(selBox);
-                    selBox.focus();
-                    selBox.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(selBox);
-                };
-
                 $scope.myPointsFunction = function (myRank, numItemsToRank) {
                     return myRankAlgorithm(myRank);
                 };

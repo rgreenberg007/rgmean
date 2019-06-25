@@ -256,7 +256,8 @@
                 $scope.inPublicGroups = function (tmpGrp) {
                     console.log("myPublicLists.ejs:  mainController inPublicGroups  tmpGrp: " + tmpGrp);
                     //return $scope.myPublicGrps.includes(tmpGrp); // this is an array of objects so this doesnt work!
-                    return $scope.myPublicGrps.some(item => item.grp === tmpGrp);
+                    //return $scope.myPublicGrps.some(item => item.grp === tmpGrp);
+                    return $scope.myPublicGrps.some(function(item) { return item.grp === tmpGrp; });
                     //return true;
                 };
 

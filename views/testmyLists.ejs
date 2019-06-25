@@ -78,6 +78,108 @@
                         //  fillLastPage: true
                         //};
                     });
+
+                    myLists.getAllGrps()
+                    .success(function (grpdata) {
+                        console.log("myAdminLists.ejs: mainController myLists.getAllGrps success");
+                        //$scope.myGrps = grpdata;
+                        //var tmpgrpdataA = grpdata;
+                        //var tmpgrpdataB = grpdata;
+                        //$scope.myGrpsA = tmpgrpdataA;
+                        //$scope.myGrpsB = grpdata;
+                        //$scope.myGrps.unshift("Everyone" , "Just Me");
+                        //$scope.myGrpsA.unshift("Just Me");
+
+                        $scope.myGrpsA.push("Everyone");
+                        $scope.myGrpsA.push("Just Me");
+                        $scope.myGrpsB.push("Just Me");
+                        for (var i = grpdata.length - 1; i > -1; i--) {
+                            //console.log("grpdata[i] = " + grpdata[i]);
+                            $scope.myGrps.push(grpdata[i]);
+                            $scope.myGrpsA.push(grpdata[i]);
+                            $scope.myGrpsB.push(grpdata[i]);
+                        }
+
+                        //for (var i = 0; i < $scope.myGrpsA.length; i++) {
+                        //  console.log("$scope.myGrpsA[i] = " + $scope.myGrpsA[i]);
+                        //}
+                        //$scope.myGrpsB = tmpgrpdataB;
+                        //$scope.myGrpsB.unshift("Everyone" , "Just Me");
+                        //console.log("myAdminLists.ejs: myLists.getAllGrps: $scope.myGrps: " + JSON.stringify($scope.myGrps));
+                        //for (var i = 0; i < $scope.myGrpsB.length; i++) {
+                        //  console.log("$scope.myGrpsB[i] = " + $scope.myGrpsB[i]);
+                        //}
+
+                    });
+
+                myLists.getAllPublicGrps()
+                    .success(function (pubgrpdata) {
+                        console.log("myAdminLists.ejs: mainController myLists.getAllPublicGrps success");
+                        $scope.myPublicGrps = pubgrpdata;
+                        //for (var i = 0; i < $scope.myPublicGrps.length; i++) {
+                        //  console.log("$scope.myPublicGrps[i].grp = " + $scope.myPublicGrps[i].grp);
+                        //}
+                    });
+
+                myLists.rankItemsGet()
+                    .success(function (myRankedItems) {
+                        console.log("myAdminListsRank.ejs: mainController myLists.rankItemsGet success");
+                        $scope.myRankedItems = myRankedItems;
+                        //console.log("myAdminListsRank.ejs: myLists.getAllGrps: $scope.myGrps: " + JSON.stringify($scope.myRankedItems));
+                        var myRankedListsTmp = [];
+                        for (var i = 0; i < $scope.myRankedItems.length; i++) {
+                            //console.log("$scope.myRankedItems[i].listName = " + $scope.myRankedItems[i].listName);
+                            myRankedListsTmp[i] = $scope.myRankedItems[i].listName;
+                        }
+                        $scope.myRankedLists = Array.from(new Set(myRankedListsTmp));
+                        //for (var i = 0; i < $scope.myRankedLists.length; i++) {
+                        //  console.log("$scope.myRankedLists = " + $scope.myRankedLists[i]);
+                        //}
+                    });
+
+                $scope.getData = function () {
+                    //return $filter('filter')($scope.data, $scope.q)
+                    return $filter('filter')($scope.myLists, $scope.q)
+                };
+
+                $scope.numberOfPages = function () {
+                    console.log("$scope.numberOfPages $scope.getData().length: " + $scope.getData().length +
+                        " $scope.pageSize: " + $scope.pageSize)
+                    return Math.ceil($scope.getData().length / $scope.pageSize);
+                };
+
+                $scope.$watch('q', function (newValue, oldValue) {
+                    console.log("$scope.$watch(q) reached");
+                    if (oldValue != newValue) {
+                        $scope.currentPage = 0;
+                    }
+                }, true
+                );
+
+                $scope.getData2 = function () {
+                    //return $filter('filter')($scope.data, $scope.q)
+                    return $filter('filter')($scope.myItems, $scope.q2)
+                };
+
+                $scope.myNumberOfPages2 = function (a, b) {
+                    return Math.ceil(a / b);
+                };
+
+                $scope.numberOfPages2 = function () {
+                    console.log("$scope.numberOfPages2 $scope.getData2().length: " + $scope.getData2().length +
+                        " $scope.pageSize2: " + $scope.pageSize2);
+                    //return Math.ceil($scope.getData2().length/$scope.pageSize2);
+                    return Math.ceil($scope.getData2().length / $scope.pageSize2);
+                };
+
+                $scope.$watch('q2', function (newValue, oldValue) {
+                    console.log("$scope.$watch(q2) reached");
+                    if (oldValue != newValue) {
+                        $scope.currentPage2 = 0;
+                    }
+                }, true
+                );
+                
             }]);
     </script>
 

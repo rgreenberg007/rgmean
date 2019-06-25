@@ -445,13 +445,7 @@
                     $scope.myItemNameTaken = false;
                 };
 
-                $scope.mySelectItem = function (myItem) {
-                    console.log("myAdminListsRank.ejs:  mainController mySelectItem ");
-                    //console.log("myAdminLists.ejs: mySelectItem $scope.myItems: " + JSON.stringify($scope.myItems));
-                    $scope.myItems2.push(myItem);
-                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
-                    //console.log("myAdminLists.ejs: mySelectItem $scope.myItems2: " + JSON.stringify($scope.myItems2));
-                };
+
 
             }]);
     </script>

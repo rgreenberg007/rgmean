@@ -90,6 +90,15 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.get('/myAbout', isLoggedInDontCare, function(req, res) {
+        console.log("routes.js /myAbout reached.");
+        failureFlash : true;
+        res.render('myAbout.ejs', {
+            user : req.user,
+            message: "" 
+        });
+    });
+
     app.get('/myPublicLists', isLoggedInDontCare, function(req, res) {
         console.log("routes.js /myPublicLists reached.");
         failureFlash : true;
@@ -124,6 +133,33 @@ module.exports = function(app, passport) {
         console.log("routes.js /myAdminLists reached.")
         failureFlash : true;
         res.render('myAdminLists.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/dumpMyItemRanks', isLoggedIn, function(req, res) {
+        console.log("routes.js /dumpMyItemRanks reached.")
+        failureFlash : true;
+        res.render('dumpMyItemRanks.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+    
+    app.get('/dumpMyItems', isLoggedIn, function(req, res) {
+        console.log("routes.js /dumpMyItems reached.")
+        failureFlash : true;
+        res.render('dumpMyItems.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/dumpMyLists', isLoggedIn, function(req, res) {
+        console.log("routes.js /dumpMyLists reached.")
+        failureFlash : true;
+        res.render('dumpMyLists.ejs', {
             user : req.user,
             message: "" //req.flash('grpsDetailsMessage')
         });
@@ -205,6 +241,34 @@ module.exports = function(app, passport) {
             failureRedirect : '/login', // redirect back to the login page if there is an error
             failureFlash : true // allow flash messages
         }));
+
+        app.get('/backdoorLogin', function(req, res) {
+            res.render('backdoorLogin.ejs', { message: req.flash('backdoorLoginMessage') });
+        });
+
+        app.post('/backdoorLogin', function (req, res) {
+            //console.log("routes.js post /backdoorLogin req.params: " + JSON.stringify(req.params));
+            console.log("routes.js post /backdoorLogin req.body: " + JSON.stringify(req.body));
+            console.log("routes.js post /backdoorLogin req.user: " + JSON.stringify(req.user));
+            //var user            = req.user;
+            user.findOne({ 'local.email' :  req.body.email }, function(err, user) {
+                if (err) { return done(err); };
+                if (!user) {
+                    return req.flash('loginMessage', 'No user found.');
+                } else {
+                ////if (!user.validPassword(password))
+                ////    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+                console.log("routes.js post /backdoorLogin req.session.passport.user: " + JSON.stringify(req.session.passport.user));
+                console.log("routes.js post /backdoorLogin user: " + JSON.stringify(user));
+                    req.user = user;
+                    req.session.passport.user = user._id;
+                    console.log("routes.js post /backdoorLogin req.session.passport.user: " + JSON.stringify(req.session.passport.user));
+                    //res.redirect('/myPublicLists#' + req.body.email);
+                    res.redirect('/myPublicLists');
+                ////return done(null, user);
+                };
+            });
+        });
 
         // SIGNUP =================================
         // show the signup form
@@ -576,6 +640,21 @@ module.exports = function(app, passport) {
     app.get('/api/myAdminLists', function (req, res) {
         console.log("routes.js get /api/myAdminLists " + JSON.stringify(req.params));
         getMyAdminLists(res);
+    });
+
+    app.get('/api/dumpMyItemRanks', function (req, res) {
+        console.log("routes.js get /api/dumpMyItemRanks " + JSON.stringify(req.params));
+        getDumpMyItemRanks(res);
+    });
+
+    app.get('/api/dumpMyItems', function (req, res) {
+        console.log("routes.js get /api/dumpMyItems " + JSON.stringify(req.params));
+        getDumpMyItems(res);
+    });
+
+    app.get('/api/dumpMyLists', function (req, res) {
+        console.log("routes.js get /api/dumpMyLists " + JSON.stringify(req.params));
+        getDumpMyLists(res);
     });
 
     app.get('/api/myPublicItems/:listName', function (req, res) {
@@ -1441,6 +1520,33 @@ function getMyAdminListsOwner(owner,res) {
 };
 
 function getMyAdminLists(res) {
+    myList.find(function (err, myLists) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myLists); 
+    });
+};
+
+function getDumpMyItemRanks(res) {
+    myItemRank.find(function (err, myItemRanks) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myItemRanks); 
+    });
+};
+
+function getDumpMyItems(res) {
+    myItem.find(function (err, myItems) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myItems); 
+    });
+};
+
+function getDumpMyLists(res) {
     myList.find(function (err, myLists) {
         if (err) {
             res.send(err);

@@ -2,11 +2,8 @@
 <html ng-app="scotchTodo" lang="en">
 
 <head X-Content-Type-Options: nosniff>
-
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
-    <!-- script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script -->
-    <!-- load angular -->
     <!-- ??? Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <!-- jQuery library -->
@@ -18,15 +15,14 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
 
-    <!-- script>import { PaginationModule } from 'ngx-pagination-bootstrap'</script -->
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/" />
 
     <script>
-        var app = angular.module('myListsController', [])
-            .controller('mainController', ['$scope', '$http', 'myLists', '$filter', function ($scope, $http, myLists, $filter) {
+        angular.module('myListsController', [])
+
+            .controller('mainController', ['$scope', '$http', 'myLists', function ($scope, $http, myLists) {
                 console.log("myLists.ejs: myListsController mainController reached");
                 $scope.formData = {};
                 $scope.formItemData = {};
@@ -49,16 +45,6 @@
                 $("#addItemForm").hide();
                 $("#addListForm").hide();
 
-                $scope.currentPage = 0;
-                $scope.currentPage2 = 0;
-                $scope.pageSize = 10;
-                $scope.pageSize2 = 10;
-                //$scope.data = [];
-                $scope.q = '';
-                $scope.q2 = '';
-                $scope.myLists = [];
-                $scope.myItems = [];
-
                 // GET =====================================================================
                 myLists.get(userEmail)
                     .success(function (data) {
@@ -70,14 +56,6 @@
                         $("#myItemsTable").hide();
                         $("#addItemForm").hide();
                         $("#addListForm").hide();
-
-                        ////$scope.list = $scope.$parent.personList
-                        //$scope.list = $scope.myLists;
-                        //$scope.config = {
-                        //  itemsPerPage: 5,
-                        //  fillLastPage: true
-                        //};
-
                     });
 
                 myLists.getAllGrps()
@@ -94,7 +72,7 @@
                         $scope.myGrpsA.push("Everyone");
                         $scope.myGrpsA.push("Just Me");
                         $scope.myGrpsB.push("Just Me");
-                        for (var i = grpdata.length - 1; i > -1; i--) {
+                        for (var i = grpdata.length - 1; i > -1 ; i--) {
                             //console.log("grpdata[i] = " + grpdata[i]);
                             $scope.myGrps.push(grpdata[i]);
                             $scope.myGrpsA.push(grpdata[i]);
@@ -102,25 +80,25 @@
                         }
 
                         //for (var i = 0; i < $scope.myGrpsA.length; i++) {
-                        //  console.log("$scope.myGrpsA[i] = " + $scope.myGrpsA[i]);
+                          //  console.log("$scope.myGrpsA[i] = " + $scope.myGrpsA[i]);
                         //}
                         //$scope.myGrpsB = tmpgrpdataB;
                         //$scope.myGrpsB.unshift("Everyone" , "Just Me");
                         //console.log("myAdminLists.ejs: myLists.getAllGrps: $scope.myGrps: " + JSON.stringify($scope.myGrps));
                         //for (var i = 0; i < $scope.myGrpsB.length; i++) {
-                        //  console.log("$scope.myGrpsB[i] = " + $scope.myGrpsB[i]);
+                          //  console.log("$scope.myGrpsB[i] = " + $scope.myGrpsB[i]);
                         //}
 
-                    });
+                });
 
                 myLists.getAllPublicGrps()
                     .success(function (pubgrpdata) {
                         console.log("myAdminLists.ejs: mainController myLists.getAllPublicGrps success");
                         $scope.myPublicGrps = pubgrpdata;
                         //for (var i = 0; i < $scope.myPublicGrps.length; i++) {
-                        //  console.log("$scope.myPublicGrps[i].grp = " + $scope.myPublicGrps[i].grp);
+                          //  console.log("$scope.myPublicGrps[i].grp = " + $scope.myPublicGrps[i].grp);
                         //}
-                    });
+                });
 
                 myLists.rankItemsGet()
                     .success(function (myRankedItems) {
@@ -134,52 +112,9 @@
                         }
                         $scope.myRankedLists = Array.from(new Set(myRankedListsTmp));
                         //for (var i = 0; i < $scope.myRankedLists.length; i++) {
-                        //  console.log("$scope.myRankedLists = " + $scope.myRankedLists[i]);
+                          //  console.log("$scope.myRankedLists = " + $scope.myRankedLists[i]);
                         //}
-                    });
-
-                $scope.getData = function () {
-                    //return $filter('filter')($scope.data, $scope.q)
-                    return $filter('filter')($scope.myLists, $scope.q)
-                };
-
-                $scope.numberOfPages = function () {
-                    console.log("$scope.numberOfPages $scope.getData().length: " + $scope.getData().length +
-                        " $scope.pageSize: " + $scope.pageSize)
-                    return Math.ceil($scope.getData().length / $scope.pageSize);
-                };
-
-                $scope.$watch('q', function (newValue, oldValue) {
-                    console.log("$scope.$watch(q) reached");
-                    if (oldValue != newValue) {
-                        $scope.currentPage = 0;
-                    }
-                }, true
-                );
-
-                $scope.getData2 = function () {
-                    //return $filter('filter')($scope.data, $scope.q)
-                    return $filter('filter')($scope.myItems, $scope.q2)
-                };
-
-                $scope.myNumberOfPages2 = function (a, b) {
-                    return Math.ceil(a / b);
-                };
-
-                $scope.numberOfPages2 = function () {
-                    console.log("$scope.numberOfPages2 $scope.getData2().length: " + $scope.getData2().length +
-                        " $scope.pageSize2: " + $scope.pageSize2);
-                    //return Math.ceil($scope.getData2().length/$scope.pageSize2);
-                    return Math.ceil($scope.getData2().length / $scope.pageSize2);
-                };
-
-                $scope.$watch('q2', function (newValue, oldValue) {
-                    console.log("$scope.$watch(q2) reached");
-                    if (oldValue != newValue) {
-                        $scope.currentPage2 = 0;
-                    }
-                }, true
-                );
+                });
 
                 // CREATE ==================================================================
                 $scope.createMyList = function () {
@@ -214,7 +149,7 @@
                     if (confirm('Are you sure you want to delete this list ?') == true) {
                         console.log(" yes delete");
                         $scope.loading = true;
-                        myLists.delMyList({ id: id, owner: userEmail })
+                        myLists.delMyList({ id : id, owner :  userEmail })
                             .success(function (data) {
                                 $scope.loading = false;
                                 $scope.formData = {}; // clear the form so our user is ready to enter another
@@ -243,20 +178,20 @@
 
                 $scope.isMyOwner = function (tmpUser) {
                     //console.log("myLists.ejs:  mainController isMyOwner  tmpUser: " + tmpUser);
-                    if (tmpUser == userEmail) {
-                        return true;
+                    if (tmpUser == userEmail){
+                      return true;
                     } else {
                         return false;
                     }
                 }
 
-                $scope.moreListsAllowed = function () {
-                    console.log("moreListsAllowed reached");
+                $scope.moreListsAllowed = function() {
+                    console.log("moreListsAllowed reached" );
                     if ($scope.myLists == undefined) return true;
                     console.log("moreListsAllowed $scope.myLists.length : " + $scope.myLists.length);
                     //$("#itemnametaken").hide();
-                    var tmpLists = $scope.myLists.filter(function (myList) {
-                        return myList.owner == userEmail;
+                    var tmpLists =  $scope.myLists.filter(function(myList) {
+	                    return myList.owner == userEmail;
                     });
                     console.log("moreListsAllowed tmpLists.length : " + tmpLists.length);
                     if (tmpLists.length < $scope.maxNumListsPerUser) {
@@ -266,8 +201,8 @@
                     }
                 }
 
-                $scope.moreItemsAllowed = function () {
-                    console.log("moreItemsAllowed reached");
+                $scope.moreItemsAllowed = function() {
+                    console.log("moreItemsAllowed reached" );
                     if ($scope.myItems == undefined) return true;
                     console.log("moreItemsAllowed $scope.myItems.length : " + $scope.myItems.length);
                     if ($scope.myItems.length < $scope.maxNumItemsInList) {
@@ -296,8 +231,8 @@
 
                 //<span ng-if="inMyGroups(aList.edit) || isMyOwner(aList.owner)">
                 $scope.itemsOfList2 = function (listName, editGrp, myOwner) {
-                    console.log("myLists.ejs:  mainController itemsOfList2 listName: " + listName +
-                        " editGrp: " + editGrp + " myOwner: " + myOwner);
+                    console.log("myLists.ejs:  mainController itemsOfList2 listName: " + listName + 
+                      " editGrp: " + editGrp + " myOwner: " + myOwner);
                     $("#addListForm").hide();
                     $scope.currentListName = listName;
                     $scope.allowEdit = false;
@@ -341,7 +276,7 @@
                 };
 
                 $scope.myCopyLink = function (listName) {
-                    console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
+                    console.log("myCopyLink call with $scope.currentListName = " +  $scope.currentListName);
                     console.log("window.location.href: " + window.location.href);
                     var selBox = document.createElement('textarea');
                     selBox.style.position = 'fixed';
@@ -352,7 +287,7 @@
                     var tmpURLx = window.location.href;
                     tmpURLx = tmpURLx.replace("myLists", "myPublicLists");
                     //selBox.value =  window.location.href + "Items/" + $scope.currentListName;
-                    selBox.value = tmpURLx + "Items/" + $scope.currentListName;
+                    selBox.value =  tmpURLx + "Items/" + $scope.currentListName;
                     document.body.appendChild(selBox);
                     selBox.focus();
                     selBox.select();
@@ -388,21 +323,21 @@
 
                                 myLists.get(userEmail)
                                     .success(function (dataX) {
-                                        //console.log("myLists.ejs: mainController myLists.get success");
-                                        $scope.myLists = dataX;
-                                        $scope.loading = false;
-                                        //console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
-                                    });
+                                    //console.log("myLists.ejs: mainController myLists.get success");
+                                    $scope.myLists = dataX;
+                                    $scope.loading = false;
+                                    //console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
+                                });
                             });
                     };
                 };
-
+                
                 $scope.myRemoveItem = function (id) {
                     console.log("myLists.ejs:  mainController myRemoveItem ");
-                    if (confirm("Really remove this item from the list?")) {
+                    if(confirm("Really remove this item from the list?")) { 
                         console.log(" yes delete");
                         $scope.loading = true;
-                        myLists.deleteItem({ "listName": $scope.currentListName, "id": id })
+                        myLists.deleteItem({ "listName" : $scope.currentListName, "id" : id })
                             .error(function (data) {
                                 $scope.loading = false;
                                 console.log("myLists.ejs: myRemoveItem ERROR data: " + JSON.stringify(data));
@@ -410,33 +345,33 @@
                                 //messageItem = data.message;
                                 //$("#itemnametaken").show(); // FIX this
                             })
-                            .success(function (data) {
-                                //$scope.loading = false;
+				            .success(function(data) {
+					            //$scope.loading = false;
                                 $scope.myItems = data; // 
                                 //$("#itemnametaken").hide();
                                 console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
                                 // ??? Is this needed ???
                                 myLists.get(userEmail)
                                     .success(function (dataX) {
-                                        $scope.myLists = dataX;
-                                        $scope.loading = false;
-                                    });
-                            });
-                    };
-                };
+                                    $scope.myLists = dataX;
+                                    $scope.loading = false;
+                                });
+				        });
+                    }; 
+		        };
 
                 $scope.myEditItem = function () {
                     console.log("myLists.ejs:  mainController myEditItem ");
                     alert("Not yet implemented!");
                     //if(confirm("Not yet implemented")) {   
-                    //  console.log("Yes"); 
+                      //  console.log("Yes"); 
                     //} else {
-                    //  console.log("No");
+                      //  console.log("No");
                     //}
                 };
 
                 function checkForDupItem() {
-                    for (var i = 0; i < $scope.myItems.length; i++) {
+                    for (var i = 0; i < $scope.myItems.length; i++ ) {
                         if ($scope.myItems[i].name == $scope.formItemData.name) {
                             $scope.myItemNameTaken = true;
                             return true;
@@ -450,7 +385,7 @@
                     console.log("myAdminListsRank.ejs:  mainController mySelectItem ");
                     //console.log("myAdminLists.ejs: mySelectItem $scope.myItems: " + JSON.stringify($scope.myItems));
                     $scope.myItems2.push(myItem);
-                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);
+                    $scope.myItems = $scope.myItems.filter(item => item._id !== myItem._id);   
                     //console.log("myAdminLists.ejs: mySelectItem $scope.myItems2: " + JSON.stringify($scope.myItems2));
                 };
 
@@ -458,7 +393,7 @@
                     console.log("myAdminListsRank.ejs:  mainController myRemoveItem2 ");
                     console.log("myAdminLists.ejs: myRemoveItem2 $scope.myItems: " + JSON.stringify($scope.myItems));
                     $scope.myItems.push(myItem);
-                    $scope.myItems2 = $scope.myItems2.filter(item => item._id !== myItem._id);
+                    $scope.myItems2 = $scope.myItems2.filter(item => item._id !== myItem._id);   
                     console.log("myAdminLists.ejs: myRemoveItem2 $scope.myItems2: " + JSON.stringify($scope.myItems2));
                 };
 
@@ -482,19 +417,17 @@
 
                 $scope.RemoveMyRankings = function (listName) {
                     console.log("myAdminListsRank.ejs:  mainController RemoveMyRankings listName: " + listName);
-                    if (confirm("Really remove your rankings of the items of this list?")) {
-                        myLists.rankItemsRemove({ "listName": listName })
+                    myLists.rankItemsRemove( { "listName" : listName} )
                             .error(function (data) {
                                 $scope.loading = false;
                                 //console.log("myAdminListsRank.ejs: RemoveMyRankings ERROR data: " + JSON.stringify(data));
                             })
                             .success(function (data) {
-                                location.reload();
+                               location.reload();
                             });
-                    };
                 };
 
-                $scope.saveMyRanking = function () {
+                $scope.saveMyRanking = function() {
                     console.log("myAdminListsRank.ejs: saveMyRanking $scope.myItems2: " + JSON.stringify($scope.myItems2));
                     //for (var i = 0; i < $scope.myItems2.length; i++ ) {
                     //}
@@ -502,19 +435,19 @@
                     console.log("A");
                     $scope.myRankingDone = true;
                     myLists.rankItems($scope.myItems2)
-                        .error(function (data) {
-                            $scope.loading = false;
-                            console.log("myAdminLists.ejs: saveMyRanking ERROR data: " + JSON.stringify(data));
-                        })
-                        .success(function (data) {
-                            console.log("B");
-                            $scope.myRankingDone = true;
-                            $scope.itemsOfListRank($scope.currentListName);
-                        });
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myAdminLists.ejs: saveMyRanking ERROR data: " + JSON.stringify(data));                               
+                            })
+                            .success(function (data) {
+                                console.log("B");
+                                $scope.myRankingDone = true;
+                                $scope.itemsOfListRank($scope.currentListName);
+                            });
                 };
 
                 $scope.myCopyLink = function (listName) {
-                    console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
+                    console.log("myCopyLink call with $scope.currentListName = " +  $scope.currentListName);
                     console.log("window.location.href: " + window.location.href);
                     var selBox = document.createElement('textarea');
                     selBox.style.position = 'fixed';
@@ -526,7 +459,7 @@
                     var tmpURLx = window.location.href;
                     tmpURLx = tmpURLx.replace("myAdminListsRank", "myPublicLists");
                     //selBox.value =  window.location.href + "Items/" + $scope.currentListName;
-                    selBox.value = tmpURLx + "Items/" + $scope.currentListName;
+                    selBox.value =  tmpURLx + "Items/" + $scope.currentListName;
                     document.body.appendChild(selBox);
                     selBox.focus();
                     selBox.select();
@@ -550,17 +483,8 @@
                     if (myRank == 9) { return 2; };
                     if (myRank == 10) { return 1; };
                 };
+
             }]);
-
-        app.filter('startFrom', function () {
-            //filter('startFrom', function() {
-            //function filter('startFrom', function() {
-            return function (input, start) {
-                start = +start;
-                return input.slice(start);
-            }
-        });
-
     </script>
 
     <script>
@@ -598,7 +522,7 @@
                     },
                     deleteItem: function (Data) {
                         console.log("myLists.ejs: service myLists deleteItem");
-                        return $http.post('/api/myItemsRemove', Data); // + {"listName" : listName, "id" : id});
+                        return $http.post('/api/myItemsRemove' , Data); // + {"listName" : listName, "id" : id});
                     },
                     getAllGrps: function () {
                         console.log("myAdminLists.ejs: service myLists getAllGrps");
@@ -610,38 +534,22 @@
                     },
                     rankItems: function (Data) {
                         console.log("myAdminListsRank.ejs: service myLists rankItems");
-                        return $http.post('/api/myItemsRank', Data);
+                        return $http.post('/api/myItemsRank' , Data);
                     },
                     rankItemsRemove: function (Data) {
                         console.log("myAdminListsRank.ejs: service myLists rankItemsRemove");
-                        return $http.post('/api/myItemsRankRemove', Data);
+                        return $http.post('/api/myItemsRankRemove' , Data);
                     },
                     rankItemsGet: function (Data) {
                         console.log("myAdminListsRank.ejs: service myLists rankItemsGet");
-                        return $http.post('/api/myItemsRankGet', Data);
+                        return $http.post('/api/myItemsRankGet' , Data);
                     }
                 }
             }]);
     </script>
 
-
-    <!-- link rel = "stylesheet"
-           href = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
-        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script> 
-        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
-
-        <script src = "https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script -->
-
-    <!-- script type = "text/javascript">    
-           angular.module('firstApplication', ['ngMaterial']);
-        </script -->
-
-
     <script>
-        angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter']); //, 'ngMaterial']);
-        //angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter','ngMaterial']);
+        angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter']);
     </script>
     <title>Top 10 Lists</title>
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" / -->
@@ -665,14 +573,14 @@
                         <tr>
                             <td>
                                 <div ng-view id=myListsTable>
-                                    <h3><span class="fa "></span> My Lists ({{ myLists.length }})
-                                        <span ng-if="moreListsAllowed()">
-                                            <button type="submit" class="btn btn-primary btn-sm"
-                                                ng-click="showNewListForm()">New List</button>
-                                        </span>
-                                        <span ng-if="!moreListsAllowed()">
-                                            <p> Maximum number of Lists allowed reached. </p>
-                                        </span>
+                                    <h3><span class="fa "></span> My Lists ({{ myLists.length }}) 
+                                    <span ng-if="moreListsAllowed()">
+                                    <button type="submit" class="btn btn-primary btn-sm" ng-click="showNewListForm()">New List</button>
+                                    
+                                    </span>
+                                    <span ng-if="!moreListsAllowed()">
+                                       <p>  Maximum number of Lists allowed reached. </p>
+                                    </span>
                                     </h3>
                                     <div id="myLists-listx">
                                         <!-- div class="col-sm-4 col-sm-offset-4" -->
@@ -691,8 +599,7 @@
                                                     <!-- th>Vote</th -->
                                                     <th>Items</th>
                                                 </tr>
-                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
-                                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'">
                             <td>{{ aList.name }}</td>
                             <td>{{ aList.description }}</td>
                             <td>{{ aList.owner }}</td>
@@ -703,23 +610,21 @@
                             <!-- td>{{ aList.suggestion }}</td -->
                             <!-- td>{{ aList.vote }}</td -->
                             <td>
-                                <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="itemsOfList2(aList.name, aList.edit, aList.owner)">Items</button>
+                                <button type="submit" class="btn btn-primary btn-sm" 
+                                ng-click="itemsOfList2(aList.name, aList.edit, aList.owner)">Items</button>
                                 <span ng-if="aList.itemCnt == '0' ">
                                     <span ng-if="inMyGroups(aList.edit) || isMyOwner(aList.owner)">
-                                        <button type="submit" class="btn btn-primary btn-sm"
-                                            ng-click="deleteMyList(aList._id)">Delete</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                    ng-click="deleteMyList(aList._id)">Delete</button>
                                     </span>
                                 </span>
                                 <span ng-if="inMyGroups(aList.rank) || isMyOwner(aList.owner)">
-                                    <span ng-if="!myRankedLists.includes(aList.name)">
-                                        <button type="submit" class="btn btn-primary btn-sm"
-                                            ng-click="itemsOfListRank(aList.name)">Rank</button>
-                                    </span>
-                                    <span ng-if="myRankedLists.includes(aList.name)">
-                                        <button type="submit" class="btn btn-primary btn-sm"
-                                            ng-click="RemoveMyRankings(aList.name)">Remove My Rank </button>
-                                    </span>
+                                <span ng-if="!myRankedLists.includes(aList.name)"> 
+                                <button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfListRank(aList.name)">Rank</button>
+                                </span>
+                                <span ng-if="myRankedLists.includes(aList.name)"> 
+                                <button type="submit" class="btn btn-primary btn-sm" ng-click="RemoveMyRankings(aList.name)">Remove My Rank </button>
+                                </span>
                                 </span>
                             </td>
                             </tbody>
@@ -729,63 +634,31 @@
                     </table>
                 </div>
             </div>
-            <!-- /td -->
-            <table>
-                <tr>&nbsp;</tr>
-                <tr>
-                    <td>
-                        <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"
-                            class="btn btn-primary btn-sm">Previous</button>
-                        {{currentPage+1}}/{{numberOfPages()}}
-                        <button ng-disabled="currentPage >= getData().length/pageSize - 1"
-                            ng-click="currentPage=currentPage+1" class="btn btn-primary btn-sm">Next</button>
-                    </td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>&nbsp;&nbsp;</td>
-                    <td>
-                        Set Rows per Page
-                        <!-- input ng-model="q" id="search" class="form-control" placeholder="Set Rows per Page" / -->
-                    </td>
-                    <td>
-                        <select ng-model="pageSize" id="pageSize" class="form-control btn btn-primary btn-sm">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-
-        </div>
-        </td>
-        </tr>
-        <!-- /div -->
-        <tr>
+            </td>
             <td>
-
-                <span id="addListForm">
-                    <h3> Create a new List: </h3>
-                    <div class="alert alert-danger" id="listnametaken">List Name already taken!</div>
-                    <% if (message.length > 0) { %>
-                    <div class="alert alert-danger"><%= message %></div>
-                    <% } %>
-                    <form name="myForm">
-                        <div class="form-group">
-                            <label>List Name</label>
-                            <input type="text" class="form-control" name="name" ng-model="formData.name" required
-                                placeholder="List Name" maxlength="32"
-                                [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
-                                title="Enter the List name. Must be unique." />
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <input type="text" class="form-control" name="description" ng-model="formData.description"
-                                placeholder="Describe this List" required maxlength="128"
-                                [ngClass]="{'invalid-textbox' :myForm.submitted && !description.valid }"
-                                data-toggle="tooltip" title="Describe the List." />
-                        </div>
-                        <!-- div class="form-group">
+        </div>
+        <span id="addListForm">
+            <h3> Create a new List: </h3>
+            <div class="alert alert-danger" id="listnametaken">List Name already taken!</div>
+            <% if (message.length > 0) { %>
+            <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+            <form name="myForm">
+                <div class="form-group">
+                    <label>List Name</label>
+                    <input type="text" class="form-control" name="name" ng-model="formData.name" required
+                        placeholder="List Name" maxlength="32"
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
+                        title="Enter the List name. Must be unique." />
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" name="description" ng-model="formData.description"
+                        placeholder="Describe this List" required maxlength="128"
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !description.valid }" data-toggle="tooltip"
+                        title="Describe the List." />
+                </div>
+                <!-- div class="form-group">
                     <label>Make this List Public so Everyone can see it (Y/N)</label>
                     <select type="text" class="form-control" name="public" ng-model="formData.public" required
                         placeholder="N" data-toggle="tooltip" title="Public = Y, Everyone can see it!">
@@ -793,231 +666,185 @@
                         <option value="N" >N</option>
                     </select>
                 </div -->
-                        <div class="form-group">
-                            <label>Who can See this List <label>
-                                    <select class="form-control" name="view" ng-model="formData.view"
-                                        ng-options="grp for grp in myGrpsA" placeholder="Select Group" required
-                                        [ngClass]="{'invalid-textbox' :myForm.submitted && !view.valid }"
-                                        data-toggle="tooltip" title="Enter the Group that can See this List.">
-                                    </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Who can Edit this List <label>
-                                    <select class="form-control" name="edit" ng-model="formData.edit"
-                                        ng-options="grp for grp in myGrpsB" placeholder="Select Group" required
-                                        [ngClass]="{'invalid-textbox' :myForm.submitted && !edit.valid }"
-                                        data-toggle="tooltip" title="Enter the Group that can Edit this List.">
-                                    </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Who can Vote/Rank items in this List <label>
-                                    <select class="form-control" name="rank" ng-model="formData.rank"
-                                        ng-options="grp for grp in myGrpsB" placeholder="Select Group" required
-                                        [ngClass]="{'invalid-textbox' :myForm.submitted && !rank.valid }"
-                                        data-toggle="tooltip" title="Enter the Group that can Rank this List.">
-                                    </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyList()" ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || !myForm.view.$dirty || 
+                <div class="form-group">
+                    <label>Who can See this List  <label>
+                    <select class="form-control" name="view" ng-model="formData.view"
+                    ng-options="grp for grp in myGrpsA"
+                        placeholder="Select Group" required 
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !view.valid }" data-toggle="tooltip"
+                        title="Enter the Group that can See this List." >
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Who can Edit this List  <label>
+                    <select class="form-control" name="edit" ng-model="formData.edit"
+                    ng-options="grp for grp in myGrpsB"
+                        placeholder="Select Group" required 
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !edit.valid }" data-toggle="tooltip"
+                        title="Enter the Group that can Edit this List." >
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Who can Vote/Rank items in this List  <label>
+                    <select class="form-control" name="rank" ng-model="formData.rank"
+                    ng-options="grp for grp in myGrpsB"
+                        placeholder="Select Group" required 
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !rank.valid }" data-toggle="tooltip"
+                        title="Enter the Group that can Rank this List." >
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyList()"
+                     ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || !myForm.view.$dirty || 
                       !myForm.edit.$dirty || !myForm.rank.$dirty ||
                       (myForm.name.$dirty && myForm.name.$invalid) || (myForm.description.$dirty && myForm.description.$invalid) 
                       || (myForm.view.$dirty && myForm.view.$invalid) || (myForm.edit.$dirty && myForm.edit.$invalid)
-                      || (myForm.rank.$dirty && myForm.rank.$invalid)" data-toggle="tooltip"
-                            title="Add this new List!">Add</button>
-                    </form>
-                </span>
-            </td>
+                      || (myForm.rank.$dirty && myForm.rank.$invalid)" 
+                      data-toggle="tooltip" title="Add this new List!">Add</button>
+            </form>
+        </span>
+        </td>
         </tr>
         </table>
 
-        <div ng-view id=myItemsTable>
-            <span ng-if="myItems.length == 0 && myItems2.length == 0">
-                <h3><span class="fa "></span>{{ currentListName }}: Contains no Items. You must Add Items before you can
-                    Rank them.</h3>
-            </span>
+    <span ng-if="myItems.length == 0 && myItems2.length == 0">
+        <h3><span class="fa "></span>{{ currentListName }}: Contains no Items. You must Add Items before you can Rank them.</h3>
+    </span>  
 
-            <span ng-if="myItems.length == 0 && myItems2 == undefined">
-                <h3><span class="fa "></span>{{ currentListName }}: Contains no Items.</h3>
-            </span>
+    <span ng-if="myItems.length == 0 && myItems2 == undefined">
+            <h3><span class="fa "></span>{{ currentListName }}: Contains no Items.</h3>
+    </span>  
 
-            <span ng-if="myItems.length > 0 || myItems2.length > 0">
-                <!-- div ng-view id=myItemsTable -->
-                <div class="text-centerx">
-                    <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
-                            {{ myItems.length }})</span>
-                        <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to
-                            List</button></h3>
-                </div>
-                <span ng-if="myItems2 != undefined">
-                    <div>
-                        <p>Select up to 10 Items for Ranking - Rank them - Then save Your Ranking.</p>
-                    </div>
-                </span>
-                <div>
-                    <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <!-- th>Owner</th -->
-                            <!-- th>List</th -->
-                            <!-- th>Suggestion</th  -->
-                            <th>Points</th>
-                            <th>Operations</th>
-                        </tr>
-                        <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
-                    | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
-                            <td>{{ aItem.name }}</td>
-                            <td>{{ aItem.description }}</td>
-                            <!-- td>{{ aItem.owner }}</td -->
-                            <!-- td>{{ aItem.list }}</td -->
-                            <!-- td>{{ aItem.suggestion }}</td -->
-                            <td>{{ aItem.rank }}</td>
-                            <td>
-                                <span ng-if="myItems2 == undefined && allowEdit">
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                        ng-click="myEditItem(aItem._id)">Edit</button>
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                        ng-click="myRemoveItem(aItem._id)">Remove</button>
-                                </span>
-                                <span ng-if="10 > myItems2.length">
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                        ng-click="mySelectItem(aItem)">Rank</button>
-                                    <span>
-                            </td>
-                        </tbody>
-                        <p class="text-center" ng-show="loading">
-                            <span class="fa fa-spinner fa-spin fa-3x"></span>
-                        </p>
-                    </table>
-                </div>
-                <table>
-                    <tr>&nbsp;</tr>
-                    <tr>
-                        <td>
-                            <button ng-disabled="currentPage2 == 0" ng-click="currentPage2=currentPage2-1"
-                                class="btn btn-primary btn-sm">Previous</button>
-                            {{currentPage2+1}}/{{myNumberOfPages2(getData2().length, pageSize2 )}}
-                            <button ng-disabled="currentPage2 >= getData2().length/pageSize2 - 1"
-                                ng-click="currentPage2=currentPage2+1" class="btn btn-primary btn-sm">Next</button>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>&nbsp;&nbsp;</td>
-                        <td>
-                            Set Rows per Page
-                            <!-- input ng-model="q2" id="search" class="form-control" placeholder="Set Rows per Page" / -->
-                        </td>
-                        <td>
-                            <select ng-model="pageSize2" id="pageSize2" class="form-control btn btn-primary btn-sm">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
-                                <option value="20">20</option>
-                                <option value="25">25</option>
-                            </select>
-                        </td>
-
-                    </tr>
-                </table>
+    <span ng-if="myItems.length > 0 || myItems2.length > 0"> 
+    <div ng-view id=myItemsTable>
+        <div class="text-centerx">
+            <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items: {{ myItems.length }})</span>
+            <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to List</button></h3>
         </div>
+        <span ng-if="myItems2 != undefined">
+        <div><p>Select up to 10 Items for Ranking - Rank them - Then save Your Ranking.</p></div>
         </span>
-    <!-- /div -->
-
-    <span ng-if="myItems2.length > 0 ">
-        <div ng-view id=myItemsTable2>
-            <div class="text-centerx">
-                <h3>&nbsp;</h3>
-                <h3>{{ currentListName }}: Items to Rank: <span class="labelx label-infox">{{ myItems2.length }}</span>
-                </h3>
-            </div>
             <div>
-                <p>Set Your Rankings via Up and Down - Then save Your Rankings.</p>
-            </div>
-            <div>
-                <table ng-table="myItemsTable2Params" border="1" cellspacing="0" cellpadding="4">
+                <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
+                        <!-- th>Owner</th -->
+                        <!-- th>List</th -->
+                        <!-- th>Suggestion</th  -->
                         <th>Points</th>
-                        <th>My Rank</th>
-                        <th>My Points</th>
                         <th>Operations</th>
                     </tr>
-                    <tbody class="tableWithItemsToOrder" id="tableWithItemsToOrder" ng-repeat="aItem2 in myItems2">
-                        <tr>
-                            <td>{{ aItem2.name }}</td>
-                            <td>{{ aItem2.description }}</td>
-                            <td>{{ aItem2.rank }}</td>
-                            <td>{{$index + 1}}</td>
-                            <td>{{ myPointsFunction($index + 1,  myItems2.length) }}</td>
-                            <td>
-                                <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="myRemoveItem2(aItem2)">Don't Rank</button>
-                                <span ng-if="$index != 0 ">
-                                    <button class="btn btn-success" ng-click="moveUp(aItem2, $index  );">Up</button>
-                                </span>
-                                <span ng-if="myItems2.length > ($index + 1) ">
-                                    <button class="btn btn-success" ng-click="moveDown(aItem2, $index );">Down</button>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <p class="text-center" ng-show="loading">
-                        <span class="fa fa-spinner fa-spin fa-3x"></span>
-                    </p>
-                </table>
-            </div>
+                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] "  >
+<td>{{ aItem.name }}</td>
+<td>{{ aItem.description }}</td>
+<!-- td>{{ aItem.owner }}</td -->
+<!-- td>{{ aItem.list }}</td -->
+<!-- td>{{ aItem.suggestion }}</td -->
+<td>{{ aItem.rank }}</td>
+<td>
+    <span ng-if="myItems2 == undefined && allowEdit">
+        <button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">Edit</button>    
+        <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">Remove</button>
+    </span>
+    <span ng-if="10 > myItems2.length">
+        <button type="submit" class="btn btn-primary btn-sm" ng-click="mySelectItem(aItem)">Rank</button>
+    <span>
+</td>
+</tbody>
+<p class="text-center" ng-show="loading">
+    <span class="fa fa-spinner fa-spin fa-3x"></span>
+</p>
+</table>
+</div>
+</div>
+</span>
+
+<span ng-if="myItems2.length > 0 ">
+        <div ng-view id=myItemsTable2>
+                <div class="text-centerx">
+                    <h3>{{ currentListName }} Items to Rank: <span class="labelx label-infox">{{ myItems2.length }}</span></h3>
+                </div>
+                <div><p>Set Your Rankings via Up and Down - Then save Your Rankings.</p></div>
+                    <div>
+                        <table ng-table="myItemsTable2Params" border="1" cellspacing="0" cellpadding="4">
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Points</th>
+                                <th>My Rank</th>
+                                <th>My Points</th>
+                                <th>Operations</th>
+                            </tr>
+                            <tbody class="tableWithItemsToOrder" id = "tableWithItemsToOrder" ng-repeat="aItem2 in myItems2">
+        <tr>
+        <td>{{ aItem2.name }}</td>
+        <td>{{ aItem2.description }}</td>
+        <td>{{ aItem2.rank }}</td>
+        <td>{{$index + 1}}</td>
+        <td>{{ myPointsFunction($index + 1,  myItems2.length) }}</td>
+        <td>
+            <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem2(aItem2)">Don't Rank</button>
+            <span ng-if="$index != 0 ">
+            <button class="btn btn-success" ng-click="moveUp(aItem2, $index  );">Up</button>
+            </span>
+            <span ng-if="myItems2.length > ($index + 1) ">
+            <button class="btn btn-success" ng-click="moveDown(aItem2, $index );">Down</button>
+            </span>
+        </td>
+        </tr>
+        </tbody>
+        <p class="text-center" ng-show="loading">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </p>
+        </table>
         </div>
-        <span ng-if="myItems2.length > 0 ">
-            <p></p>
-            <span ng-if="myRankingDone">
-                <p>You already Ranked this List. Go to My Lists and Remove My Rank to reRank this List.</p>
-            </span>
-            <!-- span ng-if="!myRankingDone"><p>myRankingDone false</p></span -->
-            <span ng-if="!myRankingDone">
-                <button class="btn btn-success" ng-click="saveMyRanking();">Save My Ranking</button>
-            </span>
+        </div>
+    <span ng-if="myItems2.length > 0 ">
+        <p></p>
+        <span ng-if="myRankingDone"><p>You already Ranked this List. Go to My Lists and Remove My Rank to reRank this List.</p></span>
+        <!-- span ng-if="!myRankingDone"><p>myRankingDone false</p></span -->
+        <span ng-if="!myRankingDone">
+        <button class="btn btn-success" ng-click="saveMyRanking();">Save My Ranking</button>
         </span>
     </span>
+</span>
 
-    <span ng-if="myItems2 == undefined">
-        <span ng-if="!moreItemsAllowed()">
-            <p>This List contains the maximum Items allowed.</p>
-        </span>
-        <span ng-if="moreItemsAllowed()">
-            <span id="addItemForm">
-                <h3> Create a new Item: </h3>
-                <span ng-if="myItemNameTaken">
-                    <div class="alert alert-danger" id="itemnametaken">Item Name already taken!</div>
-                </span>
-                <form name="myItemForm">
-                    <div class="form-group">
-                        <label>Item Name</label>
-                        <input type="text" class="form-control" name="name" ng-model="formItemData.name" required
-                            placeholder="Item Name" maxlength="32"
-                            [ngClass]="{'invalid-textbox' :myItemForm.submitted && !name.valid }" data-toggle="tooltip"
-                            title="Enter the Item name. Must be unique." />
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <input type="text" class="form-control" name="description" ng-model="formItemData.description"
-                            placeholder="Describe this Item" required maxlength="128"
-                            [ngClass]="{'invalid-textbox' :myItemForm.submitted && !description.detail }"
-                            data-toggle="tooltip" title="Describe the Item." />
-                    </div>
-                    <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyItem()" ng-disabled="!myItemForm.name.$dirty || !myItemForm.description.$dirty || 
+<span ng-if="myItems2 == undefined">
+<span ng-if="!moreItemsAllowed()"><p>This List contains the maximum Items allowed.</p></span>
+<span ng-if="moreItemsAllowed()">
+<span id="addItemForm">
+    <h3> Create a new Item: </h3>
+    <span ng-if="myItemNameTaken">
+    <div class="alert alert-danger" id="itemnametaken">Item Name already taken!</div>
+    </span>
+    <form name="myItemForm">
+        <div class="form-group">
+            <label>Item Name</label>
+            <input type="text" class="form-control" name="name" ng-model="formItemData.name" required
+                placeholder="Item Name" maxlength="32"
+                [ngClass]="{'invalid-textbox' :myItemForm.submitted && !name.valid }" data-toggle="tooltip"
+                title="Enter the Item name. Must be unique." />
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" name="description" ng-model="formItemData.description"
+                placeholder="Describe this Item" required maxlength="128"
+                [ngClass]="{'invalid-textbox' :myItemForm.submitted && !description.detail }" data-toggle="tooltip"
+                title="Describe the Item." />
+        </div>
+        <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
+        <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyItem()"
+            ng-disabled="!myItemForm.name.$dirty || !myItemForm.description.$dirty || 
              (myItemForm.name.$dirty && myItemForm.name.$invalid) || 
-             (myItemForm.description.$dirty && myItemForm.description.$invalid) " data-toggle="tooltip"
-                        title="Add this new Item!">Add</button>
-                </form>
-            </span>
-        </span>
-    </span>
-    </div>
-
-    </div>
+             (myItemForm.description.$dirty && myItemForm.description.$invalid) " 
+             data-toggle="tooltip" title="Add this new Item!">Add</button>
+    </form>
+</span>
+</span>
+</span>
+</div>
 
     </div>
     </div>
 </body>
-
 </html>

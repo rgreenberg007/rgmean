@@ -1,35 +1,31 @@
 <!doctype html>
 <html>
 <head>
-    <title>Top 10 Lists</title>
-    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" -->
-    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Node Authentication</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+
     <style>
-        body {
-            padding-top: 0px;
-            word-wrap: break-word;
-        }
-    </style>
-    <!-- style>
         body         { padding-top:80px; word-wrap:break-word; }
-    </style -->
+    </style>
+
 </head>
-<body class="bg-secondary text-white">
-    <div id='mainx' class="container-fluid">
-        <% include myNavBar %>
-<!-- body>
-<div class="container" -->
-    <div ng-viewx>
-        <div ng-controller="mainController">
-            <div class="container">
+<body>
+<div class="container">
     <% if (message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
+
+    <!-- div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> RG's List App - Your Profile</h1>
+        <a href="javascript:history.go(-1)" class="btn btn-default btn-sm">Close Your Profile</a>
+    </div -->
+
     <div class="row">
+        <!-- LOCAL INFORMATION -->
         <div class="col-sm-6">
             <div class="well">
-                <h3><span class="fa fa-user"></span> Top 10 Lists - Your Profile </h3>
+                <h3><span class="fa fa-user"></span> RG's List App - Your Profile </h3>
                 <% if (user.local.email) { %>
                     <p>
                         <strong>Email</strong>: <%= user.local.email %><br>
@@ -39,8 +35,7 @@
                         <form action="/changeProfile" method="post">
                             <div class="form-group">
                                 <label>On Save Change Screen Name to: </label>
-                                <input type="text" class="form-control" 
-                                maxlength="32" name="screenNameNew"  value="<%= user.local.screenName %>">
+                                <input type="text" class="form-control" name="screenNameNew"  value="<%= user.local.screenName %>">
                             </div>
                             <div class="form-group">
                                 <label>On Save change Private (Y/N) to: </label>
@@ -68,10 +63,8 @@
                     <a href="/connect/local" class="btn btn-default">Connect Local</a>
                 <% } %>
             </div>
+
         </div>       
-    </div>
-    </div>
-    </div>
     </div>
 </div>
 </body>

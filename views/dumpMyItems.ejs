@@ -33,15 +33,17 @@
                 $("#myItemsTable").hide();
                 $("#addItemForm").hide();
 
+                $("#addListForm").hide();
+
                 // GET =====================================================================
-                myLists.get(userEmail)
+                myLists.getAllItems(userEmail)
                     .success(function (data) {
                         console.log("myAdminLists.ejs: mainController myLists.get success");
-                        $scope.myLists = data;
+                        $scope.myItems = data;
                         $scope.loading = false;
                         $("#listnametaken").hide();
                         $("#itemnametaken").hide();
-                        $("#myItemsTable").hide();
+                        $("#myItemsTable").show();
                         $("#addItemForm").hide();
                     });
                 
@@ -212,9 +214,11 @@
                 return {
                     get: function (owner) {
                         console.log("myAdminLists.ejs: service myLists get");
-                        return $http.get('/api/myAdminLists');
-                        //return $http.get('/api/myLists');
-                        //return $http.get('/api/myAdminListsOwner/' + owner);
+                        return $http.get('/api/dumpMyLists');
+                    },
+                    getAllItems: function (owner) {
+                        console.log("dumpMyItms.ejs: service myLists getAllItems");
+                        return $http.get('/api/dumpMyItems');
                     },
                     create: function (Data) {
                         console.log("myAdminLists.ejs: service myLists create");
@@ -270,7 +274,7 @@
     <div id='mainx' class="container-fluid">
         <% include myNavBar %>
         <div ng-viewx>
-            <h3><span class="fa fa-sign-in"></span> RG's List App - My Lists - Under Development</h3>
+            <h3><span class="fa fa-sign-in"></span> Dump My Items - Under Development</h3>
             <div ng-controller="mainController">
                 <div class="container">
                     <table>
@@ -288,30 +292,36 @@
                                             <table ng-table="myListsTableParams" border="1" cellspacing="0"
                                                 cellpadding="4">
                                                 <tr>
-
-                                                    <th>Name</th>
-                                                    <th>Description</th>
-                                                    <th>Owner</th>
-                                                    <th>Private</th>
-                                                    <th>Group</th>
-                                                    <th>Edit</th>
-                                                    <th>Suggestion</th>
-                                                    <th>Vote</th>
-                                                    <th>ItemCnt</th>
-                                                    <th>Items</th>
+                                                    <th>name</th>
+                                                    <th>description</th>
+                                                    <th>totalVotes</th>
+                                                    <th>userVotes</th>
+                                                    <th>itemCnt</th>
+                                                    <th>vote</th>
+                                                    <th>suggestion</th>
+                                                    <th>rank</th>
+                                                    <th>edit</th>
+                                                    <th>view</th>
+                                                    <th>grp</th>
+                                                    <th>private</th>
+                                                    <th>owner</th>
+                                                    <th>Operations</th>
                                                 </tr>
                                                 <tbody class="problemcheckboxx" ng-repeat="aList in myLists">
 
                             <td>{{ aList.name }}</td>
                             <td>{{ aList.description }}</td>
-                            <td>{{ aList.owner }}</td>
-                            <td>{{ aList.private }}</td>
-                            <td>{{ aList.grp }}</td>
-                            <td>{{ aList.edit }}</td>
-                            <td>{{ aList.suggestion }}</td>
-                            <td>{{ aList.vote }}</td>
+                            <td>{{ aList.totalVotes }}</td>
+                            <td>{{ aList.userVotes }}</td>
                             <td>{{ aList.itemCnt }}</td>
-
+                            <td>{{ aList.vote }}</td>
+                            <td>{{ aList.suggestion }}</td>
+                            <td>{{ aList.rank }}</td>
+                            <td>{{ aList.edit }}</td>
+                            <td>{{ aList.view }}</td>
+                            <td>{{ aList.grp }}</td>
+                            <td>{{ aList.private }}</td>
+                            <td>{{ aList.owner }}</td>
                             <td>
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="itemsOfList(aList.name)">Items</button>

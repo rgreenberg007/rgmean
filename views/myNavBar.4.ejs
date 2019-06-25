@@ -9,7 +9,7 @@
             <% if (typeof(user) == 'undefined') { %>
             <li class="nav-item "><span class="nav-link">User: Guest</span></li>
             <li class="nav-item "><span class="nav-link"><a href="/login">Login</a> or <a href="/signup">Register</a></span></li>
-            <li class="nav-item "><span class="nav-link"><a href="/myAbout">About</a></span></li>
+            <li class="nav-item "><span class="nav-link"><a href="/index">About</a></span></li>
             <% } else { %>
             <% if (user.local.email) { %>
             <li class="nav-item"><span class="nav-link"><a href="/myLists">My Lists</a></span></li>
@@ -33,11 +33,11 @@
             <li class="nav-item"><span class="nav-link">Logged in as: <%= user.local.screenName %></span></li>
             <li class="nav-item"><span class="nav-link"><a href="/profile">Profile</a></span></li>
             <li class="nav-item"><span class="nav-link"><a href="/logout">Logout</a></span></li>
-            <li class="nav-item"><span class="nav-link"><a href="/myAbout">About</a></span></li>
+            <li class="nav-item"><span class="nav-link"><a href="/index">About</a></span></li>
             <% } else { %>
             <li class="nav-item"><span class="nav-link">Guest User</p>
             <li class="nav-item"><span class="nav-link"><a href="/login">Login</a> or <a href="/signup">Register</a></span></li>
-            <li class="nav-item"><span class="nav-link"><a href="/myAbout">About</a></span></li>
+            <li class="nav-item"><span class="nav-link"><a href="/index">About</a></span></li>
             <% } %>
             <% } %>
             </ul>

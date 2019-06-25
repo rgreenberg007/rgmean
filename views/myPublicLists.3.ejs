@@ -20,9 +20,9 @@
     <base href="/" />
 
     <script>
-        var app = angular.module('myListsController', [])
+        angular.module('myListsController', [])
 
-            .controller('mainController', ['$scope', '$http', 'myLists', '$filter', function ($scope, $http, myLists, $filter) {
+            .controller('mainController', ['$scope', '$http', 'myLists', function ($scope, $http, myLists) {
                 console.log("myPublicLists.ejs: myListsController mainController reached");
                 //console.log("$scope.myListItems " + $scope.myListItems);
                 //console.log("myPublicLists.ejs: $scope: " + JSON.stringify($scope));
@@ -38,15 +38,6 @@
                 $("#myItemsTable").hide();
                 $("#addItemForm").hide();
 
-                $scope.currentPage = 0;
-                $scope.currentPage2 = 0;
-                $scope.pageSize = 10;
-                $scope.pageSize2 = 10;
-                $scope.q = '';
-                $scope.q2 = '';
-                $scope.myLists = [];
-                $scope.myItems = [];
-
                 // GET =====================================================================
                 myLists.get()
                     .success(function (data) {
@@ -58,7 +49,7 @@
                         $("#myItemsTable").hide();
                         $("#addItemForm").hide();
                     });
-
+                
                 myLists.getAllPublicGrps()
                     .success(function (pubgrpdata) {
                         console.log("myAdminLists.ejs: mainController myLists.getAllPublicGrps success");
@@ -66,50 +57,7 @@
                         for (var i = 0; i < $scope.myPublicGrps.length; i++) {
                             console.log("$scope.myPublicGrps[i].grp = " + $scope.myPublicGrps[i].grp);
                         }
-                    });
-
-                $scope.getData = function () {
-                    //return $filter('filter')($scope.data, $scope.q)
-                    return $filter('filter')($scope.myLists, $scope.q)
-                };
-
-                $scope.numberOfPages = function () {
-                    console.log("$scope.numberOfPages $scope.getData().length: " + $scope.getData().length +
-                        " $scope.pageSize: " + $scope.pageSize)
-                    return Math.ceil($scope.getData().length / $scope.pageSize);
-                };
-
-                $scope.$watch('q', function (newValue, oldValue) {
-                    console.log("$scope.$watch(q) reached");
-                    if (oldValue != newValue) {
-                        $scope.currentPage = 0;
-                    }
-                }, true
-                );
-
-                $scope.getData2 = function () {
-                    //return $filter('filter')($scope.data, $scope.q)
-                    return $filter('filter')($scope.myItems, $scope.q2)
-                };
-
-                $scope.myNumberOfPages2 = function (a, b) {
-                    return Math.ceil(a / b);
-                };
-
-                $scope.numberOfPages2 = function () {
-                    console.log("$scope.numberOfPages2 $scope.getData2().length: " + $scope.getData2().length +
-                        " $scope.pageSize2: " + $scope.pageSize2);
-                    //return Math.ceil($scope.getData2().length/$scope.pageSize2);
-                    return Math.ceil($scope.getData2().length / $scope.pageSize2);
-                };
-
-                $scope.$watch('q2', function (newValue, oldValue) {
-                    console.log("$scope.$watch(q2) reached");
-                    if (oldValue != newValue) {
-                        $scope.currentPage2 = 0;
-                    }
-                }, true
-                );
+                });
 
                 // CREATE ==================================================================
                 $scope.createMyList = function () {
@@ -160,8 +108,8 @@
                 };
 
                 $scope.itemsOfList2 = function (listName, editGrp, rankGrp) {
-                    console.log("myLists.ejs:  mainController itemsOfList2 listName: " + listName + " editGrp: " +
-                        editGrp + " rankGrp: " + rankGrp);
+                    console.log("myLists.ejs:  mainController itemsOfList2 listName: " + listName + " editGrp: " + 
+                    editGrp + " rankGrp: " + rankGrp);
                     $("#addListForm").hide();
                     $scope.currentListName = listName;
                     $scope.editGrp = editGrp;
@@ -197,7 +145,7 @@
                 };
 
                 $scope.myCopyLink = function (listName) {
-                    console.log("myCopyLink call with $scope.currentListName = " + $scope.currentListName);
+                    console.log("myCopyLink call with $scope.currentListName = " +  $scope.currentListName);
                     console.log("window.location.href: " + window.location.href);
                     var selBox = document.createElement('textarea');
                     selBox.style.position = 'fixed';
@@ -205,7 +153,7 @@
                     selBox.style.top = '0';
                     selBox.style.opacity = '0';
                     //selBox.value = "http://localhost:8080/myPublicListsItems/" + $scope.currentListName;
-                    selBox.value = window.location.href + "Items/" + $scope.currentListName;
+                    selBox.value =  window.location.href + "Items/" + $scope.currentListName;
                     document.body.appendChild(selBox);
                     selBox.focus();
                     selBox.select();
@@ -245,16 +193,6 @@
                 };
 
             }]);
-
-        app.filter('startFrom', function () {
-            //filter('startFrom', function() {
-            //function filter('startFrom', function() {
-            return function (input, start) {
-                start = +start;
-                return input.slice(start);
-            }
-        });
-
     </script>
 
     <script>
@@ -297,7 +235,7 @@
 
     <script>
         angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter']);
-    </script>
+    </script>  
 
     <title>Top 10 Lists</title>
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" / -->
@@ -314,12 +252,12 @@
 <body class="bg-secondary text-white">
     <div id='main' class="container-fluid">
         <% include myNavBar %>
+
         <% if (typeof(myListItems) != 'undefined') { %>
-        <div>
-            <p class="alert alert-danger"><%= myListItems %></p>
-        </div>
-        {{ $scope.itemsOfList(myListItems) }}
+            <div><p class="alert alert-danger"><%= myListItems %></p></div>
+            {{ $scope.itemsOfList(myListItems) }}
         <% } %>
+
         <div ng-viewx>
             <!-- h3><span class="fa fa-sign-in"></span>The Lists</h3 -->
             <div ng-controller="mainController">
@@ -340,21 +278,19 @@
                                             <table ng-table="myListsTableParams" border="1" cellspacing="0"
                                                 cellpadding="4">
                                                 <tr>
+
                                                     <th>Name</th>
                                                     <th>Description</th>
                                                     <th>Items</th>
                                                 </tr>
-                                                <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'" -->
-                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
-                                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
+                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'">
 
                             <td>{{ aList.name }}</td>
                             <td>{{ aList.description }}</td>
 
                             <td>
-                                <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
-                                <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="itemsOfList2(aList.name, aList.edit, aList.rank)">Items</button>
+                            <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
+                            <button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList2(aList.name, aList.edit, aList.rank)">Items</button>
                             </td>
                             </tbody>
                             <p class="text-center" ng-show="loading">
@@ -362,32 +298,6 @@
                             </p>
                     </table>
                 </div>
-                <table>
-                    <tr>&nbsp;</tr>
-                    <tr>
-                        <td>
-                            <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"
-                                class="btn btn-primary btn-sm">Previous</button>
-                            {{currentPage+1}}/{{numberOfPages()}}
-                            <button ng-disabled="currentPage >= getData().length/pageSize - 1"
-                                ng-click="currentPage=currentPage+1" class="btn btn-primary btn-sm">Next</button>
-                        </td>
-                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                        <td>&nbsp;&nbsp;</td>
-                        <td>
-                            Set Rows per Page
-                            <!-- input ng-model="q" id="search" class="form-control" placeholder="Set Rows per Page" / -->
-                        </td>
-                        <td>
-                            <select ng-model="pageSize" id="pageSize" class="form-control btn btn-primary btn-sm">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="15">15</option>
-                                <option value="20">20</option>
-                            </select>
-                        </td>
-                    </tr>
-                </table>
             </div>
             </td>
             <td>
@@ -399,15 +309,13 @@
 
         <div ng-viewyvx id=myItemsTable>
             <div class="text-centerx">
-                <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
-                        {{ myItems.length }})</span>
-                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to
-                        List</button></h3>
-                <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' ">
-                    <p> Join the group: {{ editGrp }}, to Edit this List</p>
+                <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items: {{ myItems.length }})</span>
+                        <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to List</button></h3>
+                <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' " >
+                <p> Join the group: {{ editGrp }}, to Edit this List</p>
                 </span>
-                <span ng-if=" inPublicGroups(rankGrp) && rankGrp != 'Just Me' ">
-                    <p> Join the group: {{ rankGrp }}, to Rank this List</p>
+                <span ng-if=" inPublicGroups(rankGrp) && rankGrp != 'Just Me' " >
+                <p> Join the group: {{ rankGrp }}, to Rank this List</p>
                 </span>
             </div>
             <div>
@@ -417,9 +325,7 @@
                         <th>Description</th>
                         <th>Points</th>
                     </tr>
-                    <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] " -->
-                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
-                    | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
+                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] ">
 
                         <td>{{ aItem.name }}</td>
                         <td>{{ aItem.description }}</td>
@@ -431,39 +337,9 @@
                     </p>
                 </table>
             </div>
-            <!--/div -->
-
-            <table>
-                <tr>&nbsp;</tr>
-                <tr>
-                    <td>
-                        <button ng-disabled="currentPage2 == 0" ng-click="currentPage2=currentPage2-1"
-                            class="btn btn-primary btn-sm">Previous</button>
-                        {{currentPage2+1}}/{{myNumberOfPages2(getData2().length, pageSize2 )}}
-                        <button ng-disabled="currentPage2 >= getData2().length/pageSize2 - 1"
-                            ng-click="currentPage2=currentPage2+1" class="btn btn-primary btn-sm">Next</button>
-                    </td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>&nbsp;&nbsp;</td>
-                    <td>
-                        Set Rows per Page
-                        <!-- input ng-model="q2" id="search" class="form-control" placeholder="Set Rows per Page" / -->
-                    </td>
-                    <td>
-                        <select ng-model="pageSize2" id="pageSize2" class="form-control btn btn-primary btn-sm">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="25">25</option>
-                        </select>
-                    </td>
-
-                </tr>
-            </table>
         </div>
+
     </div>
     </div>
 </body>
-
 </html>

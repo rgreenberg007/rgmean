@@ -2,8 +2,6 @@
 <html lang="en">
 
 <head>
-    <script>window.location.replace("/myPublicLists");</script>
-        
     <title>Top 10 Lists</title>
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" -->
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" -->
@@ -19,12 +17,206 @@
             word-wrap: break-word;
         }
     </style>
+
+    <script>
+        $(document).ready(function(){
+            //$("#hide").click(function(){
+              //  $("p").hide();
+            //});
+            //$("#show").click(function(){
+              //  $("p").show();
+            //});
+            //$("#toggle").click(function(){
+              //  $("p").toggle();
+            //});
+            //$("#togglepara1").click(function(){
+              //  $("#para1").toggle();
+            //});
+
+            //$("#togglepara1").click(function(){
+              //  $("#para1").toggle();
+            //});
+            $("#oldStuff").hide();
+            $("#toggleOldStuff").click(function(){
+                $("#oldStuff").toggle();
+            });
+
+            $("#sponser").hide();
+            $("#toggleSponser").click(function(){
+                $("#sponser").toggle();
+            });
+
+            $("#goal").show();
+            $("#toggleGoal").click(function(){
+                $("#goal").toggle();
+            });
+            
+            $("#steps").hide();
+            $("#toggleSteps").click(function(){
+                $("#steps").toggle();
+            });
+
+            $("#users").hide();
+            $("#toggleUsers").click(function(){
+                $("#users").toggle();
+            });
+
+            $("#groups").hide();
+            $("#toggleGroups").click(function(){
+                $("#groups").toggle();
+            });
+
+            $("#lists").hide();
+            $("#toggleLists").click(function(){
+                $("#lists").toggle();
+            });
+
+            $("#items").hide();
+            $("#toggleItems").click(function(){
+                $("#items").toggle();
+            });
+
+            $("#ranking").hide();
+            $("#toggleRanking").click(function(){
+                $("#ranking").toggle();
+            });
+
+            
+        });
+
+        //var coll = document.getElementsByClassName("collapsible");
+        //var i;
+        
+        //for (i = 0; i < coll.length; i++) {
+          //coll[i].addEventListener("click", function() {
+            //this.classList.toggle("active");
+            //var content = this.nextElementSibling;
+            //if (content.style.display === "block") {
+              //content.style.display = "none";
+            //} else {
+              //content.style.display = "block";
+            //}
+          //});
+        //}
+
+    </script>
+
 </head>
 
 <body class="bg-secondary text-white">
     <div id='main' class="container-fluid">
             <% include myNavBar %>
-        <div ng-view>
+            <!-- for testing 
+            <p id="para1">If you click on the "Hide" button, I will disappear.</p>
+
+            <button id="hide">Hide</button>
+            <button id="show">Show</button>
+            <button id="toggle">Toggle</button>
+            <button id="togglepara1">Toggle para1</button>
+
+            <button class="collapsible">Open Collapsible</button>
+            <div class="content">test</div>
+            <div>
+            -->
+        <div ng-view id="topStuff">
+                <h1>Welcome to the Top 10 Lists application!</h1>
+                <h3>Please send comments, issues, suggestions, etc. to richardsapps@yahoo.com.</h3>
+                <h3>This is version 1.0 Beta released on 6/25/2019 and subject to changes.</h3>
+                <p></p>
+        </div>
+
+        <table><tr><td>
+        <!-- button id="toggleSponser">Money</button -->
+        <button id="toggleSponser">Money: Planning on keeping this application free.</button>
+        <div ng-view id="sponser">
+                <!-- h3>Planning on keeping this application free.</h3 -->
+                <p>Looking for a sponser or two.</p>
+                <p>Will need to take in some money to support this app in the future.</p>
+                <p>May set up donations.</p>
+        </div>
+        </td></tr>
+
+        <tr><td>
+        <button id="toggleGoal">Goal: The goal of this application is to allow for the creation and sharing of Top 10 Lists.</button>
+        <!-- button id="toggleGoal">Goal</button -->
+        <div ng-view id="goal">
+            <!-- h3>The goal of this application is to allow for the creation and sharing of Top 10 Lists.</h3 -->
+            <p>Register Users can create Lists.</p>
+            <p>Lists can be Public or Private.</p>
+            <p>Public Lists can be seen by anyone (EveryOne) who accesses the application.</p>
+            <p>Private Lists can only be seen by Register Users.</p>
+            <p>For a Registered User to see a specific List the User must be the Owner of the List</p>
+            <p>Or the User must be in a Group set on the List for allowing Viewing.</p>
+            <p>Lists can only be Editing by Register Users.</p>
+            <p>For a Registered User to Edit a specific List the User must be the Owner of the List</p>
+            <p>Or the User must be in a Group set on the List for allowing Editing.</p>
+            <p>Lists can only be Ranked by Register Users.</p>
+            <p>For a Registered User to Rank the Items of a specific List the User must be the Owner of the List</p>
+            <p>Or the User must be in a Group set on the List for allowing Ranking.</p>
+            <h3>Sounds simple. See below for information on Registered Users, Groups, Lists, Items and Ranking.</h3>
+        </div>
+        </td></tr>
+        
+        <tr><td>
+                <button id="toggleSteps">Quick Steps: Registering, creating a Group and creating a List.</button>
+                <div ng-view id="steps">
+                        <p>This is quick walkthough of the basic usage of this application.</p>
+                        <p></p>
+                        <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>
+                <button id="toggleUsers">About Registered Users.</button>
+                <div ng-view id="users">
+                        <p>Registered Users are (currently) never contacted by this application.</p>
+                        <p></p>
+                        <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>
+                <button id="toggleGroups">About Groups.</button>
+                <div ng-view id="groups">
+                        <p>Groups are used to control which Users can View, Edit and Rank Items in Lists.</p>
+                        <p></p>
+                        <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>
+                <button id="toggleLists">About Lists.</button>
+                <div ng-view id="lists">
+                        <p>Lists consist of Items. Lists and their Items can be Viewed and Edited.</p>
+                        <p>>Lists can have their Items Ranked.</p>
+                        <p></p>
+                        <p></p>
+                </div>
+        </td></tr>
+        
+        <tr><td>
+                <button id="toggleItems">About Items.</button>
+                <div ng-view id="items">
+                        <p>Items make up a List. Items of a List can be Viewed.</p>
+                        <p>New Items can be added to a List and exising Items can be removed from a List.</p>
+                        <p>The Items of a List can be Ranked.</p>
+                        <p></p>
+                        <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>
+                <button id="toggleRanking">About Ranking.</button>
+                <div ng-view id="ranking">
+                        <p>>Lists can have their Items Ranked.</p>
+                        <p></p>
+                        <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>
+        <button id="toggleOldStuff">Old Stuff</button>
+        <div ng-view id="oldStuff">
             <h1>RG's List Application</h1>
             <h3>Welcome to RG's MEAN Stack Application running on Heroku.</h3>
             <p></p>
@@ -157,6 +349,10 @@
             <p>Plan to implement some featues using React </p>
             <p></p>
         </div>
+
+        </td></tr>
+        </table>
+        <!-- /div -->
     </div>
 </body>
 

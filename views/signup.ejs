@@ -196,21 +196,31 @@ function checkPasswords() {
 }
 </script>
 
-    <title>Lists </title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <title>Top 10 Lists</title>
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" / -->
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" / -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-        body         { padding-top:80px; word-wrap:break-word; }
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
     </style>
+    <!-- style>
+        body         { padding-top:80px; word-wrap:break-word; }
+    </style -->
 </head>
-<body>
-    <div id='main' class="container-fluid">       
+<body class="bg-secondary text-white">
+    <div id='mainx' class="container-fluid">
+        <% include myNavBar %>
+<!-- body>
+    <div id='main' class="container-fluid" -->       
         <div ng-viewx>
             <div ng-controller="mainController">
                 <div class="container">
                     <div class="col-sm-6 col-sm-offset-3">
 
-                        <h1><span class="fa fa-sign-in"></span> RG's List App - Signup</h1>
+                        <h1><span class="fa fa-sign-in"></span> Top 10 Lists - Signup</h1>
                             
                         <div class="alert alert-danger" id="passwordmismatch">Passwords do not match!</div>
                         <% if (message.length > 0) { %>
@@ -222,24 +232,24 @@ function checkPasswords() {
                                 <label>Email</label> 
                                 <!-- note need to use type="email" then browser checks for valid email entered -->
                                  <input type="email" class="form-control" name="email" placeholder="enter email" 
-                                ng-model="formData.email"
+                                ng-model="formData.email" maxlength="64"
                                 required  minlength="5" [pattern]="emailRegex" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !email.valid }">                                
                             </div>
                             <div class="form-group">
                                     <label>Password</label>
-                                    <input type="password" class="form-control" name="password" 
+                                    <input type="password" class="form-control" maxlength="32" name="password" 
                                     ng-model="formData.password"
                                     required minlength="3" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !password.valid }">
                             </div>
                             <div class="form-group">
                                     <label>Confirm Password</label>
-                                    <input type="password" class="form-control" name="password2" 
+                                    <input type="password" class="form-control" maxlength="32" name="password2" 
                                     ng-model="formData.password2"
                                     required minlength="3" [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !password2.valid }">
                             </div>
                             <div class="form-group">
                                     <label>Screen Name</label>
-                                    <input type="text" class="form-control" name="screenName" placeholder="Screen Name" 
+                                    <input type="text" class="form-control" maxlength="32" name="screenName" placeholder="Screen Name" 
                                     ng-model="formData.screenName"
                                     required  [ngClass]="{'invalid-textbox' :signUpFrm.submitted && !screenName.valid }">
                             </div>
@@ -261,7 +271,7 @@ function checkPasswords() {
                         </form>   
                         <hr>
                         <p>Already have an account? <a href="/login">Login</a></p>
-                        <p>Or go <a href="/">home</a>.</p>
+                        <p>Or go <a href="/">Home</a></p>
                     </div>
                 </div>
             </div>

@@ -19,6 +19,13 @@ var session      = require('express-session');
 
 var configDB = require('./config/database.js');
 
+//import {NgxPaginationModule} from 'ngx-pagination';
+//var NgxPaginationModule = require('ngx-pagination');
+//var paginate = require('paginate')({
+  // options go here...
+//});
+//var paginate = require('paginate');
+
 // configuration ===============================================================
 //mongoose.connect(configDB.url); // connect to our database
 

@@ -37,16 +37,17 @@
               //  $("#para1").toggle();
             //});
             $("#oldStuff").hide();
-            $("#toggleOldStuff").click(function(){
-                $("#oldStuff").toggle();
-            });
+            // Never showing old stuff but leaving in place for now.
+            //$("#toggleOldStuff").click(function(){
+              //  $("#oldStuff").toggle();
+            //});
 
             $("#sponser").hide();
             $("#toggleSponser").click(function(){
                 $("#sponser").toggle();
             });
 
-            $("#goal").show();
+            $("#goal").hide();
             $("#toggleGoal").click(function(){
                 $("#goal").toggle();
             });
@@ -81,7 +82,26 @@
                 $("#ranking").toggle();
             });
 
-            
+            $("#known").hide();
+            $("#toggleKnown").click(function(){
+                $("#known").toggle();
+            });
+            $("#unknown").hide();
+            $("#toggleUnknown").click(function(){
+                $("#unknown").toggle();
+            });
+            $("#future").hide();
+            $("#toggleFuture").click(function(){
+                $("#future").toggle();
+            });
+            $("#tech").hide();
+            $("#toggleTech").click(function(){
+                $("#tech").toggle();
+            });
+            $("#aboutme").hide();
+            $("#toggleAboutMe").click(function(){
+                $("#aboutme").toggle();
+            });
         });
 
         //var coll = document.getElementsByClassName("collapsible");
@@ -119,103 +139,268 @@
             <div>
             -->
         <div ng-view id="topStuff">
-                <h1>Welcome to the Top 10 Lists application!</h1>
+                <h1>Welcome to Top 10 Lists!</h1>
                 <h3>Please send comments, issues, suggestions, etc. to richardsapps@yahoo.com.</h3>
                 <h3>This is version 1.0 Beta released on 6/25/2019 and subject to changes.</h3>
                 <p></p>
         </div>
 
-        <table><tr><td>
-        <!-- button id="toggleSponser">Money</button -->
-        <button id="toggleSponser">Money: Planning on keeping this application free.</button>
-        <div ng-view id="sponser">
-                <!-- h3>Planning on keeping this application free.</h3 -->
-                <p>Looking for a sponser or two.</p>
-                <p>Will need to take in some money to support this app in the future.</p>
-                <p>May set up donations.</p>
-        </div>
-        </td></tr>
-
+        <table>
         <tr><td>
-        <button id="toggleGoal">Goal: The goal of this application is to allow for the creation and sharing of Top 10 Lists.</button>
+        <button id="toggleGoal" class="btn btn-primary btn-sm">Goal: The goal of this application is to allow for the creation and sharing of Top 10 Lists.</button>
         <!-- button id="toggleGoal">Goal</button -->
         <div ng-view id="goal">
             <!-- h3>The goal of this application is to allow for the creation and sharing of Top 10 Lists.</h3 -->
-            <p>Register Users can create Lists.</p>
-            <p>Lists can be Public or Private.</p>
-            <p>Public Lists can be seen by anyone (EveryOne) who accesses the application.</p>
-            <p>Private Lists can only be seen by Register Users.</p>
-            <p>For a Registered User to see a specific List the User must be the Owner of the List</p>
-            <p>Or the User must be in a Group set on the List for allowing Viewing.</p>
-            <p>Lists can only be Editing by Register Users.</p>
-            <p>For a Registered User to Edit a specific List the User must be the Owner of the List</p>
-            <p>Or the User must be in a Group set on the List for allowing Editing.</p>
-            <p>Lists can only be Ranked by Register Users.</p>
-            <p>For a Registered User to Rank the Items of a specific List the User must be the Owner of the List</p>
-            <p>Or the User must be in a Group set on the List for allowing Ranking.</p>
+            <p>Register Users can create Lists.<br/>
+                Lists can be Public or Private.<br/>
+                Public Lists can be seen by anyone who accesses the application.</br>
+            <p>Private Lists can only be seen by Register Users.<br/>
+                For a Registered User to see a specific List the User must be the Owner of the List<br/>
+                Or the User must be in a Group set on the List for allowing Viewing.</p>
+            <p>Lists can only be Editing by Register Users.<br/>
+                For a Registered User to Edit a specific List the User must be the Owner of the List<br/>
+                Or the User must be in a Group set on the List for allowing Editing.</p>
+            <p>Lists can only be Ranked by Register Users.<br/>
+                For a Registered User to Rank the Items of a specific List the User must be the Owner of the List<br/>
+                Or the User must be in a Group set on the List for allowing Ranking.</p>
             <h3>Sounds simple. See below for information on Registered Users, Groups, Lists, Items and Ranking.</h3>
         </div>
         </td></tr>
         
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-                <button id="toggleSteps">Quick Steps: Registering, creating a Group and creating a List.</button>
+                <button id="toggleSteps" class="btn btn-primary btn-sm">Quick Steps: Registering, creating a Group and creating a List.</button>
                 <div ng-view id="steps">
-                        <p>This is quick walkthough of the basic usage of this application.</p>
-                        <p></p>
-                        <p></p>
+                    <p>Yea - Most people head to the quick steps to get things going so here they are.</p>
+                    <p>The starting page shows Lists. Select Items to see the Lists.<br/>
+                        These are public lists. To actually use this app for more than reading Lists you need to Register.<br>
+                        Select the Register link. Enter an Email (Username), Password, Screen Name and set Private to N.<br>
+                        Select SignUp and you get registered. Later you can Login using your Email and Password. </p>
+                    <p>Now create a new Group. Under My Groups select Manage My Groups.<br/>
+                        Enter a Group Name, Details about the Group and set Private to N.<br/>
+                        Select Add and a new Group is created.</p>
+                    <p>Now create a new List. Select My Lists. Then select the New List button.<br/>
+                        Enter a List Name and Description. <br>
+                        Under Who can See this List, select Everyone. <br/>
+                        Under Who can Edit this List, select your new Group. <br/>
+                        Under Who can Vote/Rank Items in this List, select your new Group.<br/>
+                        Select Add and the new List gets created.
+                    </p>
+                    <p>Now add Items to your new List. Find your List in the Lists shown (via My Lists) and select Items.<br>
+                        Enter an Item Name and Description and then select Add to create a new Item.<br/>
+                        Repeat to create as many Items for you List as you want.
+                    </p>
+                    <p>Now Rank the Items in your List. Select My Lists, find your List and select Rank.<br/>
+                        Select Rank on up to ten Items.<br>
+                        Use the Up and Down buttons to position the Items in the Ranking you want.<br/>
+                        When things are set, select Save My Rankings.<br>
+                        Your Points will be added to the Items in the List.
+                    </p>Now if you go to Lists, you can find your List and select Items to see your Ranked List.<br/>
+                        Comments, issues, suggestions, etc. contact richardsapps@yahoo.com
+                    <p>
+
+                    </p>
                 </div>
         </td></tr>
 
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-                <button id="toggleUsers">About Registered Users.</button>
+                <button id="toggleUsers" class="btn btn-primary btn-sm">About Registered Users.</button>
                 <div ng-view id="users">
                         <p>Registered Users are (currently) never contacted by this application.</p>
-                        <p></p>
-                        <p></p>
+                        <p>Only Registered Users can create Lists, Edit Lists and Rank Items in Lists.</p>
+                        <p>Select the Register link to become a Registered User.<br/>
+                            -- Enter an Email address as your Username<br/>
+                            -- Enter a Password<br/>
+                            -- Set a Screen Name<br/>
+                            -- Set whether you want to be a Private or Public user<br>
+                            Select Signup and that's it, you are a Registered User.<br/>
+                        </p>
+                        <p>When loginning in, use your Username (Email) and Password.<br/>
+                            Emails are not validated but must be in an Email format: name@x.y<br/>
+                            Emails and Screen Names must be unique within this application.<br/>
+                            For now Email is used to identify Users as Owner's of Lists and for Group membership.<br/>
+                            At this time no Emails are sent from this application.</p>
+                        <p>Your Screen Name and Private/Public setting can be changed at any time via the Profile link.</p>
+                        <p>Private Users place themselves in Public Groups.<br/>
+                            Public Users can place themselves in Public Groups.<br/>
+                            Public Users can also be placed into Groups by other Users.</p>
                 </div>
         </td></tr>
 
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-                <button id="toggleGroups">About Groups.</button>
+                <button id="toggleGroups" class="btn btn-primary btn-sm">About Groups.</button>
                 <div ng-view id="groups">
-                        <p>Groups are used to control which Users can View, Edit and Rank Items in Lists.</p>
-                        <p></p>
-                        <p></p>
+                        <p>Groups are used to control which Users can View and Edit Lists and Rank Items in Lists.</p>
+                        <p>Registered Users can create new Groups via the My Groups -> Manage My Groups link.<br/>
+                            -- Enter a Group Name<br/>
+                            -- Enter Details about the Group<br/>
+                            -- Enter whether the Group is Private or Public<br/>
+                            Select Add and that's it, a new Group gets created. <br/>
+                        </p>
+                        <p>Group Names must be unique within the application.<br/>
+                            Only the Owner of a Private Group can add Users to the Group.<br/>
+                            Any Registered User can add themselves to a Public Group.</p>
+                        <p>Use the My Groups -> Manage Users in My Groups link to: <br/>
+                            -- See the Users in your Groups<br/>
+                            -- Add and Remove Users from your Groups<br/>
+                            -- And Delete any of your Groups (if there are no Users in it.)</p>
+                        <p>Use the My Groups -> Manage Me in Other Groups link to: <br/>
+                            -- Add and Remove yourself from Public Groups</p>
+                        <p>When you create a new List you select who can View, Edit and Rank your new List <br/>
+                            from your Groups and other Groups you are in</p>
                 </div>
         </td></tr>
 
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-                <button id="toggleLists">About Lists.</button>
+                <button id="toggleLists" class="btn btn-primary btn-sm">About Lists.</button>
                 <div ng-view id="lists">
-                        <p>Lists consist of Items. Lists and their Items can be Viewed and Edited.</p>
-                        <p>>Lists can have their Items Ranked.</p>
-                        <p></p>
-                        <p></p>
+                        <p>Lists consist of Items. Lists and their Items can be Viewed and Edited.<br/>
+                            Lists can have their Items Ranked.</p>
+                        <p>From My Lists and then from the New List button a new List can be created.<br/>
+                            -- Enter a List Name<br/>
+                            -- Enter a Description for the List<br>
+                            -- Enter who can See the List<br/>
+                            -- Enter who can Edit the List<br/>
+                            -- Enter who can Rank the List<br/>
+                            Select Add and that's it, a new List gets created. <br/>
+                        </p>
+                        <p>Selection of the My Lists link shows all the Lists you can see in a table.</p>
+                        <p>For each List this table contains the List Name, Description, Owner, <br/>
+                            whether the List is Private or not, the Group that can View the List, <br/>
+                            the Group that can Edit the List and the Group that can Rank the Items of the List.</p>
+                        <p>Buttons in the table allow for Deletion of empty Lists, Removing your Ranking from a List<br/>
+                            and seeing (and editing) the List Items and Ranking the list items. </p>
+                        <p>See About Items for details on seeing and editing List Items.</p>
+                        <p>See About Ranking for details on Ranking List Items.</p>
                 </div>
         </td></tr>
         
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-                <button id="toggleItems">About Items.</button>
+                <button id="toggleItems" class="btn btn-primary btn-sm">About Items.</button>
                 <div ng-view id="items">
-                        <p>Items make up a List. Items of a List can be Viewed.</p>
-                        <p>New Items can be added to a List and exising Items can be removed from a List.</p>
-                        <p>The Items of a List can be Ranked.</p>
-                        <p></p>
-                        <p></p>
+                        <p>Items make up a List and can be Viewed / Edited via the Items button in the List table.</p>
+                        <p>When the Items button (in a List table) is selected the Items of the List are displayed. </p>
+                        <p>If you have Edit access to the List then new Items can be added <br/>
+                            and exising Items can be removed from the List.</p>
                 </div>
         </td></tr>
 
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-                <button id="toggleRanking">About Ranking.</button>
+                <button id="toggleRanking" class="btn btn-primary btn-sm">About Ranking.</button>
                 <div ng-view id="ranking">
-                        <p>>Lists can have their Items Ranked.</p>
-                        <p></p>
+                    <p>Lists can have their Items Ranked.</p>
+                    <p>When the Rank button (in a List table) is selected the Items of the List are displayed.</p>
+                    <p>Select the Rank buttons from the Items table to select Items for Ranking.<br/>
+                        Then in the Ranking table, order the Items to Rank them how you want.<br/>
+                        When done, select Save My Ranking and you Rankings will be saved.<br/>
+                        Your points will be added to the Items in the List and the List will be displayed in Point order.</p>
+                    <p>At this time Item number one get 10 points, Item number two gets 9 points and so on.<br/>
+                        You can Rank up to ten Items in a List.<br/>
+                        If you Rank only one Item, it gets 10 points and the other Items get none so it counts more.<br/>
+                        You can only Rank Items in a List once, but you can remove your Rankings and then ReRank.<br/>
+                    </p>
+                    <p>New Ranking algorithms may be in the future. Suggestions are welcome.</p>
+                </div>
+        </td></tr>
+
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+                <button id="toggleKnown" class="btn btn-primary btn-sm">Known Issues.</button>
+                <div ng-view id="known">
+                        <p>Issue with Copy to Link on older iPads/iPhones using older IOS (9) versions.<br/>
+                            To create a link to a List use <br/>
+                            &nbsp;&nbsp;http://rgmean.herokuapp.com/myPublicListsItems/ListName <br/>
+                             where ListName is the name of the list.<br/>
+                            For example if the List name is: TopTen BBall Players<br/>
+                            then the link should be <br/>
+                            &nbsp;&nbsp;http://rgmean.herokuapp.com/myPublicListsItems/TopTen BBall Players<br/>
+                            Browsers should add %20 where spaces are. In some cases you may need to add them yourself.<br/>
+                            For example: <br/>
+                            &nbsp;&nbsp;http://rgmean.herokuapp.com/myPublicListsItems/TopTen%20BBall%20Players</p>
                         <p></p>
                 </div>
         </td></tr>
 
+        <tr><td>&nbsp;</td></tr>
         <tr><td>
-        <button id="toggleOldStuff">Old Stuff</button>
+                <button id="toggleUnknown" class="btn btn-primary btn-sm">Unknown Issues</button>
+                <div ng-view id="unknown">
+                        <p>Duh - but thanks for reading this far.</p>
+                        <p>If you do find issues please report them to richardsapps@yahoo.com.</p>
+                        <p>There will be issues, there always are.</p>
+                </div>
+        </td></tr>
+
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+                <button id="toggleFuture" class="btn btn-primary btn-sm">Future plans.</button>
+                <div ng-view id="future">
+                        <p>Some planned changes include the following.</p>
+                        <p>Use Screen Name everywhere instead of Email to reference users as Owners, for Group memberships, etc.</p>
+                        <p>Automated way to get a temporary password if it is forgotten.</p>
+                        <p>Changes and perhaps user options to the look and feel of the app.</p>
+                        <p>Point allocations and/or diffent ranking methods for List Items.</p>
+                        <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+                <button id="toggleTech" class="btn btn-primary btn-sm">About Technology used for this app.</button>
+                <div ng-view id="tech">
+                    <p>This is a MEAN stack app.<br/>
+                        -- MEAN Stack: MongoDB, Express, Angular, NodeJS<br/>
+                        -- Also made use of Passport and Mongoose on the back end<br/>
+                        -- and Bootstrap 4 and some JQuery on the front end.<br/>
+                        -- Developed on Windows 10 - Visual Studio Code.<br/>
+                        -- Deployed to Microsoft Azure with Docker then switched to Heroku using Git.<br/>
+                        -- Used Robo 3T for MongoDB access.<br/>
+                        -- Used Postman to check some backend APIs.<br/>
+                    </p>
+                    <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+                <!-- button id="toggleSponser">Money</button -->
+                <button id="toggleSponser" class="btn btn-primary btn-sm">Money: Planning on keeping this application free.</button>
+                <div ng-view id="sponser">
+                        <!-- h3>Planning on keeping this application free.</h3 -->
+                        <p>Looking for a sponser or two.<br/>
+                        Will need to take in some money to support this app in the future.<br/>
+                        May set up donations.</p>
+                </div>
+        </td></tr>
+                
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+                <button id="toggleAboutMe" class="btn btn-primary btn-sm">About Me.</button>
+                <div ng-view id="aboutme">
+                    <p>My name is Richard Greenberg.<br/>
+                        I am currently looking for employment in the Orange County, Califonia area.</p>
+                    <p>I created this application to play with new (to me) technologies.<br/>
+                        As a longtime implementer of software solutions, I have played various roles <br/>
+                        in the full software lifecycle, from Project Manager through to Programmer.<br/>
+                        I enjoy learning new technologies and have continued to expand my knowledge over the years.<br/> 
+                        Whatever is needed to get the job done is where I head. </br>
+                        I have worked on Proof of Concepts, Rapid Prototypes, Agile and Waterfall projects.<br/>
+                    </p>
+                    <p>I am looking for an opportunity at a fun place to work <br/>
+                        where I can continue to learn and contribute to successful applications.<br/>
+                        Please check me out on LinkedIn at: http://www.linkedin.com/in/richard-greenberg-007</p>
+                    <p></p>
+                </div>
+        </td></tr>
+
+        <tr><td>&nbsp;</td></tr>
+        <tr><td>
+        <!-- button id="toggleOldStuff" class="btn btn-primary btn-sm" >Old Stuff</button -->
         <div ng-view id="oldStuff">
             <h1>RG's List Application</h1>
             <h3>Welcome to RG's MEAN Stack Application running on Heroku.</h3>
@@ -292,7 +477,7 @@
             <dl>
                 <dt>Register</dt>
                 <dd> - Allows set up of a new account. Email is the login. Email must be unique.</dd>
-                <dd> - ScreenName must also be unique.</dd>
+                <dd> - Screen Name must also be unique.</dd>
                 <dd> - Private = Y means you control which groups you are in. </dd>
                 <dd> - Private = N means other users see you and can place you in their groups. </dd>
                 <dd> - Passwords are encrypted.</dd>
@@ -305,7 +490,7 @@
             </dl>
             <dl>
                 <dt>Profile</dt>
-                <dd> - From here the User can change their ScreenName, their Privacy setting and their Password.</dd>
+                <dd> - From here the User can change their Screen Name, their Privacy setting and their Password.</dd>
                 <dd> - The User can also Remove themselves from the application (set of Registered Users.)</dd>
             </dl>
             <dl>

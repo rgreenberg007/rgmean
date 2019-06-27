@@ -998,34 +998,6 @@ module.exports = function(app, passport) {
         });
     });
 
-    app.post('/api/modMyList', function (req, res) {
-        console.log("routes.js: app.post /api/modMyList");
-        console.log("req.body: " + JSON.stringify(req.body));
-        var myPrivate = "Y";      
-        if (req.body.view == "Everyone") {
-            myPrivate = "N";
-        }  
-        myList.findByIdAndUpdate( req.body.id, {
-            name: req.body.name,
-            description: req.body.description,
-            owner: req.body.owner,
-            grp: req.body.view,
-            view: req.body.view,
-            private: myPrivate,
-            edit: req.body.edit,
-            rank: req.body.rank
-        }, function (err, myList) {
-            if (err) {
-                if (err.name === 'MongoError') {
-                    console.log("Some other error found!");
-                    return res.status(500).send(err);
-                }
-            } else {
-                getMyListsOwner(req.body.owner, res);
-            }
-        });
-    });
-
     app.post('/api/myAdminLists', function (req, res) {
         console.log("routes.js: app.post /api/myAdminLists");
         console.log("req.body: " + JSON.stringify(req.body));

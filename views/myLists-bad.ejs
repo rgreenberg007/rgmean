@@ -28,11 +28,8 @@
         var app = angular.module('myListsController', [])
             .controller('mainController', ['$scope', '$http', 'myLists', '$filter', function ($scope, $http, myLists, $filter) {
                 console.log("myLists.ejs: myListsController mainController reached");
-                console.log("myLists.ejs :: " +  "<%= user.local.email %>" + " :: " + "<%= user.local.screenName %>"
-                + " :: "  + "<%= user._id %>");
-
                 $scope.formData = {};
-                $scope.formData2 = {};
+                //$scope.formData2 = {};
                 $scope.formData3 = {};
                 $scope.formItemData = {};
                 $scope.loading = true;
@@ -54,7 +51,6 @@
                 $("#addItemForm").hide();
                 $("#addListForm").hide();
                 $("#modListForm").hide();
-                $("#commentForm").hide();
 
                 $scope.currentPage = 0;
                 $scope.currentPage2 = 0;
@@ -76,7 +72,6 @@
                         //$("#itemnametaken").hide();
                         $("#myItemsTable").hide();
                         $("#addItemForm").hide();
-                        $("#commentForm").hide();
                         $("#addListForm").hide();
                         $("#modListForm").hide();
 
@@ -114,7 +109,7 @@
                         //  console.log("$scope.myGrpsA[i] = " + $scope.myGrpsA[i]);
                         //}
                         //$scope.myGrpsB = tmpgrpdataB;
-                        //$scope.myGrpsB.unshift("Everyone" , "Just Me");JSON
+                        //$scope.myGrpsB.unshift("Everyone" , "Just Me");
                         //console.log("myAdminLists.ejs: myLists.getAllGrps: $scope.myGrps: " + JSON.stringify($scope.myGrps));
                         //for (var i = 0; i < $scope.myGrpsB.length; i++) {
                         //  console.log("$scope.myGrpsB[i] = " + $scope.myGrpsB[i]);
@@ -177,7 +172,7 @@
 
                 $scope.numberOfPages2 = function () {
                     //console.log("$scope.numberOfPages2 $scope.getData2().length: " + $scope.getData2().length +
-                    //    " $scope.pageSize2: " + $scope.pageSize2);
+                        " $scope.pageSize2: " + $scope.pageSize2);
                     //return Math.ceil($scope.getData2().length/$scope.pageSize2);
                     return Math.ceil($scope.getData2().length / $scope.pageSize2);
                 };
@@ -263,7 +258,6 @@
                                 //$("#itemnametaken").hide();
                                 $("#myItemsTable").hide();
                                 $("#addItemForm").hide();
-                                $("#commentForm").hide();
                             });
                     } else {
                         console.log(" No delete");
@@ -290,9 +284,9 @@
                     $("#myListsTable").hide();
                     $("#modListForm").show();
                     
-                    formData2.description.value = "aBC";
-                    formData2.description.focus();
-                    formData2.description.select();
+                    //formData2.description.value = "aBC";
+                    //formData2.description.focus();
+                    //formData2.description.select();
 
                 };
 
@@ -353,8 +347,6 @@
                             $("#myListsTable").hide();
                             $("#myItemsTable").show();
                             $("#addItemForm").show();
-                            //$("#commentForm").show();
-                            $("#commentForm").hide();
                         });
                 };
 
@@ -380,45 +372,8 @@
                             $scope.myItemNameTaken = false;
                             $("#myListsTable").hide();
                             $("#myItemsTable").show();
-                            //$("#commentForm").show();
-                            $("#commentForm").hide();
                             if ($scope.allowEdit) {
-                                $("#addItemForm").show();  
-                            };
-                        });
-                };
-                    
-                $scope.itemsOfList3 = function (myList) { // listName, editGrp, myOwner) {
-                    var listName = myList.name;
-                    var editGrp = myList.edit;
-                    var myOwner = myList.owner;
-                    var myListId = myList._id;
-                    $scope.currentListOwner = myOwner;
-                    $scope.currentListId = myListId;
-                    console.log("myLists.ejs:  mainController itemsOfList3 listName: " + listName +
-                        " editGrp: " + editGrp + " myOwner (list): " + myOwner + " myListId " + myListId);
-                    $("#addListForm").hide();
-                    $("#modListForm").hide();
-                    $scope.currentListName = listName;
-                    $scope.allowEdit = false;
-                    if ($scope.inMyGroups(editGrp) || $scope.isMyOwner(myOwner)) {
-                        $scope.allowEdit = true;
-                    }
-                    console.log("myLists.ejs:  mainController itemsOfList3 $scope.allowEdit: " + $scope.allowEdit);
-                    myLists.getItems(listName)
-                        .success(function (data) {
-                            $scope.loading = false;
-                            $scope.formData = {}; // clear the form so our user is ready to enter another
-                            $scope.myItems = data; // 
-                            $("#listnametaken").hide();
-                            //$("#itemnametaken").hide();
-                            $scope.myItemNameTaken = false;
-                            $("#myListsTable").hide();
-                            $("#myItemsTable").show();
-                            //$("#commentForm").show();
-                            $("#commentForm").hide();
-                            if ($scope.allowEdit) {
-                                $("#addItemForm").show();  
+                                $("#addItemForm").show();
                             };
                         });
                 };
@@ -439,8 +394,7 @@
                             //$("#itemnametaken").hide();
                             $("#myListsTable").hide();
                             $("#myItemsTable").show();
-                            $("#addItemForm").hide();
-                            $("#commentForm").hide();
+                            $("#addItemForm").show();
                         });
                 };
 
@@ -502,27 +456,24 @@
                 };
 
                 $scope.addCommentOnList = function () {
-                    console.log("myLists.ejs:  mainController addCommentOnList $scope.currentListName: " + $scope.currentListName);
+                    console.log("myLists.ejs:  mainController addCommentOnList ");
+                    //formData3.comment
                     $scope.loading = true;
                     //$scope.formData3.testData = "abc";
-                    $scope.formData3.userId = "<%= user._id %>";
-                    $scope.formData3.listName = $scope.currentListName;
+                    //$scope.formData3.listName = $scope.currentListName;
                     $scope.formData3.owner = userEmail;
-                    $scope.formData3.screenName = "<%= user.local.screenName %>";
-                    $scope.formData3.listOwner = $scope.currentListOwner;
-                    $scope.formData3.listId = $scope.currentListId; 
                     console.log("myLists.ejs: $scope.formData3: " + JSON.stringify($scope.formData3));
-                    myLists.createComment($scope.formData3)
-                        .error(function (data) {
-                          $scope.loading = false;
-                            console.log("myLists.ejs: addCommentOnList ERROR data: " + JSON.stringify(data));
-                            console.log("myLists.ejs: addCommentOnList ERROR data.message: " + data.message);
-                            //messageItem = data.message;
-                            //$("#itemnametaken").show();
-                        })
-                        .success(function (data) {
-                            //$scope.loading = false;
-                            $scope.formData3 = {}; // clear the form so our user is ready to enter another
+                    //myLists.createItem($scope.formItemData)
+                        //.error(function (data) {
+                        //  $scope.loading = false;
+                        //    console.log("myLists.ejs: addCommentOnList ERROR data: " + JSON.stringify(data));
+                        //    console.log("myLists.ejs: addCommentOnList ERROR data.message: " + data.message);
+                                //messageItem = data.message;
+                                //$("#itemnametaken").show();
+                        //    })
+                        //.success(function (data) {
+                                //$scope.loading = false;
+                        //    $scope.formData3 = {}; // clear the form so our user is ready to enter another
                             //$("#itemnametaken").hide();
                             //$scope.myItems = data; // 
                             //myLists.get(userEmail)
@@ -532,7 +483,7 @@
                                   //      $scope.loading = false;
                                   //      //console.log("myLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
                                   //  });
-                        });
+                            //});
                 };
 
                 $scope.myRemoveItem = function (id) {
@@ -745,10 +696,6 @@
                     rankItemsGet: function (Data) {
                         console.log("myAdminListsRank.ejs: service myLists rankItemsGet");
                         return $http.post('/api/myItemsRankGet', Data);
-                    },
-                    createComment: function (Data) {
-                        console.log("myLists.ejs: service myLists createComment");
-                        return $http.post('/api/myListComments', Data);
                     }
                 }
             }]);
@@ -838,7 +785,7 @@
                                     ng-click="showModListForm(aList)">Modify</button>
                                 </span>
                                 <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="itemsOfList3(aList)">Items</button>
+                                    ng-click="itemsOfList2(aList.name, aList.edit, aList.owner)">Items</button>
                                 <span ng-if="aList.itemCnt == '0' ">
                                     <span ng-if="inMyGroups(aList.edit) || isMyOwner(aList.owner)">
                                         <button type="submit" class="btn btn-primary btn-sm"
@@ -1026,6 +973,8 @@
             </td>
         </tr>
 
+        
+
     </table>
 
         <div ng-view id=myItemsTable>
@@ -1211,30 +1160,6 @@
             </span>
         </span>
     </span>
-    
-    <table>
-        <tr>
-            <td>
-            <span id="commentForm">
-                <h3> Add a comment about the {{ currentListName }} List. </h3>
-                <form name="myForm3">
-                    <div class="form-group">
-                        <label>Comment</label>
-                        <input type="text" class="form-control" name="comment" ng-model="formData3.comment"
-                             required maxlength="128"
-                            [ngClass]="{'invalid-textbox' :myForm3.submitted && !comment.valid }"
-                            data-toggle="tooltip" title="Add a comment about the List." />
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="addCommentOnList()" 
-                    ng-disabled="!myForm3.comment.$dirty ||
-                    (myForm3.comment.$dirty && myForm3.comment.$invalid)" data-toggle="tooltip"
-                    title="Comment on this List.">Add</button>
-                </form>
-            </span>
-            </td>
-        </tr>
-    </table>
-
     </div>
 
     </div>

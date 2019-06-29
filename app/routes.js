@@ -1183,6 +1183,34 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.post('/api/myListComments', function (req, res) {
+        console.log("routes.js: app.post /api/myListComments");
+        console.log("req.body: " + JSON.stringify(req.body));
+        console.log("req.user: " + JSON.stringify(req.user));
+        //myComment.create({
+          //  name: req.body.name,
+          //  description: req.body.description,
+          //  list: req.body.list,
+          //  owner: req.body.owner
+
+          //  listId
+          //  listName
+          //  listOwner
+          //  ownerEmail
+          //  ownerScreenName
+          //  ownerId
+          //  comment : {
+          //      type: String
+          //  },
+          //  timeStamp
+
+        //}, function (err, myList) {
+          //  if (err)
+            //    res.send(err);
+            ////myListItemCntPlus(req.body.list);
+            //getMyItems(req.body.list, res);
+        //});
+    });
 };
 
 // route middleware to ensure user is logged in

@@ -6,7 +6,6 @@ var GoogleStrategy   = require('passport-google-oauth').OAuth2Strategy;
 
 // load up the user model
 var User       = require('../app/models/user');
-var myLoginRecord       = require('../app/models/myLoginRecord');
 
 // load the auth variables
 var configAuth = require('./auth'); // use this one for testing
@@ -59,25 +58,8 @@ module.exports = function(passport) {
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
 
                 // all is well, return user
-                else {
-                    // recording that this user logged in
-                    // should be able to get time of login from record id timestamp
-                    // but putting timestamp into a field any way
-                    var date = new Date(); 
-                    var myTimeStamp = date.getTime();
-                    var newLoginRecord  = new myLoginRecord();
-                    newLoginRecord.email = email;
-                    newLoginRecord.timeStamp = myTimeStamp;
-                    newLoginRecord.save(function(err) {
-                        if (err) {
-                            return done(err);
-                        } else {
-                        //return done(null, newUser);
-                        return done(null, user);
-                        }
-                    });
-                    //return done(null, user);
-                }
+                else
+                    return done(null, user);
             });
         });
 
@@ -127,25 +109,9 @@ module.exports = function(passport) {
                                 newUser.local.private    = req.body.private;
 
                                 newUser.save(function(err) {
-                                    //if (err) return done(err);
-                                    if (err) {
-                                        return done(err);
-                                    } else {
-                                        var date = new Date(); 
-                                        var myTimeStamp = date.getTime();
-                                        var newLoginRecord  = new myLoginRecord();
-                                        newLoginRecord.email = email;
-                                        newLoginRecord.timeStamp = myTimeStamp;
-                                        newLoginRecord.save(function(err) {
-                                            if (err) {
-                                                return done(err);
-                                            } else {
-                                                return done(null, newUser);
-                                                //return done(null, user);
-                                            }
-                                        });
-                                    };    
-                                    //return done(null, newUser);
+                                    if (err) return done(err);
+
+                                    return done(null, newUser);
                                 });
                             }
                         });

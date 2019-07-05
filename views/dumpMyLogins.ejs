@@ -1,0 +1,563 @@
+<!doctype html>
+<html ng-app="scotchTodo" lang="en">
+
+<head X-Content-Type-Options: nosniff>
+    <!-- SPELLS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <!-- ??? Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/" />
+
+    <script>
+        angular.module('myListsController', [])
+
+            .controller('mainController', ['$scope', '$http', 'myLists', function ($scope, $http, myLists) {
+                console.log("myAdminLists.ejs: myListsController mainController reached");
+                $scope.formData = {};
+                $scope.loading = true;
+                $scope.myListsTableParams = {};
+                var userEmail = "<%= user.local.email %>";
+                $("#listnametaken").hide();
+                $("#itemnametaken").hide();
+                $("#myItemsTable").hide();
+                $("#addItemForm").hide();
+
+                $("#addListForm").hide();
+
+                // GET =====================================================================
+                //myLists.getAllComments(userEmail)
+                  //  .success(function (data) {
+                    //    console.log("myComments.ejs: mainController myLists.getAllComments success");
+                    //    $scope.myComments = data;
+                    //    $scope.loading = false;
+                    //    $("#listnametaken").hide();
+                    //    $("#itemnametaken").hide();
+                    //    $("#myItemsTable").hide();
+                    //    $("#addItemForm").hide();
+                    //    //$("myUserList3x").hide();
+                    //    $("#myCommentsTable").show();
+                    //    $("#myLoginsTable").hide();
+                    //    //$("myListTable").hide();
+                    //});
+
+                myLists.getAllLogins(userEmail)
+                    .success(function (data) {
+                        console.log("myLogins.ejs: mainController myLists.getAllLogins success");
+                        $scope.myLogins = data;
+                        $scope.loading = false;
+                        $("#listnametaken").hide();
+                        $("#itemnametaken").hide();
+                        $("#myItemsTable").show();
+                        $("#addItemForm").hide();
+                        $("#myCommentsTable").hide();
+                        $("#myLoginsTable").show();
+                    });
+
+                //myLists.getAllItemRanks(userEmail)
+                  //  .success(function (data) {
+                    //    console.log("myAdminLists.ejs: mainController myLists.get success");
+                    //    $scope.myItemRanks = data;
+                    //    $scope.loading = false;
+                    //    $("#listnametaken").hide();
+                    //    $("#itemnametaken").hide();
+                    //    $("#myItemsTable").show();
+                    //    $("#addItemForm").hide();
+                    //});
+                
+                myLists.getAllGrps()
+                    .success(function (grpdata) {
+                        console.log("myAdminLists.ejs: mainController myLists.getAllGrps success");
+                        $scope.myGrps = grpdata;
+                        $scope.myGrps.unshift("Everyone" , "Just Me");
+                        console.log("myAdminLists.ejs: myLists.getAllGrps: $scope.myGrps: " + JSON.stringify($scope.myGrps));
+                        for (var i = 0; i < $scope.myGrps.length; i++) {
+                            console.log("$scope.myGrps[i] = " + $scope.myGrps[i]);
+                        }
+                });
+
+                // CREATE ==================================================================
+                $scope.createMyList = function () {
+                    console.log("myAdminLists.ejs:  mainController createMyList ");
+                    if ($scope.formData.name != undefined) {
+                        $scope.loading = true;
+                        $scope.formData.owner = userEmail;
+                        console.log("myAdminLists.ejs: $scope.formData: " + JSON.stringify($scope.formData));
+                        myLists.create($scope.formData)
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myAdminLists.ejs: createMyList ERROR data: " + JSON.stringify(data));
+                                console.log("myAdminLists.ejs: createMyList ERROR data.message: " + data.message);
+                                message = data.message;
+                                $("#listnametaken").show();
+
+                            })
+                            .success(function (data) {
+                                $scope.loading = false;
+                                $scope.formData = {}; // clear the form so our user is ready to enter another
+                                $scope.myLists = data; // 
+                                $("#listnametaken").hide();
+                                console.log("myAdminLists.ejs: createMyList $scope.myLists: " + JSON.stringify($scope.myLists));
+                            });
+                    }
+                };
+
+                $scope.deleteMyList = function (id) {
+                    console.log("myAdminLists.ejs:  mainController deleteMyList id: " + id);
+                    //$scope.loading = true;
+
+                    if (confirm('Are you sure you want to delete this list ?') == true) {
+                        console.log(" yes delete");
+                        $scope.loading = true;
+                        myLists.delMyList(id)
+                            .success(function (data) {
+                                $scope.loading = false;
+                                $scope.formData = {}; // clear the form so our user is ready to enter another
+                                $scope.myLists = data; // 
+                                $("#listnametaken").hide();
+                                $("#itemnametaken").hide();
+                                $("#myItemsTable").hide();
+                                $("#addItemForm").hide();
+                            });
+                    } else {
+                        console.log(" No delete");
+                    }
+                };
+
+                $scope.itemsOfList = function (listName) {
+                    console.log("myAdminLists.ejs:  mainController itemsOfList listName: " + listName);
+                    $("#addListForm").hide();
+                    $scope.currentListName = listName;
+                    myLists.getItems(listName)
+                        .success(function (data) {
+                            $scope.loading = false;
+                            $scope.formData = {}; // clear the form so our user is ready to enter another
+                            $scope.myItems = data; // 
+                            $("#listnametaken").hide();
+                            $("#itemnametaken").hide();
+                            $("#myItemsTable").show();
+                            $("#addItemForm").show();
+                        });
+                };
+
+                $scope.createMyItem = function () {
+                    console.log("myAdminLists.ejs:  mainController createMyItem ");
+                    if ($scope.formItemData.name != undefined) {
+                        if (checkForDupItem()) {
+                            $("#itemnametaken").show();
+                            return;
+                        }
+                        $scope.loading = true;
+                        $scope.formItemData.list = $scope.currentListName;
+                        $scope.formItemData.owner = userEmail;
+                        console.log("myAdminLists.ejs: $scope.formItemData: " + JSON.stringify($scope.formItemData));
+                        myLists.createItem($scope.formItemData)
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myAdminLists.ejs: createMyItem ERROR data: " + JSON.stringify(data));
+                                console.log("myAdminLists.ejs: createMyItem ERROR data.message: " + data.message);
+                                //messageItem = data.message;
+                                $("#itemnametaken").show();
+                            })
+                            .success(function (data) {
+                                //$scope.loading = false;
+                                $scope.formItemData = {}; // clear the form so our user is ready to enter another
+                                $scope.myItems = data; // 
+
+                                myLists.get(userEmail)
+                                    .success(function (dataX) {
+                                    //console.log("myAdminLists.ejs: mainController myLists.get success");
+                                    $scope.myLists = dataX;
+                                    $scope.loading = false;
+                                    $("#itemnametaken").hide();
+                                    //console.log("myAdminLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
+                                });
+                            });
+                    };
+                };
+                
+                $scope.myRemoveItem = function (id) {
+                    console.log("myAdminLists.ejs:  mainController myRemoveItem ");
+                    if(confirm("Really remove this item from the list?")) { 
+                        console.log(" yes delete");
+                        $scope.loading = true;
+                        myLists.deleteItem({ "listName" : $scope.currentListName, "id" : id })
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myAdminLists.ejs: myRemoveItem ERROR data: " + JSON.stringify(data));
+                                console.log("myAdminLists.ejs: myRemoveItem ERROR data.message: " + data.message);
+                                //messageItem = data.message;
+                                $("#itemnametaken").show(); // FIX this
+                            })
+				            .success(function(data) {
+					            //$scope.loading = false;
+                                $scope.myItems = data; // 
+                                $("#itemnametaken").hide();
+                                console.log("myAdminLists.ejs: createMyItem $scope.myItems: " + JSON.stringify($scope.myItems));
+
+                                myLists.get(userEmail)
+                                    .success(function (dataX) {
+                                    $scope.myLists = dataX;
+                                    $scope.loading = false;
+                                });
+				        });
+                    }; 
+		        };
+
+                $scope.myEditItem = function () {
+                    console.log("myAdminLists.ejs:  mainController myEditItem ");
+                    alert("Not yet implemented!");
+                    //if(confirm("Not yet implemented")) {   
+                      //  console.log("Yes"); 
+                    //} else {
+                      //  console.log("No");
+                    //}
+                };
+
+                function checkForDupItem() {
+                    for (var i = 0; i < $scope.myItems.length; i++ ) {
+                        if ($scope.myItems[i].name == $scope.formItemData.name) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }]);
+    </script>
+
+    <script>
+        angular.module('myListsService', [])
+
+            .factory('myLists', ['$http', function ($http) {
+                return {
+                    get: function (owner) {
+                        console.log("myAdminLists.ejs: service myLists get");
+                        return $http.get('/api/dumpMyLists');
+                    },
+                    getAllItems: function (owner) {
+                        console.log("dumpMyItms.ejs: service myLists getAllItems");
+                        return $http.get('/api/dumpMyItems');
+                    },
+                    getAllItemRanks: function (owner) {
+                        console.log("dumpMyItemRanks.ejs: service myLists getAllItemRanks");
+                        return $http.get('/api/dumpMyItemRanks');
+                    },
+                    getAllComments: function (owner) {
+                        console.log("dumpMyCommentss.ejs: service myLists getAllComments");
+                        return $http.get('/api/dumpMyComments');
+                    },
+                    getAllLogins: function (owner) {
+                        console.log("dumpMyLogins.ejs: service myLists getAllLogins");
+                        return $http.get('/api/dumpMyLogins');
+                    },
+                    create: function (Data) {
+                        console.log("myAdminLists.ejs: service myLists create");
+                        return $http.post('/api/myAdminLists', Data);
+                    },
+                    delete: function (id) {
+                        console.log("myAdminLists.ejs: service myLists delete");
+                        return $http.delete('/api/myLists/' + id);
+                    },
+                    delMyList: function (id) {
+                        console.log("myAdminLists.ejs: service myLists delMyList");
+                        return $http.delete('/api/myLists/' + id);
+                    },
+                    change: function (id) {
+                        console.log("myAdminLists.ejs: service myLists change");
+                        return $http.get('/api/myLists/' + id);
+                    },
+                    getItems: function (listName) {
+                        console.log("myAdminLists.ejs: service myLists getItems");
+                        return $http.get('/api/myAdminItems' + listName);
+                    },
+                    createItem: function (Data) {
+                        console.log("myAdminLists.ejs: service myLists createItem");
+                        return $http.post('/api/myAdminItems', Data);
+                    },
+                    deleteItem: function (Data) {
+                        console.log("myAdminLists.ejs: service myLists deleteItem");
+                        return $http.post('/api/myItemsRemove' , Data); // + {"listName" : listName, "id" : id});
+                    },
+                    getAllGrps: function () {
+                        console.log("myAdminLists.ejs: service myLists getAllGrps");
+                        return $http.get('/api/getAllMyGrps');
+                    }
+                }
+            }]);
+    </script>
+
+    <script>
+        angular.module('scotchTodo', ['myListsController', 'myListsService', 'angular.filter']);
+    </script>
+    <title>Top 10 Lists</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+    <style>
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body class="bg-secondary text-white">
+    <div id='mainx' class="container-fluid">
+        <% include myNavBar %>
+        <div ng-viewx>
+            <h3><span class="fa fa-sign-in"></span> Dump My Items - Under Development</h3>
+            <div ng-controller="mainController">
+                <div class="container">
+                    <table>
+                        <tr>
+                            <td>
+                                <!-- span id="myListTable" -->
+                                <div ng-viewyvx id=myUserList3x>
+                                    <div class="text-centerx">
+                                        <h3>Number of Lists: <span
+                                                class="labelx label-infox">({{ myLists.length }})</span>
+                                        </h3>
+                                    </div>
+                                    <div id="myLists-listx">
+                                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                                        <div>
+                                            <table ng-table="myListsTableParams" border="1" cellspacing="0"
+                                                cellpadding="4">
+                                                <tr>
+                                                    <th>name</th>
+                                                    <th>description</th>
+                                                    <th>totalVotes</th>
+                                                    <th>userVotes</th>
+                                                    <th>itemCnt</th>
+                                                    <th>vote</th>
+                                                    <th>suggestion</th>
+                                                    <th>rank</th>
+                                                    <th>edit</th>
+                                                    <th>view</th>
+                                                    <th>grp</th>
+                                                    <th>private</th>
+                                                    <th>owner</th>
+                                                    <th>Operations</th>
+                                                </tr>
+                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists">
+
+                            <td>{{ aList.name }}</td>
+                            <td>{{ aList.description }}</td>
+                            <td>{{ aList.totalVotes }}</td>
+                            <td>{{ aList.userVotes }}</td>
+                            <td>{{ aList.itemCnt }}</td>
+                            <td>{{ aList.vote }}</td>
+                            <td>{{ aList.suggestion }}</td>
+                            <td>{{ aList.rank }}</td>
+                            <td>{{ aList.edit }}</td>
+                            <td>{{ aList.view }}</td>
+                            <td>{{ aList.grp }}</td>
+                            <td>{{ aList.private }}</td>
+                            <td>{{ aList.owner }}</td>
+                            <td>
+                                <button type="submit" class="btn btn-primary btn-sm"
+                                    ng-click="itemsOfList(aList.name)">Items</button>
+                                <span ng-if="aList.itemCnt == '0' ||  aList.itemCnt == '-1' || aList.itemCnt == '-2' ">
+                                    <button type="submit" class="btn btn-primary btn-sm"
+                                    ng-click="deleteMyList(aList._id)">Delete</button>
+                                </span>
+                            </td>
+                            </tbody>
+                            <p class="text-center" ng-show="loading">
+                                <span class="fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                    </table>
+                </div>
+            </div>
+            </td>
+            <td>
+        </div>
+        <!-- /span -->
+        
+        <span id="addListForm">
+
+            <h3> Create a new List: </h3>
+            <div class="alert alert-danger" id="listnametaken">List Name already taken!</div>
+
+            <% if (message.length > 0) { %>
+            <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+
+            <form name="myForm">
+                <div class="form-group">
+                    <label>List Name</label>
+                    <input type="text" class="form-control" name="name" ng-model="formData.name" required
+                        placeholder="List Name" maxlength="32"
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
+                        title="Enter the List name. Must be unique." />
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" name="description" ng-model="formData.description"
+                        placeholder="Describe this List" required maxlength="128"
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !description.valid }" data-toggle="tooltip"
+                        title="Describe the List." />
+                </div>
+                <div class="form-group">
+                    <label>Who can see this List</label>
+                    <select class="form-control" name="grp" ng-model="formData.grp"
+                    ng-options="grp for grp in myGrps"
+                        placeholder="Select Group" required 
+                        [ngClass]="{'invalid-textbox' :myForm.submitted && !grp.valid }" data-toggle="tooltip"
+                        title="Enter the Group that can see this List." >
+                    </select>
+                    
+                </div>
+                <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
+                <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyList()"
+                    ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || !myForm.grp.$dirty || 
+                     (myForm.name.$dirty && myForm.name.$invalid) || (myForm.description.$dirty && myForm.description.$invalid) 
+                     || (myForm.grp.$dirty && myForm.grp.$invalid)" 
+                     data-toggle="tooltip" title="Add this new List!">Add</button>
+
+            </form>
+        </span>
+        </td>
+        </tr>
+        </table>
+
+    <div ng-viewyvx id=myItemsTable>
+        <div class="text-centerx">
+            <p>Number of Items in List ({{ currentListName }}): <span class="labelx label-infox">{{ myItemRanks.length }}</span></p>
+        </div>
+            <div>
+                <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
+                    <tr>
+                        <th>email</th>
+                        <th>itemId</th>
+                        <th>itemName</th>
+                        <th>listName</th>
+                        <th>rank</th>
+                        <th>Operations</th>
+                    </tr>
+                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItemRanks">
+
+<td>{{ aItem.email }}</td>
+<td>{{ aItem.itemId }}</td>
+<td>{{ aItem.itemName }}</td>
+<td>{{ aItem.listName }}</td>
+<td>{{ aItem.rank }}</td>
+
+<td>
+    <button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">Edit</button>
+    <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">Remove</button>
+</td>
+</tbody>
+<p class="text-center" ng-show="loading">
+    <span class="fa fa-spinner fa-spin fa-3x"></span>
+</p>
+</table>
+</div>
+</div>
+
+<div ng-viewyvx id=myCommentsTable>
+    <div class="text-centerx">
+        <p>Number of Comments: <span class="labelx label-infox">{{ myComments.length }}</span></p>
+    </div>
+        <div>
+            <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
+                <tr>
+                    <th>listName</th>
+                    <th>listOwner</th>
+                    <th>ownerEmail</th>
+                    <th>ownerScreenName</th>
+                    <th>comment</th>
+                    <th>timeStamp</th>
+                    <th>Operations</th>
+                </tr>
+                <tbody class="problemcheckboxx" ng-repeat="aItem in myComments">
+
+<td>{{ aItem.listName }}</td>
+<td>{{ aItem.listOwner }}</td>
+<td>{{ aItem.ownerEmail }}</td>
+<td>{{ aItem.ownerScreenName }}</td>
+<td>{{ aItem.comment }}</td>
+<td>{{ aItem.timeStamp }}</td>
+<td>
+<button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">xEdit</button>
+<button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">xRemove</button>
+</td>
+</tbody>
+<p class="text-center" ng-show="loading">
+<span class="fa fa-spinner fa-spin fa-3x"></span>
+</p>
+</table>
+</div>
+</div>
+
+<div ng-viewyvx id=myLoginsTable>
+    <div class="text-centerx">
+        <p>Number of Logins: <span class="labelx label-infox">{{ myLogins.length }}</span></p>
+    </div>
+        <div>
+            <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
+                <tr>
+                    <th>email</th>
+                    <th>timeStamp</th>
+                    <th>Operations</th>
+                </tr>
+                <tbody class="problemcheckboxx" ng-repeat="aItem in myLogins">
+
+<td>{{ aItem.email }}</td>
+<td>{{ aItem.timeStamp }}</td>
+<td>
+<button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">xEdit</button>
+<button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">xRemove</button>
+</td>
+</tbody>
+<p class="text-center" ng-show="loading">
+<span class="fa fa-spinner fa-spin fa-3x"></span>
+</p>
+</table>
+</div>
+</div>
+
+<span id="addItemForm">
+    <h3> Create a new Item: </h3>
+    <div class="alert alert-danger" id="itemnametaken">Item Name already taken!</div>
+
+    <form name="myItemForm">
+        <div class="form-group">
+            <label>Item Name</label>
+            <input type="text" class="form-control" name="name" ng-model="formItemData.name" required
+                placeholder="Item Name" maxlength="32"
+                [ngClass]="{'invalid-textbox' :myItemForm.submitted && !name.valid }" data-toggle="tooltip"
+                title="Enter the Item name. Must be unique.">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" class="form-control" name="description" ng-model="formItemData.description"
+                placeholder="Describe this Item" required maxlength="128"
+                [ngClass]="{'invalid-textbox' :myItemForm.submitted && !description.detail }" data-toggle="tooltip"
+                title="Describe the Item.">
+        </div>
+        <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
+        <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyItem()"
+            ng-disabled="!myItemForm.name.$dirty || !myItemForm.description.$dirty || 
+             (myItemForm.name.$dirty && myItemForm.name.$invalid) || 
+             (myItemForm.description.$dirty && myItemForm.description.$invalid) " 
+             data-toggle="tooltip" title="Add this new Item!">Add</button>
+
+    </form>
+</span>
+
+    </div>
+    </div>
+
+</body>
+
+</html>

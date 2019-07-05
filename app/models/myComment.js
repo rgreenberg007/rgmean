@@ -3,6 +3,10 @@ var mongoose = require('mongoose');
 // ownerEmail, ownerScreenName, ownerId - attributes of the user that created the comment
 // comment - the comment itself
 // timestamp - timestamp when the comment was created
+//   let mongoose = require('mongoose')
+//   let id = mongoose.Types.ObjectId(<Your document _id>)
+//   console.log(id.getTimestamp())
+// collection.insert({ "date": datetime.now() } 
 var userSchema = mongoose.Schema({
     listId: {
         type: String
@@ -26,7 +30,7 @@ var userSchema = mongoose.Schema({
         type: String
     },
     timeStamp : {
-        type: String
+        type: Date
     }
 });
 

@@ -13,6 +13,8 @@ var userGrpDetail = require('./models/userGrpDetail');
 var myList = require('./models/myList');
 var myItem = require('./models/myItem');
 var myItemRank = require('./models/myItemRank');
+var myComment = require('./models/myComment');
+var myLogin = require('./models/myLoginRecord');
 
 module.exports = function(app, passport) {
 
@@ -142,6 +144,24 @@ module.exports = function(app, passport) {
         console.log("routes.js /myAdminLists reached.")
         failureFlash : true;
         res.render('myAdminLists.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/dumpMyComments', isLoggedIn, function(req, res) {
+        console.log("routes.js /dumpMyComments reached.")
+        failureFlash : true;
+        res.render('dumpMyComments.ejs', {
+            user : req.user,
+            message: "" //req.flash('grpsDetailsMessage')
+        });
+    });
+
+    app.get('/dumpMyLogins', isLoggedIn, function(req, res) {
+        console.log("routes.js /dumpMyLogins reached.")
+        failureFlash : true;
+        res.render('dumpMyLogins.ejs', {
             user : req.user,
             message: "" //req.flash('grpsDetailsMessage')
         });
@@ -649,6 +669,16 @@ module.exports = function(app, passport) {
     app.get('/api/myAdminLists', function (req, res) {
         console.log("routes.js get /api/myAdminLists " + JSON.stringify(req.params));
         getMyAdminLists(res);
+    });
+
+    app.get('/api/dumpMyComments', function (req, res) {
+        console.log("routes.js get /api/dumpMyComments " + JSON.stringify(req.params));
+        getDumpMyComments(res);
+    });
+    
+    app.get('/api/dumpMyLogins', function (req, res) {
+        console.log("routes.js get /api/dumpMyLogins " + JSON.stringify(req.params));
+        getDumpMyLogins(res);
     });
 
     app.get('/api/dumpMyItemRanks', function (req, res) {
@@ -1183,33 +1213,71 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.post('/api/myDeleteComment', function (req, res) {
+        console.log("routes.js delete /api/myListComments/:id " + JSON.stringify(req.params));
+        console.log("routes.js delete /api/myListComments/:id req.body: " + JSON.stringify(req.body));
+        myComment.remove({
+            _id: req.body._id
+        }, function (err, myComments) {
+            if (err) {
+                res.send(err);
+            } else {
+                myComment.find(function (err, myComments) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(myComments); 
+                }).sort({timeStamp : 1}).where({listId : req.body.listId});
+            }
+        });
+    });
+
+    app.post('/api/myGetComments', function (req, res) {
+        console.log("routes.js: app.post /api/myGetComments");
+        console.log("req.body: " + JSON.stringify(req.body));
+        console.log("req.user: " + JSON.stringify(req.user));
+        myComment.find(function (err, myComments) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(myComments); 
+        }).sort({timeStamp : 1}).where({listId : req.body.listId});
+    });
+
     app.post('/api/myListComments', function (req, res) {
         console.log("routes.js: app.post /api/myListComments");
         console.log("req.body: " + JSON.stringify(req.body));
         console.log("req.user: " + JSON.stringify(req.user));
-        //myComment.create({
-          //  name: req.body.name,
-          //  description: req.body.description,
-          //  list: req.body.list,
-          //  owner: req.body.owner
-
-          //  listId
-          //  listName
-          //  listOwner
-          //  ownerEmail
-          //  ownerScreenName
-          //  ownerId
-          //  comment : {
-          //      type: String
-          //  },
-          //  timeStamp
-
-        //}, function (err, myList) {
-          //  if (err)
-            //    res.send(err);
+        var date = new Date(); 
+        var timestamp = date.getTime();
+        myComment.create({
+            listId: req.body.listId,
+            listName: req.body.listName,
+            listOwner: req.body.listOwner,
+            ownerEmail: req.body.owner,
+            ownerScreenName: req.body.screenName,
+            ownerId: req.body.userId,
+            comment: req.body.comment,
+            timeStamp: timestamp
+        }, function (err, myList) {
+            if (err) {
+                res.send(err);
+            } else {
             ////myListItemCntPlus(req.body.list);
             //getMyItems(req.body.list, res);
-        //});
+
+            // really return list of all comment for this list in timestamp order
+             // call function for this and use this function in the get for this also.
+             // and after any delete or remove of comments.
+              //  return;
+                myComment.find(function (err, myComments) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    res.json(myComments); 
+                }).sort({timeStamp : 1}).where({listId : req.body.listId});
+            };
+        });
     });
 };
 
@@ -1590,6 +1658,24 @@ function getMyAdminLists(res) {
             res.send(err);
         }
         res.json(myLists); 
+    });
+};
+
+function getDumpMyComments(res) {
+    myComment.find(function (err, myComments) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myComments); 
+    });
+};
+
+function getDumpMyLogins(res) {
+    myLogin.find(function (err, myLogins) {
+        if (err) {
+            res.send(err);
+        }
+        res.json(myLogins); 
     });
 };
 

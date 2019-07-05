@@ -30,6 +30,7 @@
                 //console.log("myPublicLists.ejs: $http: " + $http);
                 //console.log("myPublicLists.ejs: $scope: " + $scope);
                 $scope.formData = {};
+                $scope.formData3 = {};
                 $scope.loading = true;
                 $scope.myListsTableParams = {};
                 $scope.myPublicGrps = [];
@@ -40,12 +41,20 @@
 
                 $scope.currentPage = 0;
                 $scope.currentPage2 = 0;
+                $scope.currentPage3 = 0;
                 $scope.pageSize = 10;
                 $scope.pageSize2 = 10;
+                $scope.pageSize3 = 10;
                 $scope.q = '';
                 $scope.q2 = '';
+                $scope.q3 = '';
                 $scope.myLists = [];
                 $scope.myItems = [];
+                $scope.myComments = [];
+                $scope.myCommentsMyLen = 0;
+                $scope.buttonCommentFormText = "Show Comments";
+                $("#commentForm").hide();
+                //$("#showMyCommentsPaging").hide();
 
                 // GET =====================================================================
                 myLists.get()
@@ -107,6 +116,29 @@
                     console.log("$scope.$watch(q2) reached");
                     if (oldValue != newValue) {
                         $scope.currentPage2 = 0;
+                    }
+                }, true
+                );
+
+                $scope.getData3 = function () {
+                    //return $filter('filter')($scope.data, $scope.q)
+                    return $filter('filter')($scope.myComments, $scope.q3)
+                };
+
+                $scope.myNumberOfPages3 = function (a, b) {
+                    return Math.ceil(a / b);
+                };
+
+                $scope.numberOfPages3 = function () {
+                    console.log("$scope.numberOfPages3 $scope.getData3().length: " + $scope.getData3().length +
+                        " $scope.pageSize3: " + $scope.pageSize3);
+                    return Math.ceil($scope.getData3().length / $scope.pageSize3);
+                };
+
+                $scope.$watch('q3', function (newValue, oldValue) {
+                    console.log("$scope.$watch(q3) reached");
+                    if (oldValue != newValue) {
+                        $scope.currentPage3 = 0;
                     }
                 }, true
                 );
@@ -178,6 +210,43 @@
                             $("#addItemForm").show();
                         });
                 }
+
+                $scope.itemsOfList3 = function (myList) { // listName, editGrp, myOwner) {
+                    var listName = myList.name;
+                    var editGrp = myList.edit;
+                    var myOwner = myList.owner;
+                    var myListId = myList._id;
+                    $scope.editGrp = myList.edit;
+                    $scope.rankGrp = myList.rank;
+                    $scope.currentListOwner = myOwner;
+                    $scope.currentListId = myListId;
+                    console.log("myLists.ejs:  mainController itemsOfList3 listName: " + listName +
+                        " editGrp: " + editGrp + " myOwner (list): " + myOwner + " myListId " + myListId);
+                    $("#addListForm").hide();
+                    $("#modListForm").hide();
+                    $scope.currentListName = listName;
+                    //$scope.allowEdit = false;
+                    //if ($scope.inMyGroups(editGrp) || $scope.isMyOwner(myOwner)) {
+                    //    $scope.allowEdit = true;
+                    //}
+                    //console.log("myLists.ejs:  mainController itemsOfList3 $scope.allowEdit: " + $scope.allowEdit);
+                    myLists.getItems(listName)
+                        .success(function (data) {
+                            $scope.loading = false;
+                            $scope.formData = {}; // clear the form so our user is ready to enter another
+                            $scope.myItems = data; // 
+                            $("#listnametaken").hide();
+                            //$("#itemnametaken").hide();
+                            $scope.myItemNameTaken = false;
+                            $("#myListsTable").hide();
+                            $("#myItemsTable").show();
+                            //$("#commentForm").show();
+                            $("#commentForm").hide();
+                            //if ($scope.allowEdit) {
+                              //  $("#addItemForm").show();  
+                            //};
+                        });
+                };
 
                 $scope.itemsOfList = function (listName) {
                     console.log("myLists.ejs:  mainController itemsOfList listName: " + listName);
@@ -253,6 +322,59 @@
                     //return true;
                 };
 
+                $scope.backToList = function () {
+                    //$scope.myItems2 = [];
+                    $scope.buttonCommentFormText = "Show/Add Comments";
+                    $("#myListsTable").show();
+                    //$("#addListForm").hide();
+                    //$("#modListForm").hide();
+                    $("#myItemsTable").hide();
+                    $("#commentForm").hide();   
+                    //$("#addItemForm").hide();
+                };
+
+                $scope.showCommentForm = function () {
+                    if ($scope.buttonCommentFormText == "Hide Comments") {
+                        //$("#addItemForm").show();
+                        $scope.buttonCommentFormText = "Show Comments";
+                        $("#commentForm").hide();
+                    } else {
+                        // get all comments for this list in timestamp order to update display.
+                        //$scope.formData3.userId = "<!-- %= user._id % -->";
+                        $scope.formData3.listName = $scope.currentListName;
+                        //$scope.formData3.owner = userEmail;
+                        //$scope.formData3.screenName = "<!-- %= user.local.screenName % -->";
+                        //$scope.formData3.listOwner = $scope.currentListOwner;
+                        $scope.formData3.listId = $scope.currentListId; 
+                        myLists.getComments($scope.formData3)
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("myLists.ejs:  ERROR data: " + JSON.stringify(data));
+                                console.log("myLists.ejs:  ERROR data.message: " + data.message);
+                                //    //message = data.message;
+                                //    //$("#listnametaken").show();
+                                })
+                            .success(function (data) {
+                                $scope.loading = false;
+                                //    console.log("myLists.ejs: get comments success data: " + JSON.stringify(data));
+                                $scope.myComments = data; //
+                                //$scope.myCommentsMyLen = data.length;
+                                //if (data.length > 5) {
+                                    //$("#showMyCommentsPaging").show();
+                                //} else {
+                                    //$("#showMyCommentsPaging").hide();
+                                //}
+                            });
+                        //$("#addItemForm").hide();
+                        $scope.buttonCommentFormText = "Hide Comments";
+                        $("#commentForm").show();
+                    }
+                };
+
+                $scope.myGetDateFromTimeStamp = function (myTime) {
+                    return myTime.substring(0,10);
+                };
+
             }]);
 
         app.filter('startFrom', function () {
@@ -298,6 +420,10 @@
                     getAllPublicGrps: function () {
                         console.log("myAdminLists.ejs: service myLists getAllPublicGrps");
                         return $http.get('/api/getAllPublicGrps');
+                    },
+                    getComments: function (Data) {
+                        console.log("myLists.ejs: service myLists getComments");
+                        return $http.post('/api/myGetComments', Data);
                     }
                 }
             }]);
@@ -363,7 +489,7 @@
                             <td>
                                 <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
                                 <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="itemsOfList2(aList.name, aList.edit, aList.rank)">Items</button>
+                                    ng-click="itemsOfList3(aList)">Items</button>
                             </td>
                             </tbody>
                             <p class="text-center" ng-show="loading">
@@ -407,11 +533,23 @@
         </table>
 
         <div ng-viewyvx id=myItemsTable>
+            <span ng-if="myItems.length == 0 && myItems2 == undefined">
+                <h3><span class="fa "></span>{{ currentListName }}: Contains no Items.
+                    <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
+                    ng-click="backToList()">Go Back</button>
+                </h3>
+            </span>
+            <span ng-if="myItems.length > 0 ">
             <div class="text-centerx">
                 <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
                         {{ myItems.length }})</span>
-                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to
-                        List</button></h3>
+                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()" data-toggle="tooltip"
+                    title="Select to make a link copy and then paste.">Copy Link to List</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id=buttonCommentForm
+                        ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
+                        ng-click="backToList()">Go Back</button>
+                </h3>
                 <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' ">
                     <p> Join the group: {{ editGrp }}, to Edit this List</p>
                 </span>
@@ -456,7 +594,6 @@
                     <td>&nbsp;&nbsp;</td>
                     <td>
                         Set Rows per Page
-                        <!-- input ng-model="q2" id="search" class="form-control" placeholder="Set Rows per Page" / -->
                     </td>
                     <td>
                         <select ng-model="pageSize2" id="pageSize2" class="form-control btn btn-primary btn-sm">
@@ -467,10 +604,72 @@
                             <option value="25">25</option>
                         </select>
                     </td>
-
                 </tr>
             </table>
+            </span>
         </div>
+    
+        <table>
+                <tr>
+                    <td>
+                    <span id="commentForm">
+                        <p>&nbsp;</p>
+                        <span ng-if="0 >= myComments.length">
+                            <p>No comments on this List, yet.  </p>
+                        </span>
+                        <span ng-if="myComments.length > 0">
+                        <table ng-table="myItemsTable2Params" border="1" cellspacing="0" cellpadding="4">
+                            <tr>
+                                <th>Comment</th>
+                                <th>By</th>
+                                <th>When</th>
+                            </tr>
+                            <tbody class="tableWithItemsToOrder" id="tableWithItemsToOrder" 
+                            ng-repeat="comment in myComments | filter:q3 | startFrom:currentPage3*pageSize3 
+                            | limitTo:pageSize3">
+                                <tr>
+                                    <td>{{ comment.comment }}</td>
+                                    <td>{{ comment.ownerScreenName }}</td>
+                                    <td>{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+        
+                        <!-- span ng-if="myCommentsMyLen > 5" -->
+                        <!-- span id="showMyCommentsPaging" -->
+                        <!-- span ng-if="myNumberOfPages3(getData3().length, pageSize3 ) > 5" -->
+                        <table>
+                            <tr>&nbsp;</tr>
+                            <tr>
+                                <td>
+                                    <button ng-disabled="currentPage3 == 0" ng-click="currentPage3=currentPage3-1"
+                                    class="btn btn-primary btn-sm">Previous</button>
+                                    {{currentPage3+1}}/{{myNumberOfPages3(getData3().length, pageSize3 )}}
+                                    <button ng-disabled="currentPage3 >= getData3().length/pageSize3 - 1"
+                                    ng-click="currentPage3=currentPage3+1" class="btn btn-primary btn-sm">Next</button>
+                                </td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>
+                                    Set Rows per Page
+                                </td>
+                                <td>
+                                    <select ng-model="pageSize3" id="pageSize3" class="form-control btn btn-primary btn-sm">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- /span -->
+                        
+                        </span>
+                    </span>
+                    </td>
+            </table>
     </div>
     </div>
 </body>

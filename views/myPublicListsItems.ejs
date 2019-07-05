@@ -418,8 +418,8 @@
             <div class="text-centerx">
                 <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
                         {{ myItems.length }})</span>
-                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to
-                        List</button></h3>
+                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()" data-toggle="tooltip"
+                    title="Select to make a link copy and then paste.">Copy Link to List</button></h3>
                 <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' ">
                     <p> Join the group: {{ editGrp }}, to Edit this List</p>
                 </span>

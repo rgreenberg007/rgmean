@@ -277,7 +277,7 @@
                     if ($scope.formData2.description != undefined) {
                         $scope.loading = true;
                         $scope.formData2.id = $scope.currentListId;
-                        //$scope.formData2.name = $scope.currentListName;
+                        $scope.formData2.name = $scope.currentListName;
                         $scope.formData2.prevListName = $scope.prevListName;
                         $scope.formData2.owner = $scope.currentListOwner;
                         //$scope.formData.description = $scope.formData.description2;
@@ -344,8 +344,6 @@
                     $scope.currentListRank = myList.rank;
                     $("#myListsTable").hide();
                     $("#modListForm").show();             
-                    $scope.formData2.name = myList.name;
-                    $scope.myForm2.name.$dirty = true;
                     $scope.formData2.description = myList.description;
                     $scope.myForm2.description.$dirty = true;
                     $scope.formData2.view = myList.view;
@@ -1199,13 +1197,13 @@
                     <div class="alert alert-danger"><%= message %></div>
                     <% } %>
                     <form name="myForm2">
-                        <div class="form-group">
+                        <!-- div class="form-group">
                             <label>List Name</label>
-                            <input type="text" class="form-control" name="name" ng-model="formData2.name" required
-                                 maxlength="32"
-                                [ngClass]="{'invalid-textbox' :myForm2.submitted && !name.valid }" data-toggle="tooltip"
+                            <input type="text" class="form-control" name="name" ng-model="formData.name" required
+                                placeholder="List Name" maxlength="32"
+                                [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
                                 title="Enter the List name. Must be unique." />
-                        </div>
+                        </div -->
                         <!-- [ngClass]="{'invalid-textbox' :myForm2.submitted && !description.valid }" -->
                         <div class="form-group">
                             <label>Description</label>
@@ -1241,9 +1239,8 @@
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg" ng-click="modifyMyList()" 
-                            ng-disabled="!myForm2.name.$dirty || !myForm2.description.$dirty || !myForm2.view.$dirty || 
+                            ng-disabled="!myForm2.description.$dirty || !myForm2.view.$dirty || 
                             !myForm2.edit.$dirty || !myForm2.rank.$dirty ||
-                            (myForm2.name.$dirty && myForm2.name.$invalid) ||
                             (myForm2.description.$dirty && myForm2.description.$invalid) ||
                             (myForm2.view.$dirty && myForm2.view.$invalid) || 
                             (myForm2.edit.$dirty && myForm2.edit.$invalid) || 

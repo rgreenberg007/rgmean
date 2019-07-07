@@ -1051,6 +1051,17 @@ module.exports = function(app, passport) {
                     return res.status(500).send(err);
                 }
             } else {
+                console.log("req.body.prevListName: " + req.body.prevListName);
+                if (req.body.name == req.body.prevListName) {
+                    console.log("routes.js: app.post /api/modMyList list name no change");
+                } else {
+                    console.log("routes.js: app.post /api/modMyList list name changed!!");
+                    // update update myItem (list), myItemRank (listName) and MyComment (listName) 
+                    //use old list name to find and replace with new list name
+                    myUpdateMyItemWList(req.body.prevListName, req.body.name);
+                    myUpdateMyItemRankWList(req.body.prevListName, req.body.name);
+                    myUpdateMyCommentWList(req.body.prevListName, req.body.name);
+                };
                 getMyListsOwner(req.body.owner, res);
             }
         });
@@ -1210,6 +1221,30 @@ module.exports = function(app, passport) {
                     }
                 });
             }
+        });
+    });
+
+    app.post('/api/modMyItem', function (req, res) {
+        console.log("routes.js: app.post /api/modMyItem");
+        console.log("req.body: " + JSON.stringify(req.body));
+        myItem.findByIdAndUpdate( req.body.listItemId, {
+            name: req.body.name,
+            description: req.body.description
+        }, function (err, myItem) {
+            if (err) {
+                if (err.name === 'MongoError') {
+                    console.log("Some other error found!");
+                    return res.status(500).send(err);
+                }
+            } else {
+                //myItemRank.findAndModify({
+                  //  query: { itemId : req.body.listItemId },
+                  //  update: { itemName: req.body.name }
+                //});
+                //myItemRank.update({itemId : req.body.listItemId}, {"$set": {"status": "processed" }}, callback);
+                myUpdateItemRank(req.body.listItemId, req.body.name);
+                getMyItems(req.body.list, res);
+            };
         });
     });
 
@@ -1962,6 +1997,86 @@ function myItemRankAddMinus(myItemId, myRank, addOrMinus ) {
                 } } ) ;
         }
     }).where ( { "_id": myItemId } ) ;
+};
+
+function myUpdateItemRank(myItemId, myItemName) {
+    myItemRank.find(function (err, myRankItems) {
+        if (err) {
+            res.send(err);
+            return;
+        } else {
+            console.log("myUpdateItemRank " + JSON.stringify(myRankItems));
+            for (var i = 0; i < myRankItems.length; i++) {
+                myItemRank.findByIdAndUpdate(myRankItems[i]._id, { itemName: myItemName }, function (err, myRankItems) {
+                    if (err) {
+                        console.log("error");
+                        return;
+                    } else {
+                        console.log("no error");
+                    } } ) ;
+            }
+        }
+    }).where ( { "itemId": myItemId } ) ;
+};
+
+function myUpdateMyItemWList(prevListName, newListName) {
+    myItem.find(function (err, myItems) {
+        if (err) {
+            res.send(err);
+            return;
+        } else {
+            console.log("myUpdateMyItemWList " + JSON.stringify(myItems));
+            for (var i = 0; i < myItems.length; i++) {
+                myItem.findByIdAndUpdate(myItems[i]._id, { list: newListName }, function (err, myItems) {
+                    if (err) {
+                        console.log("error");
+                        return;
+                    } else {
+                        console.log("no error");
+                    } } ) ;
+            }
+        }
+    }).where ( { "list" : prevListName } ) ;
+};
+
+function myUpdateMyItemRankWList(prevListName, newListName)  {
+    myItemRank.find(function (err, myRankItems) {
+    if (err) {
+        res.send(err);
+        return;
+    } else {
+        console.log("myUpdateMyItemRankWList " + JSON.stringify(myRankItems));
+        for (var i = 0; i < myRankItems.length; i++) {
+            myItemRank.findByIdAndUpdate(myRankItems[i]._id, { listName: newListName }, function (err, myRankItems) {
+                if (err) {
+                    console.log("error");
+                    return;
+                } else {
+                    console.log("no error");
+                } } ) ;
+        }
+    }
+    }).where ( { "listName" : prevListName } ) ;
+};
+
+function myUpdateMyCommentWList(prevListName, newListName)  {
+    myComment.find(function (err, myComments) {
+    if (err) {
+        res.send(err);
+        return;
+    } else {
+        console.log("myUpdateMyCommentWList " + JSON.stringify(myComments));
+        for (var i = 0; i < myComments.length; i++) {
+            myComment.findByIdAndUpdate(myComments[i]._id, { listName: newListName }, function (err, myComments) {
+                if (err) {
+                    console.log("error");
+                    return;
+                } else {
+                    console.log("no error");
+                } } ) ;
+        }
+    }
+    }).where ( { "listName" : prevListName } ) ;
 };
 
 function myItemRankRemove(myItemId, myListName ) {

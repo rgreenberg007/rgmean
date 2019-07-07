@@ -35,7 +35,6 @@
                 $scope.formData2 = {};
                 $scope.formData3 = {};
                 $scope.formItemData = {};
-                $scope.formModItemData = {};
                 $scope.loading = true;
                 $scope.myListsTableParams = {};
                 $scope.myRankedLists = [];
@@ -56,7 +55,6 @@
                 $("#addListForm").hide();
                 $("#modListForm").hide();
                 $("#commentForm").hide();
-                $("#modItemForm").hide();
 
                 $scope.currentPage = 0;
                 $scope.currentPage2 = 0;
@@ -76,10 +74,6 @@
                 $scope.aboutToShowItems = false;
                 $scope.aboutToShowRank = false;
 
-                $scope.sortListCol = 'name';
-                $scope.sortListReverse = false;
-                $scope.searchList = "again";
-
                 // GET =====================================================================
                 myLists.get(userEmail)
                     .success(function (data) {
@@ -93,7 +87,6 @@
                         $("#commentForm").hide();
                         $("#addListForm").hide();
                         $("#modListForm").hide();
-                        $("#modItemForm").hide();
 
                         $scope.aboutToShowItems = false;
                         $scope.aboutToShowRank = false;
@@ -273,12 +266,10 @@
 
                 $scope.modifyMyList = function () {
                     console.log("myLists.ejs:  mainController modifyMyList ");
-                    console.log("myLists.ejs: $scope.formData2: " + JSON.stringify($scope.formData2));
                     if ($scope.formData2.description != undefined) {
                         $scope.loading = true;
                         $scope.formData2.id = $scope.currentListId;
-                        //$scope.formData2.name = $scope.currentListName;
-                        $scope.formData2.prevListName = $scope.prevListName;
+                        $scope.formData2.name = $scope.currentListName;
                         $scope.formData2.owner = $scope.currentListOwner;
                         //$scope.formData.description = $scope.formData.description2;
                         console.log("myLists.ejs: $scope.formData2: " + JSON.stringify($scope.formData2));
@@ -335,25 +326,20 @@
                     //console.log("myLists.ejs:  mainController showModListForm ");
                     $scope.currentListId = myList._id;
                     $scope.currentListName = myList.name;
-                    $scope.prevListName = myList.name;
                     $scope.currentListDesc = myList.description;
                     $scope.currentListOwner = myList.owner;
                     $scope.currentListPrivate = myList.private;
                     $scope.currentListView = myList.view;
                     $scope.currentListEdit = myList.edit;
                     $scope.currentListRank = myList.rank;
+                    //$scope.formData.view.value = $scope.currentListView;
                     $("#myListsTable").hide();
-                    $("#modListForm").show();             
-                    $scope.formData2.name = myList.name;
-                    $scope.myForm2.name.$dirty = true;
-                    $scope.formData2.description = myList.description;
-                    $scope.myForm2.description.$dirty = true;
-                    $scope.formData2.view = myList.view;
-                    $scope.myForm2.view.$dirty = true;
-                    $scope.formData2.edit = myList.edit;
-                    $scope.myForm2.edit.$dirty = true;
-                    $scope.formData2.rank = myList.rank;
-                    $scope.myForm2.rank.$dirty = true;
+                    $("#modListForm").show();
+                    //$scope.myForm2.description.$dirty = true;
+
+                    //formData2.description.value = "aBC";
+                    //formData2.description.focus();
+                    //formData2.description.select();
                 };
 
                 $scope.backToList = function () {
@@ -596,36 +582,7 @@
                     selBox.select();
                     document.execCommand('copy');
                     document.body.removeChild(selBox);
-                };
-
-                $scope.modifyMyItem = function () {
-                    console.log("myLists.ejs: modifyMyItem $scope.formModItemData: " + JSON.stringify($scope.formModItemData));
-                    $scope.formModItemData.list = $scope.currentListName;
-                    $scope.formModItemData.listItemId = $scope.currentListItemId;
-                    if (checkForDupModItem()) {
-                            return;
-                    };
-                    console.log("myLists.ejs: modifyMyItem $scope.formModItemData: " + JSON.stringify($scope.formModItemData));
-                    myLists.modifyItem($scope.formModItemData)
-                        .error(function (data) {
-                            $scope.loading = false;
-                            console.log("myLists.ejs: modifyMyItem ERROR data: " + JSON.stringify(data));
-                            console.log("myLists.ejs: modifyMyItem ERROR data.message: " + data.message);
-                            message = data.message;
-                            //$("#listnametaken").show();
-                        })
-                        .success(function (data) {
-                            $scope.loading = false;
-                            $scope.formModItemData = {}; // clear the form so our user is ready to enter another
-                            $scope.myItems = data; // 
-                            console.log("myLists.ejs: modifyMyItem $scope.myItems: " + JSON.stringify($scope.myItems));                                $("#addListForm").hide();
-                            
-                            $("#modItemForm").hide();
-                            $("#addItemForm").show();
-                        });
-                    //$("#modItemForm").hide();
-                    //$("#addItemForm").show();
-                };
+                }
 
                 $scope.createMyItem = function () {
                     console.log("myLists.ejs:  mainController createMyItem ");
@@ -739,21 +696,14 @@
                     };
                 };
 
-                $scope.myEditItem = function (myItem) {
-                    console.log("myLists.ejs:  mainController myEditItem myItem: " + JSON.stringify(myItem));
-                    //alert("Not yet implemented!");
+                $scope.myEditItem = function () {
+                    console.log("myLists.ejs:  mainController myEditItem ");
+                    alert("Not yet implemented!");
                     //if(confirm("Not yet implemented")) {   
                     //  console.log("Yes"); 
                     //} else {
                     //  console.log("No");
                     //}
-                    $("#addItemForm").hide();
-                    $("#modItemForm").show();
-                    $scope.currentListItemId = myItem._id;
-                    $scope.formModItemData.name = myItem.name; //"ABC";
-                    $scope.myModItemForm.name.$dirty = true;
-                    $scope.formModItemData.description = myItem.description; //"XYZ";
-                    $scope.myModItemForm.description.$dirty = true;
                 };
 
                 function checkForDupItem() {
@@ -766,18 +716,6 @@
                     $scope.myItemNameTaken = false;
                     return false;
                     //$scope.myItemNameTaken = false;
-                };
-
-                function checkForDupModItem() {
-                    for (var i = 0; i < $scope.myItems.length; i++) {
-                        if ($scope.myItems[i].name == $scope.formModItemData.name &&
-                            $scope.myItems[i]._id != $scope.formModItemData.listItemId) {
-                            $scope.myItemModNameTaken = true;
-                            return true;
-                        };
-                    };
-                    $scope.myItemModNameTaken = false;
-                    return false;
                 };
 
                 $scope.mySelectItem = function (myItem) {
@@ -967,10 +905,6 @@
                     deleteComment: function (Data) {
                         console.log("myLists.ejs: service myLists deleteComment");
                         return $http.post('/api/myDeleteComment', Data);
-                    },
-                    modifyItem: function (Data) {
-                        console.log("myLists.ejs: service myLists modifyItem");
-                        return $http.post('/api/modMyItem', Data);
                     }
                 }
             }]);
@@ -1043,10 +977,8 @@
                                 <!-- th>Vote</th -->    
                                 <th>Items</th>
                             </tr>
-                            <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
-                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" -->
-                            <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy:sortListCol:sortListReverse
-                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" > <!-- | searchList" -->
+                            <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
+                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
                                 <td>{{ aList.name }}</td>
                                 <td>{{ aList.description }}</td>
                                 <td>{{ aList.owner }}</td>
@@ -1086,7 +1018,7 @@
                             </p>
                         </table>
                     </div>
-
+            
                     <table>
                         <tr>&nbsp;</tr>
                         <tr>
@@ -1199,18 +1131,18 @@
                     <div class="alert alert-danger"><%= message %></div>
                     <% } %>
                     <form name="myForm2">
-                        <div class="form-group">
+                        <!-- div class="form-group">
                             <label>List Name</label>
-                            <input type="text" class="form-control" name="name" ng-model="formData2.name" required
-                                 maxlength="32"
-                                [ngClass]="{'invalid-textbox' :myForm2.submitted && !name.valid }" data-toggle="tooltip"
+                            <input type="text" class="form-control" name="name" ng-model="formData.name" required
+                                placeholder="List Name" maxlength="32"
+                                [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
                                 title="Enter the List name. Must be unique." />
-                        </div>
+                        </div -->
                         <!-- [ngClass]="{'invalid-textbox' :myForm2.submitted && !description.valid }" -->
                         <div class="form-group">
                             <label>Description</label>
                             <input type="text" class="form-control" name="description" ng-model="formData2.description"
-                                required maxlength="128" 
+                                required maxlength="128" placeholder={{currentListDesc}} value={{currentListDesc}}
                                 [ngClass]="{'invalid-textbox' :myForm2.submitted && !description.valid }"
                                 data-toggle="tooltip" title="Describe the List." />
                         </div>
@@ -1241,10 +1173,9 @@
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg" ng-click="modifyMyList()" 
-                            ng-disabled="!myForm2.name.$dirty || !myForm2.description.$dirty || !myForm2.view.$dirty || 
+                            ng-disabled="!myForm2.description.$dirty || !myForm2.view.$dirty || 
                             !myForm2.edit.$dirty || !myForm2.rank.$dirty ||
-                            (myForm2.name.$dirty && myForm2.name.$invalid) ||
-                            (myForm2.description.$dirty && myForm2.description.$invalid) ||
+                            (myForm2.description.$dirty && myForm2.description.$invalid) || 
                             (myForm2.view.$dirty && myForm2.view.$invalid) || 
                             (myForm2.edit.$dirty && myForm2.edit.$invalid) || 
                             (myForm2.rank.$dirty && myForm2.rank.$invalid)" data-toggle="tooltip"
@@ -1301,8 +1232,6 @@
                         <th>Points</th>
                         <th>Operations</th>
                     </tr>
-                    <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
-                        | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2" -->
                     <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
                         | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
                         <td>{{ aItem.name }}</td>
@@ -1314,7 +1243,7 @@
                         <td>
                             <span ng-if="myItems2 == undefined && allowEdit">
                                 <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="myEditItem(aItem)">Edit</button>
+                                    ng-click="myEditItem(aItem._id)">Edit</button>
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="myRemoveItem(aItem._id)">Remove</button>
                             </span>
@@ -1330,7 +1259,6 @@
                 </table>
             </div>
 
-            <!-- span ng-if="myItems.length > 5" -->
             <table>
                 <tr>&nbsp;</tr>
                 <tr>
@@ -1358,7 +1286,6 @@
                     </td>
                 </tr>
             </table>
-            <!-- /span -->
 
         </span>
 
@@ -1459,35 +1386,6 @@
                     </span>
                 </div>
             </span>
-        </span>
-
-        <span id="modItemForm">
-            <h3> Modify Item: </h3>
-            <span ng-if="myItemModNameTaken">
-                <div class="alert alert-danger" id="itemmodnametaken">Item Name already taken!</div>
-            </span>
-            <form name="myModItemForm">
-                <div class="form-group">
-                    <label>Item Name</label>
-                    <input type="text" class="form-control" name="name" ng-model="formModItemData.name"
-                        required placeholder="Item Name" maxlength="32"
-                        [ngClass]="{'invalid-textbox' :myModItemForm.submitted && !name.valid }"
-                        data-toggle="tooltip" title="Enter the Item name. Must be unique." />
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <input type="text" class="form-control" name="description"
-                        ng-model="formModItemData.description" placeholder="Describe this Item" required
-                        maxlength="128"
-                        [ngClass]="{'invalid-textbox' :myModItemForm.submitted && !description.detail }"
-                        data-toggle="tooltip" title="Describe the Item." />
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="modifyMyItem()" 
-                    ng-disabled="!myModItemForm.name.$dirty || !myModItemForm.description.$dirty || 
-                    (myModItemForm.name.$dirty && myModItemForm.name.$invalid) || 
-                    (myModItemForm.description.$dirty && myModItemForm.description.$invalid) " data-toggle="tooltip"
-                    title="Modify this Item!">Modify</button>
-            </form>
         </span>
 
         <table>

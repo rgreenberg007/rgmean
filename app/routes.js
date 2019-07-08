@@ -110,6 +110,15 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.get('/testmyPublicLists', isLoggedInDontCare, function(req, res) {
+        console.log("routes.js /testmyPublicLists reached.");
+        failureFlash : true;
+        res.render('testmyPublicLists.ejs', {
+            user : req.user,
+            message: "" 
+        });
+    });
+
     app.get('/myPublicLists', isLoggedInDontCare, function(req, res) {
         console.log("routes.js /myPublicLists reached.");
         failureFlash : true;

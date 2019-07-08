@@ -306,7 +306,7 @@
                 $scope.deleteMyList = function (id) {
                     console.log("myLists.ejs:  mainController deleteMyList id: " + id);
                     //$scope.loading = true;
-                    if (confirm('Are you sure you want to delete this list ?') == true) {
+                    if (confirm('Are you sure you want to Delete this List?') == true) {
                         console.log(" yes delete");
                         $scope.loading = true;
                         myLists.delMyList({ id: id, owner: userEmail })
@@ -318,6 +318,7 @@
                                 //$("#itemnametaken").hide();
                                 $("#myItemsTable").hide();
                                 $("#addItemForm").hide();
+                                $("#modItemForm").hide();
                                 $("#commentForm").hide();
                             });
                     } else {
@@ -388,11 +389,13 @@
                     $("#myItemsTable").hide();
                     $("#commentForm").hide();
                     $("#addItemForm").hide();
+                    $("#modItemForm").hide();
                 };
 
                 $scope.showCommentForm = function () {
                     if ($scope.buttonCommentFormText == "Hide Comments") {
                         $("#addItemForm").show();
+                        $("#modItemForm").hide();
                         $scope.buttonCommentFormText = "Show/Add Comments";
                         $("#commentForm").hide();
                     } else {
@@ -417,6 +420,7 @@
                                 $scope.myComments = data; //
                             });
                         $("#addItemForm").hide();
+                        $("#modItemForm").hide();
                         $scope.buttonCommentFormText = "Hide Comments";
                         $("#commentForm").show();
                     }
@@ -479,6 +483,7 @@
                             $("#myListsTable").hide();
                             $("#myItemsTable").show();
                             $("#addItemForm").show();
+                            $("#modItemForm").hide();
                             //$("#commentForm").show();
                             $("#commentForm").hide();
                         });
@@ -511,6 +516,7 @@
                             if ($scope.allowEdit) {
                                 $("#addItemForm").show();
                             };
+                            $("#modItemForm").hide();
                         });
                 };
 
@@ -550,6 +556,7 @@
                             if ($scope.allowEdit) {
                                 $("#addItemForm").show();
                             };
+                            $("#modItemForm").hide();
                         });
                 };
 
@@ -574,6 +581,7 @@
                             $("#myListsTable").hide();
                             $("#myItemsTable").show();
                             $("#addItemForm").hide();
+                            $("#modItemForm").hide();
                             $("#commentForm").hide();
                         });
                 };
@@ -596,6 +604,13 @@
                     selBox.select();
                     document.execCommand('copy');
                     document.body.removeChild(selBox);
+                };
+
+                $scope.modifyMyItemCancel = function () {
+                    console.log("myLists.ejs:  mainController modifyMyItemCancel ");
+                    //$("#modItemForm").hide();
+                    $("#addItemForm").show(); 
+                    $("#modItemForm").hide();                   
                 };
 
                 $scope.modifyMyItem = function () {
@@ -694,7 +709,7 @@
 
                 $scope.myRemoveItem = function (id) {
                     console.log("myLists.ejs:  mainController myRemoveItem ");
-                    if (confirm("Really remove this item from the list?")) {
+                    if (confirm("Really Remove this Item from this List?")) {
                         console.log(" yes delete");
                         $scope.loading = true;
                         myLists.deleteItem({ "listName": $scope.currentListName, "id": id })
@@ -722,7 +737,7 @@
 
                 $scope.deleteMyComment = function (myComment) {
                     console.log("myLists.ejs:  mainController deleteMyComment ");
-                    if (confirm("Really remove this comment?")) {
+                    if (confirm("Really Remove this Comment?")) {
                         console.log(" yes delete");
                         $scope.loading = true;
                         myLists.deleteComment(myComment)
@@ -748,6 +763,8 @@
                     //  console.log("No");
                     //}
                     $("#addItemForm").hide();
+                    $scope.buttonCommentFormText = "Show/Add Comments";
+                    $("#commentForm").hide();
                     $("#modItemForm").show();
                     $scope.currentListItemId = myItem._id;
                     $scope.formModItemData.name = myItem.name; //"ABC";
@@ -820,7 +837,7 @@
 
                 $scope.RemoveMyRankings = function (listName) {
                     console.log("myAdminListsRank.ejs:  mainController RemoveMyRankings listName: " + listName);
-                    if (confirm("Really remove your rankings of the items of this list?")) {
+                    if (confirm("Really Remove your Rankings of the Items of this List?")) {
                         myLists.rankItemsRemove({ "listName": listName })
                             .error(function (data) {
                                 $scope.loading = false;
@@ -1021,7 +1038,10 @@
                     <h3><span class="fa "></span> My Lists ({{ myLists.length }})
                         <span ng-if="moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
-                                ng-click="showNewListForm()">New List</button>
+                                ng-click="showNewListForm()"
+                                data-toggle="tooltip"
+                                title="Click to add a new List">New List
+                            </button>
                         </span>
                         <span ng-if="!moreListsAllowed()">
                             <p> Maximum number of Lists allowed reached. </p>
@@ -1035,7 +1055,7 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Owner</th>
-                                <th>Private</th>
+                                <!-- th>Private</th -->
                                 <th>View Grp</th>
                                 <th>Edit Grp</th>
                                 <th>Rank Grp</th>
@@ -1050,7 +1070,7 @@
                                 <td>{{ aList.name }}</td>
                                 <td>{{ aList.description }}</td>
                                 <td>{{ aList.owner }}</td>
-                                <td>{{ aList.private }}</td>
+                                <!-- td>{{ aList.private }}</td -->
                                 <td>{{ aList.view }}</td>
                                 <td>{{ aList.edit }}</td>
                                 <td>{{ aList.rank }}</td>
@@ -1059,24 +1079,29 @@
                                 <td>
                                     <span ng-if="isMyOwner(aList.owner)">
                                         <button type="submit" class="btn btn-primary btn-sm"
-                                            ng-click="showModListForm(aList)">Modify</button>
+                                            ng-click="showModListForm(aList)" data-toggle="tooltip"
+                                            title="Modify the List">Mod</button>
                                     </span>
                                     <button type="submit" class="btn btn-primary btn-sm"
-                                        ng-click="itemsOfList3(aList)">Items</button>
+                                        ng-click="itemsOfList3(aList)"  data-toggle="tooltip"
+                                        title="Show the List Items">Items</button>
                                     <span ng-if="aList.itemCnt == '0' ">
                                         <span ng-if="inMyGroups(aList.edit) || isMyOwner(aList.owner)">
                                             <button type="submit" class="btn btn-primary btn-sm"
-                                                ng-click="deleteMyList(aList._id)">Delete</button>
+                                                ng-click="deleteMyList(aList._id)" data-toggle="tooltip"
+                                                title="Delete this List">Del</button>
                                         </span>
                                     </span>
                                     <span ng-if="inMyGroups(aList.rank) || isMyOwner(aList.owner)">
                                         <span ng-if="!myRankedLists.includes(aList.name)">
                                             <button type="submit" class="btn btn-primary btn-sm"
-                                                ng-click="itemsOfListRank(aList)">Rank</button>
+                                                ng-click="itemsOfListRank(aList)" data-toggle="tooltip"
+                                                title="Rank Items in this List">Rank</button>
                                         </span>
                                         <span ng-if="myRankedLists.includes(aList.name)">
                                             <button type="submit" class="btn btn-primary btn-sm"
-                                                ng-click="RemoveMyRankings(aList.name)">Remove My Rank </button>
+                                                ng-click="RemoveMyRankings(aList.name)" data-toggle="tooltip"
+                                                title="Delete your Ranking of Items to ReRank">Remove Rank </button>
                                         </span>
                                     </span>
                                 </td>
@@ -1277,8 +1302,9 @@
             <div class="text-centerx">
                 <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
                     {{ myItems.length }})</span>
-                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()">Copy Link to
-                        List</button>
+                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()"
+                    data-toggle="tooltip" 
+                    title="Copy a Link to this List. Then paste, into Email to send for example">Copy Link to List</button>
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonCommentForm
                         ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
@@ -1314,13 +1340,16 @@
                         <td>
                             <span ng-if="myItems2 == undefined && allowEdit">
                                 <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="myEditItem(aItem)">Edit</button>
+                                    ng-click="myEditItem(aItem)" data-toggle="tooltip" 
+                                    title="Edit this Item">Edit</button>
                                 <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="myRemoveItem(aItem._id)">Remove</button>
+                                    ng-click="myRemoveItem(aItem._id)" data-toggle="tooltip" 
+                                    title="Remove this Item from the List">Remove</button>
                             </span>
                             <span ng-if="10 > myItems2.length">
                                 <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="mySelectItem(aItem)">Rank</button>
+                                    ng-click="mySelectItem(aItem)" data-toggle="tooltip" 
+                                    title="Add to Items to Rank">Rank</button>
                             <span>
                         </td>
                     </tbody>
@@ -1392,7 +1421,8 @@
                                 <td>{{ myPointsFunction($index + 1,  myItems2.length) }}</td>
                                 <td>
                                     <button type="submit" class="btn btn-primary btn-sm"
-                                        ng-click="myRemoveItem2(aItem2)">Don't Rank</button>
+                                        ng-click="myRemoveItem2(aItem2)" data-toggle="tooltip" 
+                                        title="Remove from Items to Rank">Don't Rank</button>
                                     <span ng-if="$index != 0 ">
                                         <button class="btn btn-success" ng-click="moveUp(aItem2, $index  );">Up</button>
                                     </span>
@@ -1417,7 +1447,9 @@
                 </span>
                 <!-- span ng-if="!myRankingDone"><p>myRankingDone false</p></span -->
                 <span ng-if="!myRankingDone">
-                    <button class="btn btn-success" ng-click="saveMyRanking();">Save My Ranking</button>
+                    <button class="btn btn-success" ng-click="saveMyRanking();"
+                    data-toggle="tooltip" 
+                    title="Save your Ranking when set they way you want">Save My Ranking</button>
                 </span>
             </span>
         </span>
@@ -1487,6 +1519,8 @@
                     (myModItemForm.name.$dirty && myModItemForm.name.$invalid) || 
                     (myModItemForm.description.$dirty && myModItemForm.description.$invalid) " data-toggle="tooltip"
                     title="Modify this Item!">Modify</button>
+                    <button type="submit" class="btn btn-primary btn-lg"
+                    ng-click="modifyMyItemCancel()">Cancel</button>
             </form>
         </span>
 

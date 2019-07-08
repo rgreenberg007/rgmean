@@ -24,6 +24,11 @@
 
             .controller('mainController', ['$scope', '$http', 'myLists', '$filter', function ($scope, $http, myLists, $filter) {
                 console.log("myPublicLists.ejs: myListsController mainController reached");
+                //console.log("$scope.myListItems " + $scope.myListItems);
+                //console.log("myPublicLists.ejs: $scope: " + JSON.stringify($scope));
+                //console.log("myPublicLists.ejs: $http: " + JSON.stringify($http));
+                //console.log("myPublicLists.ejs: $http: " + $http);
+                //console.log("myPublicLists.ejs: $scope: " + $scope);
                 $scope.formData = {};
                 $scope.formData3 = {};
                 $scope.loading = true;
@@ -49,6 +54,7 @@
                 $scope.myCommentsMyLen = 0;
                 $scope.buttonCommentFormText = "Show Comments";
                 $("#commentForm").hide();
+                //$("#showMyCommentsPaging").hide();
 
                 // GET =====================================================================
                 myLists.get()
@@ -437,151 +443,218 @@
             padding-top: 0px;
             word-wrap: break-word;
         }
-        .table-striped>tbody:nth-child(2n+1)>tr {background-color: lightgray;} 
-        .table-striped>tbody:nth-child(2n+0)>tr {background-color: gray;} 
-</style>
     </style>
 </head>
 
 <body class="bg-secondary text-white">
-<div  ng-controller="mainController" id='main' class="container-fluid">
-    <% include myNavBar %>
-    <% if (typeof(myListItems) != 'undefined') { %>
+    <div id='main' class="container-fluid">
+        <% include myNavBar %>
+        <% if (typeof(myListItems) != 'undefined') { %>
         <div>
             <p class="alert alert-danger"><%= myListItems %></p>
         </div>
         {{ $scope.itemsOfList(myListItems) }}
-    <% } %>
-    <!-- div ng-viewx -->
-        <!-- h3><span class="fa fa-sign-in"></span>The Lists</h3 -->
-        <!-- div ng-controller="mainController" -->
-         <!-- div ng-controller="mainController" class="container-fluid" -->
-            <!-- div class="container" -->
-                <!-- table -->
-                    <!-- tr -->
-                        <!-- td -->
-                            <div ng-viewyvx id=myListsTable>
-                                <h3><span class="fa fa-sign-in"></span>The Lists</h3>
-                                <!-- div class="text-centerx">
-                                <div -->
-                                <!-- div id="myLists-listx" -->
-                                    <!-- div class="col-sm-4 col-sm-offset-4" -->
-                                    <!-- div -->
-                                        <table ng-table="myListsTableParams" border="0" cellspacing="0" cellpadding="0"
-                                        class="table table-striped" >
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th>Items</th>
-                                            </tr>
-                                            <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'" -->
-                                            <tbody  ng-repeat="aList in myLists | orderBy: 'name'
-                                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
+        <% } %>
+        <div ng-viewx>
+            <!-- h3><span class="fa fa-sign-in"></span>The Lists</h3 -->
+            <div ng-controller="mainController">
+                <div class="container">
+                    <table>
+                        <tr>
+                            <td>
+                                <div ng-viewyvx id=myListsTable>
+                                    <h3><span class="fa fa-sign-in"></span>The Lists</h3>
+                                    <div class="text-centerx">
+                                        <!-- h3>Number of Lists: <span
+                                                class="labelx label-infox">({{ myLists.length }})</span>
+                                        </h3 -->
+                                    </div>
+                                    <div id="myLists-listx">
+                                        <!-- div class="col-sm-4 col-sm-offset-4" -->
+                                        <div>
+                                            <table ng-table="myListsTableParams" border="1" cellspacing="0"
+                                                cellpadding="4">
                                                 <tr>
-                                                <td>{{ aList.name }}</td>
-                                                <td>{{ aList.description }}</td>
-                                                <td>
-                                                    <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
-                                                    <button type="submit" class="btn btn-primary btn-sm"
-                                                        ng-click="itemsOfList3(aList)">Items</button>
-                                                </td>
-                                                </tr>                                            </tbody>
-                                            <p class="text-center" ng-show="loading">
-                                                <span class="fa fa-spinner fa-spin fa-3x"></span>
-                                            </p>
-                                        </table>
-                                    <!-- /div -->
-                                    
-                                    <table>
-                                        <tr>&nbsp;</tr>
-                                        <tr>
-                                            <td>
-                                                <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"
-                                                    class="btn btn-primary btn-sm">Previous</button>
-                                                {{currentPage+1}}/{{numberOfPages()}}
-                                                <button ng-disabled="currentPage >= getData().length/pageSize - 1"
-                                                    ng-click="currentPage=currentPage+1" class="btn btn-primary btn-sm">Next</button>
-                                            </td>
-                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                            <td>&nbsp;&nbsp;</td>
-                                            <td>Set Rows per Page</td>
-                                            <td>
-                                                <select ng-model="pageSize" id="pageSize" class="form-control btn btn-primary btn-sm">
-                                                    <option value="5">5</option>
-                                                    <option value="10">10</option>
-                                                    <option value="15">15</option>
-                                                    <option value="20">20</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                <!-- /div -->
-                            </div>
-                        <!-- /td -->
-                    <!-- /tr -->
-                <!-- /table -->
+                                                    <th>Name</th>
+                                                    <th>Description</th>
+                                                    <th>Items</th>
+                                                </tr>
+                                                <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'" -->
+                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
+                                                | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
 
-                <div ng-viewyvx id=myItemsTable>
-                    <span ng-if="myItems.length == 0 && myItems2 == undefined">
-                        <h3><span class="fa "></span>{{ currentListName }}: Contains no Items.
-                            <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
-                                ng-click="backToList()">Go Back</button>
-                        </h3>
-                    </span>
-                    <span ng-if="myItems.length > 0 ">
-                        <div class="text-centerx">
-                            <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
-                                {{ myItems.length }})</span>
-                                <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()" data-toggle="tooltip"
-                                    title="Select to make a link copy and then paste.">Copy Link to List</button>
-                                <button type="submit" class="btn btn-primary btn-sm" id=buttonCommentForm
-                                    ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
-                                <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
-                                    ng-click="backToList()">Go Back</button>
-                            </h3>
-                            <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' ">
-                                <p> Join the group: {{ editGrp }}, to Edit this List</p>
-                            </span>
-                            <span ng-if=" inPublicGroups(rankGrp) && rankGrp != 'Just Me' ">
-                                <p> Join the group: {{ rankGrp }}, to Rank this List</p>
-                            </span>
-                        </div>
-                        <div>
-                            <table ng-table="myItemsTableParams" border="0" cellspacing="0" cellpadding="0"
-                            class="table table-striped">
+                            <td>{{ aList.name }}</td>
+                            <td>{{ aList.description }}</td>
+
+                            <td>
+                                <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
+                                <button type="submit" class="btn btn-primary btn-sm"
+                                    ng-click="itemsOfList3(aList)">Items</button>
+                            </td>
+                            </tbody>
+                            <p class="text-center" ng-show="loading">
+                                <span class="fa fa-spinner fa-spin fa-3x"></span>
+                            </p>
+                    </table>
+                </div>
+                <table>
+                    <tr>&nbsp;</tr>
+                    <tr>
+                        <td>
+                            <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"
+                                class="btn btn-primary btn-sm">Previous</button>
+                            {{currentPage+1}}/{{numberOfPages()}}
+                            <button ng-disabled="currentPage >= getData().length/pageSize - 1"
+                                ng-click="currentPage=currentPage+1" class="btn btn-primary btn-sm">Next</button>
+                        </td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>&nbsp;&nbsp;</td>
+                        <td>
+                            Set Rows per Page
+                            <!-- input ng-model="q" id="search" class="form-control" placeholder="Set Rows per Page" / -->
+                        </td>
+                        <td>
+                            <select ng-model="pageSize" id="pageSize" class="form-control btn btn-primary btn-sm">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            </td>
+            <td>
+        </div>
+
+        </td>
+        </tr>
+        </table>
+
+        <div ng-viewyvx id=myItemsTable>
+            <span ng-if="myItems.length == 0 && myItems2 == undefined">
+                <h3><span class="fa "></span>{{ currentListName }}: Contains no Items.
+                    <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
+                    ng-click="backToList()">Go Back</button>
+                </h3>
+            </span>
+            <span ng-if="myItems.length > 0 ">
+            <div class="text-centerx">
+                <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
+                        {{ myItems.length }})</span>
+                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()" data-toggle="tooltip"
+                    title="Select to make a link copy and then paste.">Copy Link to List</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id=buttonCommentForm
+                        ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
+                        ng-click="backToList()">Go Back</button>
+                </h3>
+                <span ng-if=" inPublicGroups(editGrp) && editGrp != 'Just Me' ">
+                    <p> Join the group: {{ editGrp }}, to Edit this List</p>
+                </span>
+                <span ng-if=" inPublicGroups(rankGrp) && rankGrp != 'Just Me' ">
+                    <p> Join the group: {{ rankGrp }}, to Rank this List</p>
+                </span>
+            </div>
+            <div>
+                <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Points</th>
+                    </tr>
+                    <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] " -->
+                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
+                    | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
+
+                        <td>{{ aItem.name }}</td>
+                        <td>{{ aItem.description }}</td>
+                        <td>{{ aItem.rank }}</td>
+
+                    </tbody>
+                    <p class="text-center" ng-show="loading">
+                        <span class="fa fa-spinner fa-spin fa-3x"></span>
+                    </p>
+                </table>
+            </div>
+            <!--/div -->
+
+            <table>
+                <tr>&nbsp;</tr>
+                <tr>
+                    <td>
+                        <button ng-disabled="currentPage2 == 0" ng-click="currentPage2=currentPage2-1"
+                            class="btn btn-primary btn-sm">Previous</button>
+                        {{currentPage2+1}}/{{myNumberOfPages2(getData2().length, pageSize2 )}}
+                        <button ng-disabled="currentPage2 >= getData2().length/pageSize2 - 1"
+                            ng-click="currentPage2=currentPage2+1" class="btn btn-primary btn-sm">Next</button>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>
+                        Set Rows per Page
+                    </td>
+                    <td>
+                        <select ng-model="pageSize2" id="pageSize2" class="form-control btn btn-primary btn-sm">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            </span>
+        </div>
+    
+        <table>
+                <tr>
+                    <td>
+                    <span id="commentForm">
+                        <p>&nbsp;</p>
+                        <span ng-if="0 >= myComments.length">
+                            <p>No comments on this List, yet.  </p>
+                        </span>
+                        <span ng-if="myComments.length > 0">
+                        <table ng-table="myItemsTable2Params" border="1" cellspacing="0" cellpadding="4">
+                            <tr>
+                                <th>Comment</th>
+                                <th>By</th>
+                                <th>When</th>
+                            </tr>
+                            <tbody class="tableWithItemsToOrder" id="tableWithItemsToOrder" 
+                            ng-repeat="comment in myComments | filter:q3 | startFrom:currentPage3*pageSize3 
+                            | limitTo:pageSize3">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Points</th>
+                                    <td>{{ comment.comment }}</td>
+                                    <td>{{ comment.ownerScreenName }}</td>
+                                    <td>{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>
                                 </tr>
-                                <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] " -->
-                                <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
-                                    | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
-                                    <td>{{ aItem.name }}</td>
-                                    <td>{{ aItem.description }}</td>
-                                    <td>{{ aItem.rank }}</td>
-                                </tbody>
-                                <p class="text-center" ng-show="loading">
-                                    <span class="fa fa-spinner fa-spin fa-3x"></span>
-                                </p>
-                            </table>
-                        </div>
-
-                        <table> 
+                            </tbody>
+                        </table>
+        
+                        <!-- span ng-if="myCommentsMyLen > 5" -->
+                        <!-- span id="showMyCommentsPaging" -->
+                        <!-- span ng-if="myNumberOfPages3(getData3().length, pageSize3 ) > 5" -->
+                        <table>
                             <tr>&nbsp;</tr>
                             <tr>
                                 <td>
-                                    <button ng-disabled="currentPage2 == 0" ng-click="currentPage2=currentPage2-1"
-                                        class="btn btn-primary btn-sm">Previous</button>
-                                    {{currentPage2+1}}/{{myNumberOfPages2(getData2().length, pageSize2 )}}
-                                    <button ng-disabled="currentPage2 >= getData2().length/pageSize2 - 1"
-                                        ng-click="currentPage2=currentPage2+1" class="btn btn-primary btn-sm">Next</button>
+                                    <button ng-disabled="currentPage3 == 0" ng-click="currentPage3=currentPage3-1"
+                                    class="btn btn-primary btn-sm">Previous</button>
+                                    {{currentPage3+1}}/{{myNumberOfPages3(getData3().length, pageSize3 )}}
+                                    <button ng-disabled="currentPage3 >= getData3().length/pageSize3 - 1"
+                                    ng-click="currentPage3=currentPage3+1" class="btn btn-primary btn-sm">Next</button>
                                 </td>
                                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 <td>&nbsp;&nbsp;</td>
-                                <td>Set Rows per Page</td>
                                 <td>
-                                    <select ng-model="pageSize2" id="pageSize2" class="form-control btn btn-primary btn-sm">
+                                    Set Rows per Page
+                                </td>
+                                <td>
+                                    <select ng-model="pageSize3" id="pageSize3" class="form-control btn btn-primary btn-sm">
                                         <option value="5">5</option>
                                         <option value="10">10</option>
                                         <option value="15">15</option>
@@ -591,73 +664,14 @@
                                 </td>
                             </tr>
                         </table>
-                    </span>
-                </div>
-    
-                <!-- table -->
-                    <!-- tr -->
-                        <!-- td -->
-                            <span id="commentForm">
-                                <p>&nbsp;</p>
-                                <span ng-if="0 >= myComments.length">
-                                    <p>No comments on this List, yet.  </p>
-                                </span>
-                                <span ng-if="myComments.length > 0">
-                                    <table ng-table="myItemsTable2Params" border="0" cellspacing="0" cellpadding="0"
-                                    class="table table-striped">
-                                        <tr>
-                                            <th>Comment</th>
-                                            <th>By</th>
-                                            <th>When</th>
-                                        </tr>
-                                        <tbody class="tableWithItemsToOrder" id="tableWithItemsToOrder" 
-                                            ng-repeat="comment in myComments | filter:q3 | startFrom:currentPage3*pageSize3 
-                                            | limitTo:pageSize3">
-                                            <!-- tr -->
-                                                <td>{{ comment.comment }}</td>
-                                                <td>{{ comment.ownerScreenName }}</td>
-                                                <td>{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>
-                                            <!-- /tr -->
-                                        </tbody>
-                                    </table>
-        
-                                    <!-- span ng-if="myCommentsMyLen > 5" -->
-                                    <!-- span id="showMyCommentsPaging" -->
-                                    <!-- span ng-if="myNumberOfPages3(getData3().length, pageSize3 ) > 5" -->
-                                    <table>
-                                        <tr>&nbsp;</tr>
-                                        <tr>
-                                            <td>
-                                            <button ng-disabled="currentPage3 == 0" ng-click="currentPage3=currentPage3-1"
-                                                class="btn btn-primary btn-sm">Previous</button>
-                                            {{currentPage3+1}}/{{myNumberOfPages3(getData3().length, pageSize3 )}}
-                                            <button ng-disabled="currentPage3 >= getData3().length/pageSize3 - 1"
-                                                ng-click="currentPage3=currentPage3+1" class="btn btn-primary btn-sm">Next</button>
-                                            </td>
-                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                            <td>&nbsp;&nbsp;</td>
-                                            <td>Set Rows per Page</td>
-                                            <td>
-                                                <select ng-model="pageSize3" id="pageSize3" class="form-control btn btn-primary btn-sm">
-                                                    <option value="5">5</option>
-                                                    <option value="10">10</option>
-                                                    <option value="15">15</option>
-                                                    <option value="20">20</option>
-                                                    <option value="25">25</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- /span -->
+                        <!-- /span -->
                         
-                                </span>
-                            </span>
-                        <!-- /td -->
-                    <!-- /tr -->
-                <!-- /table -->
-            <!-- /div -->
-        <!-- /div -->
-    <!-- /div -->
-</div>
+                        </span>
+                    </span>
+                    </td>
+            </table>
+    </div>
+    </div>
 </body>
+
 </html>

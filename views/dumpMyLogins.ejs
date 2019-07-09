@@ -185,7 +185,25 @@
                             });
                     };
                 };
-                
+
+                $scope.myRemoveLoginRecord = function (id) {
+                    console.log("dumpMyLogins.ejs:  mainController myRemoveLoginRecord ");
+                    if(confirm("Really remove this login record?")) { 
+                        console.log(" yes delete");
+                        $scope.loading = true;
+                        myLists.deleteLoginRecord(id)
+                            .error(function (data) {
+                                $scope.loading = false;
+                                console.log("dumpMyLogins.ejs: myRemoveLoginRecord ERROR data: " + JSON.stringify(data));
+                                console.log("dumpMyLogins.ejs: myRemoveLoginRecord ERROR data.message: " + data.message);
+                            })
+				            .success(function(data) {
+					            $scope.loading = false;
+                                $scope.myLogins = data; // 
+				        });
+                    }; 
+                };
+
                 $scope.myRemoveItem = function (id) {
                     console.log("myAdminLists.ejs:  mainController myRemoveItem ");
                     if(confirm("Really remove this item from the list?")) { 
@@ -291,8 +309,12 @@
                     getAllGrps: function () {
                         console.log("myAdminLists.ejs: service myLists getAllGrps");
                         return $http.get('/api/getAllMyGrps');
+                    },
+                    deleteLoginRecord: function (id) {
+                        console.log("dumpMyLogins.ejs: service myLists deleteLoginRecord");
+                        return $http.delete('/api/delMyLogin/' + id);
                     }
-                }
+                };
             }]);
     </script>
 
@@ -311,253 +333,32 @@
 </head>
 
 <body class="bg-secondary text-white">
-    <div id='mainx' class="container-fluid">
-        <% include myNavBar %>
-        <div ng-viewx>
-            <h3><span class="fa fa-sign-in"></span> Dump My Items - Under Development</h3>
-            <div ng-controller="mainController">
-                <div class="container">
-                    <table>
-                        <tr>
-                            <td>
-                                <!-- span id="myListTable" -->
-                                <div ng-viewyvx id=myUserList3x>
-                                    <div class="text-centerx">
-                                        <h3>Number of Lists: <span
-                                                class="labelx label-infox">({{ myLists.length }})</span>
-                                        </h3>
-                                    </div>
-                                    <div id="myLists-listx">
-                                        <!-- div class="col-sm-4 col-sm-offset-4" -->
-                                        <div>
-                                            <table ng-table="myListsTableParams" border="1" cellspacing="0"
-                                                cellpadding="4">
-                                                <tr>
-                                                    <th>name</th>
-                                                    <th>description</th>
-                                                    <th>totalVotes</th>
-                                                    <th>userVotes</th>
-                                                    <th>itemCnt</th>
-                                                    <th>vote</th>
-                                                    <th>suggestion</th>
-                                                    <th>rank</th>
-                                                    <th>edit</th>
-                                                    <th>view</th>
-                                                    <th>grp</th>
-                                                    <th>private</th>
-                                                    <th>owner</th>
-                                                    <th>Operations</th>
-                                                </tr>
-                                                <tbody class="problemcheckboxx" ng-repeat="aList in myLists">
-
-                            <td>{{ aList.name }}</td>
-                            <td>{{ aList.description }}</td>
-                            <td>{{ aList.totalVotes }}</td>
-                            <td>{{ aList.userVotes }}</td>
-                            <td>{{ aList.itemCnt }}</td>
-                            <td>{{ aList.vote }}</td>
-                            <td>{{ aList.suggestion }}</td>
-                            <td>{{ aList.rank }}</td>
-                            <td>{{ aList.edit }}</td>
-                            <td>{{ aList.view }}</td>
-                            <td>{{ aList.grp }}</td>
-                            <td>{{ aList.private }}</td>
-                            <td>{{ aList.owner }}</td>
-                            <td>
-                                <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="itemsOfList(aList.name)">Items</button>
-                                <span ng-if="aList.itemCnt == '0' ||  aList.itemCnt == '-1' || aList.itemCnt == '-2' ">
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                    ng-click="deleteMyList(aList._id)">Delete</button>
-                                </span>
-                            </td>
-                            </tbody>
-                            <p class="text-center" ng-show="loading">
-                                <span class="fa fa-spinner fa-spin fa-3x"></span>
-                            </p>
-                    </table>
-                </div>
-            </div>
-            </td>
-            <td>
-        </div>
-        <!-- /span -->
-        
-        <span id="addListForm">
-
-            <h3> Create a new List: </h3>
-            <div class="alert alert-danger" id="listnametaken">List Name already taken!</div>
-
-            <% if (message.length > 0) { %>
-            <div class="alert alert-danger"><%= message %></div>
-            <% } %>
-
-            <form name="myForm">
-                <div class="form-group">
-                    <label>List Name</label>
-                    <input type="text" class="form-control" name="name" ng-model="formData.name" required
-                        placeholder="List Name" maxlength="32"
-                        [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
-                        title="Enter the List name. Must be unique." />
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <input type="text" class="form-control" name="description" ng-model="formData.description"
-                        placeholder="Describe this List" required maxlength="128"
-                        [ngClass]="{'invalid-textbox' :myForm.submitted && !description.valid }" data-toggle="tooltip"
-                        title="Describe the List." />
-                </div>
-                <div class="form-group">
-                    <label>Who can see this List</label>
-                    <select class="form-control" name="grp" ng-model="formData.grp"
-                    ng-options="grp for grp in myGrps"
-                        placeholder="Select Group" required 
-                        [ngClass]="{'invalid-textbox' :myForm.submitted && !grp.valid }" data-toggle="tooltip"
-                        title="Enter the Group that can see this List." >
-                    </select>
-                    
-                </div>
-                <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyList()"
-                    ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || !myForm.grp.$dirty || 
-                     (myForm.name.$dirty && myForm.name.$invalid) || (myForm.description.$dirty && myForm.description.$invalid) 
-                     || (myForm.grp.$dirty && myForm.grp.$invalid)" 
-                     data-toggle="tooltip" title="Add this new List!">Add</button>
-
-            </form>
-        </span>
-        </td>
-        </tr>
-        </table>
-
-    <div ng-viewyvx id=myItemsTable>
-        <div class="text-centerx">
-            <p>Number of Items in List ({{ currentListName }}): <span class="labelx label-infox">{{ myItemRanks.length }}</span></p>
-        </div>
-            <div>
-                <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
-                    <tr>
-                        <th>email</th>
-                        <th>itemId</th>
-                        <th>itemName</th>
-                        <th>listName</th>
-                        <th>rank</th>
-                        <th>Operations</th>
-                    </tr>
-                    <tbody class="problemcheckboxx" ng-repeat="aItem in myItemRanks">
-
-<td>{{ aItem.email }}</td>
-<td>{{ aItem.itemId }}</td>
-<td>{{ aItem.itemName }}</td>
-<td>{{ aItem.listName }}</td>
-<td>{{ aItem.rank }}</td>
-
-<td>
-    <button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">Edit</button>
-    <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">Remove</button>
-</td>
-</tbody>
-<p class="text-center" ng-show="loading">
-    <span class="fa fa-spinner fa-spin fa-3x"></span>
-</p>
-</table>
-</div>
-</div>
-
-<div ng-viewyvx id=myCommentsTable>
-    <div class="text-centerx">
-        <p>Number of Comments: <span class="labelx label-infox">{{ myComments.length }}</span></p>
-    </div>
-        <div>
-            <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
-                <tr>
-                    <th>listName</th>
-                    <th>listOwner</th>
-                    <th>ownerEmail</th>
-                    <th>ownerScreenName</th>
-                    <th>comment</th>
-                    <th>timeStamp</th>
-                    <th>Operations</th>
-                </tr>
-                <tbody class="problemcheckboxx" ng-repeat="aItem in myComments">
-
-<td>{{ aItem.listName }}</td>
-<td>{{ aItem.listOwner }}</td>
-<td>{{ aItem.ownerEmail }}</td>
-<td>{{ aItem.ownerScreenName }}</td>
-<td>{{ aItem.comment }}</td>
-<td>{{ aItem.timeStamp }}</td>
-<td>
-<button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">xEdit</button>
-<button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">xRemove</button>
-</td>
-</tbody>
-<p class="text-center" ng-show="loading">
-<span class="fa fa-spinner fa-spin fa-3x"></span>
-</p>
-</table>
-</div>
-</div>
-
+<div ng-controller="mainController" id='mainx' class="container-fluid">
+    <% include myNavBar %>
 <div ng-viewyvx id=myLoginsTable>
-    <div class="text-centerx">
+<div class="text-centerx">
         <p>Number of Logins: <span class="labelx label-infox">{{ myLogins.length }}</span></p>
-    </div>
-        <div>
-            <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
-                <tr>
-                    <th>email</th>
-                    <th>timeStamp</th>
-                    <th>Operations</th>
-                </tr>
-                <tbody class="problemcheckboxx" ng-repeat="aItem in myLogins">
-
-<td>{{ aItem.email }}</td>
-<td>{{ aItem.timeStamp }}</td>
-<td>
-<button type="submit" class="btn btn-primary btn-sm" ng-click="myEditItem(aItem._id)">xEdit</button>
-<button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveItem(aItem._id)">xRemove</button>
-</td>
-</tbody>
-<p class="text-center" ng-show="loading">
-<span class="fa fa-spinner fa-spin fa-3x"></span>
-</p>
-</table>
+</div>
+<div>
+    <table ng-table="myItemsTableParams" border="1" cellspacing="0" cellpadding="4">
+            <tr>
+                <th>email</th>
+                <th>timeStamp</th>
+                <th>Operations</th>
+            </tr>
+            <tbody class="problemcheckboxx" ng-repeat="aItem in myLogins">
+                <td>{{ aItem.email }}</td>
+                <td>{{ aItem.timeStamp }}</td>
+                <td>
+                    <button type="submit" class="btn btn-primary btn-sm" ng-click="myRemoveLoginRecord(aItem._id)">xRemove</button>
+                </td>
+            </tbody>
+            <p class="text-center" ng-show="loading">
+                <span class="fa fa-spinner fa-spin fa-3x"></span>
+            </p>
+    </table>
 </div>
 </div>
-
-<span id="addItemForm">
-    <h3> Create a new Item: </h3>
-    <div class="alert alert-danger" id="itemnametaken">Item Name already taken!</div>
-
-    <form name="myItemForm">
-        <div class="form-group">
-            <label>Item Name</label>
-            <input type="text" class="form-control" name="name" ng-model="formItemData.name" required
-                placeholder="Item Name" maxlength="32"
-                [ngClass]="{'invalid-textbox' :myItemForm.submitted && !name.valid }" data-toggle="tooltip"
-                title="Enter the Item name. Must be unique.">
-        </div>
-        <div class="form-group">
-            <label>Description</label>
-            <input type="text" class="form-control" name="description" ng-model="formItemData.description"
-                placeholder="Describe this Item" required maxlength="128"
-                [ngClass]="{'invalid-textbox' :myItemForm.submitted && !description.detail }" data-toggle="tooltip"
-                title="Describe the Item.">
-        </div>
-        <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
-        <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyItem()"
-            ng-disabled="!myItemForm.name.$dirty || !myItemForm.description.$dirty || 
-             (myItemForm.name.$dirty && myItemForm.name.$invalid) || 
-             (myItemForm.description.$dirty && myItemForm.description.$invalid) " 
-             data-toggle="tooltip" title="Add this new Item!">Add</button>
-
-    </form>
-</span>
-
-    </div>
-    </div>
-
+</div>
 </body>
-
 </html>

@@ -651,6 +651,20 @@ module.exports = function(app, passport) {
         });
     });
 
+    app.delete('/api/delMyLogin/:id', function (req, res) {
+        console.log("routes.js delete /api/delMyLogin/:id " + JSON.stringify(req.params));
+        console.log("routes.js delete /api/delMyLogin/:id req.body: " + JSON.stringify(req.body));
+        myLogin.remove({
+            _id: req.params.id
+        }, function (err, myLists) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+            getDumpMyLogins(res);
+        });
+    });
+
     app.post('/api/delMyList/', function (req, res) {
         console.log("routes.js post /api/delMyList req.params: " + JSON.stringify(req.params));
         console.log("routes.js post /api/delMyList req.body: " + JSON.stringify(req.body));

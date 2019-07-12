@@ -1,26 +1,4 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <title>Top 10 Lists</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
-    
-    <style>
-        body {
-            padding-top: 0px;
-            word-wrap: break-word;
-        }
-    </style>
-    
-<script>
+<!-- script -->
 var myDelay = 0;
 var myDelayIncrement = 1000;
 var myFinalPosFromTop = 600;
@@ -202,7 +180,9 @@ function myRandomAnimate(myelementid) {
         	}, 1000);
 }
 
-$(document).ready(function(){
+//$(document).ready(function(){
+//function myStartToAnimate() {
+$scope.myStartToAnimate = function () {
     $("#item10").hide();
     $("#item9").hide();
     $("#item8").hide();
@@ -247,30 +227,8 @@ document.querySelector('#item1').innerHTML = "Number 1";
 
     myItem1Animate($("#item1"));
 
-    setTimeout(function(){
-        	location.reload();
-        	}, 20000);
-});
-</script>
-
-</head>
-<body class="bg-secondary text-white">
-<div id='main' class="container-fluid">
-    <% include myNavBarIntro %>
-
-    <div id = "mytitle" style="position:absolute; color:blue;">Top 10 Lists</div>
-
-    <div id = "item10" style="position:absolute; color:blue;">Number 10</div>
-    <div id = "item9" style="position:absolute; color:blue;">Number 9</div>
-    <div id = "item8" style="position:absolute; color:blue;">Number 8</div>
-    <div id = "item7" style="position:absolute; color:blue;">Number 7</div>
-    <div id = "item6" style="position:absolute; color:blue;">Number 6</div>
-    <div id = "item5" style="position:absolute; color:blue;">Number 5</div>
-    <div id = "item4" style="position:absolute; color:blue;">Number 4</div>
-    <div id = "item3" style="position:absolute; color:blue;">Number 3</div>
-    <div id = "item2" style="position:absolute; color:blue;">Number 2</div>
-    <div id = "item1" style="position:absolute; color:blue;">Number 1</div>
-        
-</div>
-</body>
-</html>
+//    setTimeout(function(){
+//        	location.reload();
+//        	}, 20000);
+};
+<!-- /script -->

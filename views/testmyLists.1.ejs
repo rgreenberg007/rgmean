@@ -96,16 +96,12 @@
                 var item10Deg = 0;
                 var testAnimateCnt = 0;
                 var myeffect = ['bounce', 'flash', 'pulse', 'rubberBand', 'shake', 'headShake', 'pulse', 
-                  'tada', 'wobble', 'jello', 'bounce', 'bounce', 'jackInTheBox', 'heartBeat'] ; // hidge, swing out!
-                  
-                $scope.myShowAll = 'N';
-                $scope.buttonShowDetailsText = "Show Details";
+  	            'tada', 'wobble', 'jello', 'bounce', 'bounce', 'jackInTheBox', 'heartBeat'] ; // hidge, swing out!
 
                 // GET =====================================================================
                 myLists.get(userEmail)
                     .success(function (data) {
                         console.log("myLists.ejs: mainController myLists.get success");
-                        $scope.myShowAll = 'N';
                         $scope.myLists = data;
                         $scope.loading = false;
                         $("#listnametaken").hide();
@@ -1342,17 +1338,6 @@
                     //        	location.reload();
                     //        	}, 20000);
                 };
-
-                $scope.myShowDetails = function () {
-                    if ($scope.buttonShowDetailsText == "Hide Details") {
-                        $scope.buttonShowDetailsText = "Show Details";
-                        $scope.myShowAll = 'N';
-                    } else {
-                        $scope.buttonShowDetailsText = "Hide Details";
-                        $scope.myShowAll = 'Y';
-                    }
-                };
-
             }]);
 
         app.filter('startFrom', function () {
@@ -1481,7 +1466,7 @@
 </head>
 
 <body class="bg-secondary text-white">
-<div  ng-controller="mainController" id='main' class="container-fluid">
+<div  ng-controller="mainController" id='mainx' class="container-fluid">
 <% include myNavBar %>
 <!-- -div ng-viewx -->
 <!-- div ng-controller="mainController" -->
@@ -1502,16 +1487,13 @@
                         <span ng-if="!moreListsAllowed()">
                             <p> Maximum number of Lists allowed reached. </p>
                         </span>
-                        <span ng-if="myShowAll != 'Y'">(click to open)</span>
-                        <button type="submit" class="btn btn-primary btn-sm"
-                            ng-click="myShowDetails()">{{ buttonShowDetailsText }}</button>
                     </h3>
                     
                     <div id="myLists-listx">
                     <!-- div class="col-sm-4 col-sm-offset-4" -->
                         <table ng-table="myListsTableParams" border="0" cellspacing="0" cellpadding="0"
                         class="table table-striped" >
-                            <tr ng-if="myShowAll == 'Y'">
+                            <tr>
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Owner</th>
@@ -1527,17 +1509,13 @@
                                 | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" -->
                             <tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy:sortListCol:sortListReverse
                                 | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" > <!-- | searchList" -->
-                                
-                                <td data-toggle="tooltip" title= "{{aList.description}}" 
-                                    ng-click="itemsOfList3(aList)" >{{ aList.name }}
-                                </td>
-                                <td ng-if="myShowAll == 'Y'">{{ aList.description }}</td>
-                                                
-                                <td ng-if="myShowAll == 'Y'">{{ aList.owner }}</td>
+                                <td>{{ aList.name }}</td>
+                                <td>{{ aList.description }}</td>
+                                <td>{{ aList.owner }}</td>
                                 <!-- td>{{ aList.private }}</td -->
-                                <td ng-if="myShowAll == 'Y'">{{ aList.view }}</td>
-                                <td ng-if="myShowAll == 'Y'">{{ aList.edit }}</td>
-                                <td ng-if="myShowAll == 'Y'">{{ aList.rank }}</td>
+                                <td>{{ aList.view }}</td>
+                                <td>{{ aList.edit }}</td>
+                                <td>{{ aList.rank }}</td>
                                 <!-- td>{{ aList.suggestion }}</td -->
                                 <!-- td>{{ aList.vote }}</td -->
                                 <td>
@@ -1546,7 +1524,7 @@
                                             ng-click="showModListForm(aList)" data-toggle="tooltip"
                                             title="Modify the List">Mod</button>
                                     </span>
-                                    <button ng-if="myShowAll == 'Y'" type="submit" class="btn btn-primary btn-sm"
+                                    <button type="submit" class="btn btn-primary btn-sm"
                                         ng-click="itemsOfList3(aList)"  data-toggle="tooltip"
                                         title="Show the List Items">Items</button>
                                     <span ng-if="aList.itemCnt == '0' ">

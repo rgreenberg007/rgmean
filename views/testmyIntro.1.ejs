@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Top 10 Lists</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    
+    <style>
+        body {
+            padding-top: 0px;
+            word-wrap: break-word;
+        }
+    </style>
+
+<script>
+//The property names must be camel-cased when used with the animate() method: 
+//You will need to write paddingLeft instead of padding-left, marginRight instead of margin-right, and so on.
+function item1looping() {
+    //$('#item1').fadeOut(1000);
+    //$('#item1').fadeIn(1000);
+    $('#item1').animate({color: 'red'}, 500);
+    $('#item1').animate({color: 'blue'}, 500);
+    setTimeout(function(){
+        item1looping();
+    }, 10);
+}
+
+$(document).ready(function(){
+    $("#item10").hide();
+    $("#item9").hide();
+    $("#item8").hide();
+    $("#item7").hide();
+    $("#item6").hide();
+    $("#item5").hide();
+    $("#item4").hide();
+    $("#item3").hide();
+    $("#item2").hide();
+    $("#item1").hide();
+
+    var div = $("#mytitle");  
+    //div.animate({left: '100px'}, "slow");
+    //div.animate( {translateX(-50%)}, "slow" );
+    div.animate({left: '40%'}, 1000);
+    div.animate({fontSize: '4em', color: 'red'}, 1100);
+    //div.fadeOut(1000);
+
+    var item10 = $("#item10");
+    item10.animate( {top: "+=150px"} ).delay(2100).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=450px"}, 1100 );
+
+    var item9 = $("#item9");
+    item9.animate( {top: "+=150px"} ).delay(6000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=400px"}, 1100 );
+
+    var item8 = $("#item8");
+    item8.animate( {top: "+=150px"} ).delay(10000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=350px"}, 1100 );
+
+    var item7 = $("#item7");
+    item7.animate( {top: "+=150px"} ).delay(14000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=300px"}, 1100 );
+
+    var item6 = $("#item6");
+    item6.animate( {top: "+=150px"} ).delay(18000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=250px"}, 1100 );
+
+    var item5 = $("#item5");
+    item5.animate( {top: "+=150px"} ).delay(22000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=200px"}, 1100 );
+
+    var item4 = $("#item4");
+    item4.animate( {top: "+=150px"} ).delay(26000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=150px"}, 1100 );
+
+    var item3 = $("#item3");
+    item3.animate( {top: "+=150px"} ).delay(30000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=100px"}, 1100 );
+
+    var item2 = $("#item2");
+    item2.animate( {top: "+=150px"} ).delay(34000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=50px"}, 1100 );
+
+    var item1 = $("#item1");
+    item1.animate( {top: "+=150px"} ).delay(38000).show(1000)
+	.animate({left: '40%'}, 1000)
+	.animate({fontSize: '2em', color: 'red'}, 500)
+	.animate( {top: "+=10px"}, 1100 )
+	.delay(500)
+	.animate( {top: "-=25px"}, 1100 )
+	.animate({fontSize: '1em', color: 'black'}, 500)
+	.animate({fontSize: '3em', color: 'blue'}, 500, item1looping());
+});
+</script>
+
+</head>
+<body class="bg-secondary text-white">
+<div id='main' class="container-fluid">
+    <% include myNavBarIntro %>
+
+    <div id = "mytitle" style="position:absolute; color:blue;">Top 10 Lists</div>
+
+    <div id = "item10" style="position:absolute; color:blue;">Number 10</div>
+    <div id = "item9" style="position:absolute; color:blue;">Number 9</div>
+    <div id = "item8" style="position:absolute; color:blue;">Number 8</div>
+    <div id = "item7" style="position:absolute; color:blue;">Number 7</div>
+    <div id = "item6" style="position:absolute; color:blue;">Number 6</div>
+    <div id = "item5" style="position:absolute; color:blue;">Number 5</div>
+    <div id = "item4" style="position:absolute; color:blue;">Number 4</div>
+    <div id = "item3" style="position:absolute; color:blue;">Number 3</div>
+    <div id = "item2" style="position:absolute; color:blue;">Number 2</div>
+    <div id = "item1" style="position:absolute; color:blue;">Number 1</div>
+        
+</div>
+</body>
+</html>

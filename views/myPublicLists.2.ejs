@@ -49,15 +49,11 @@
                 $scope.myCommentsMyLen = 0;
                 $scope.buttonCommentFormText = "Show Comments";
                 $("#commentForm").hide();
-                
-                $scope.myShowAll = 'N';
-                $scope.buttonShowDetailsText = "Show Details";
 
                 // GET =====================================================================
                 myLists.get()
                     .success(function (data) {
                         console.log("myPublicLists.ejs: mainController myLists.get success");
-                        $scope.myShowAll = 'N';
                         $scope.myLists = data;
                         $scope.loading = false;
                         $("#listnametaken").hide();
@@ -373,16 +369,6 @@
                     return myTime.substring(0,10);
                 };
 
-                $scope.myShowDetails = function () {
-                    if ($scope.buttonShowDetailsText == "Hide Details") {
-                        $scope.buttonShowDetailsText = "Show Details";
-                        $scope.myShowAll = 'N';
-                    } else {
-                        $scope.buttonShowDetailsText = "Hide Details";
-                        $scope.myShowAll = 'Y';
-                    }
-                };
-
             }]);
 
         app.filter('startFrom', function () {
@@ -445,7 +431,7 @@
     <title>Top 10 Lists</title>
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" / -->
     <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" / -->
-    <!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body {
             padding-top: 0px;
@@ -453,6 +439,7 @@
         }
         .table-striped>tbody:nth-child(2n+1)>tr {background-color: lightgray;} 
         .table-striped>tbody:nth-child(2n+0)>tr {background-color: gray;} 
+</style>
     </style>
 </head>
 
@@ -474,45 +461,35 @@
                     <!-- tr -->
                         <!-- td -->
                             <div ng-viewyvx id=myListsTable>
-                                <h3><span class="fa "></span>The Lists
-                                    <span ng-if="myShowAll != 'Y'">(click to open)</span>
-                                    <button type="submit" class="btn btn-primary btn-sm"
-                                        ng-click="myShowDetails()">{{ buttonShowDetailsText }}</button>
-                                </h3>
+                                <h3><span class="fa fa-sign-in"></span>The Lists</h3>
                                 <!-- div class="text-centerx">
                                 <div -->
                                 <!-- div id="myLists-listx" -->
                                     <!-- div class="col-sm-4 col-sm-offset-4" -->
                                     <!-- div -->
-                                        <!-- span ng-if="myShowAll == 'Y'" -->
                                         <table ng-table="myListsTableParams" border="0" cellspacing="0" cellpadding="0"
                                         class="table table-striped" >
-                                            <tr ng-if="myShowAll == 'Y'">
-                                                <th >Name</th>
-                                                <th >Description</th>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Description</th>
                                                 <th>Items</th>
                                             </tr>
                                             <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'" -->
                                             <tbody  ng-repeat="aList in myLists | orderBy: 'name'
                                                 | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize">
                                                 <tr>
-                                                <td data-toggle="tooltip" title= "{{aList.description}}" 
-                                                    ng-click="itemsOfList3(aList)" >{{ aList.name }}
-                                                </td>
-                                                <td ng-if="myShowAll == 'Y'">{{ aList.description }}</td>
-                                                <td ng-if="myShowAll == 'Y'">
+                                                <td>{{ aList.name }}</td>
+                                                <td>{{ aList.description }}</td>
+                                                <td>
                                                     <!-- button type="submit" class="btn btn-primary btn-sm" ng-click="itemsOfList(aList.name)">Items</button -->
                                                     <button type="submit" class="btn btn-primary btn-sm"
                                                         ng-click="itemsOfList3(aList)">Items</button>
                                                 </td>
-                                                <td ng-if="myShowAll != 'Y'">&nbsp;</td>
-                                                </tr>                                            
-                                            </tbody>
+                                                </tr>                                            </tbody>
                                             <p class="text-center" ng-show="loading">
                                                 <span class="fa fa-spinner fa-spin fa-3x"></span>
                                             </p>
                                         </table>
-                                        <!-- /span -->
                                     <!-- /div -->
                                     
                                     <table>

@@ -981,6 +981,8 @@
                 };
 
                 // animation stuff - also var defined above and some start and stop functions above
+                // Seems let cannot be used for iPad use Var
+                // Seems the below comment needs to be a html comment or else iPad does not work
                 //<!-- % include myAnimateCode % -->
 
                 //function sleep(delay) {
@@ -1021,7 +1023,7 @@
                 };
 
                 function myLeftAnimate(myElement) {
-                    let element2 = $('#' + myElement);
+                    var element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                     
@@ -1186,7 +1188,7 @@
             <td>
                 <div ng-view id=myListsTable>
                     
-                    <h3><span class="fa "></span> My Lists ({{ myLists.length }})
+                    <h3><span class="fa "></span> My Lists : ({{ myLists.length }})
                         <span ng-if="moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
                                 ng-click="showNewListForm()"

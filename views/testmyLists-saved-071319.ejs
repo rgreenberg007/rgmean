@@ -997,7 +997,7 @@
                         timeoutItem1Loop = setTimeout(function(){
                             item1looping();
                         }, 1010);
-                    };
+                    }
                 };
 
                 function item10rotate() {
@@ -1016,15 +1016,15 @@
                             timeoutItem10Rotote = setTimeout(function(){
                                 item10rotate();
                             }, 1000);
-                        };
-                    };
+                        }
+                    }
                 };
 
                 function myLeftAnimate(myElement) {
                     let element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
-                
+                    
 
                     element2.animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
                         //.animate({left: '50%'}, 1000)
@@ -1144,13 +1144,13 @@
                     } else {
                     	element1.className = 'animated ' + myeffect[testAnimateCnt]; // infinite';
 	                    element1.animated;
-	                };
+	                }
                 	testAnimateCnt = testAnimateCnt + 1;
 	                if (testAnimateCnt < 14) {
     		            setTimeout(function(){
         	            myTestAnimate(myelementid);
         	                }, 2000);
-  	                };
+  	                }
                     // bounce	flash	pulse	rubberBand
                     // shake	headShake	swing	tada
                     // wobble	jello	bounceIn	bounceInDown
@@ -1193,14 +1193,14 @@
                         } else {
 		                    element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
                             element1.animated;
-                        };
-	                };
+                        }
+	                }
 
                     if (!myAnimationStopped) {
                     	timeoutRandomAnimate = setTimeout(function(){
             	            myRandomAnimate(myelementid);
                         }, 1000);
-                    };
+                    }
                 };
 
                 //$(document).ready(function(){
@@ -1264,31 +1264,31 @@
                     //}
                     if (localMyItems.length >= 10) {
                         document.querySelector('#item10').innerHTML = localMyItems[9].name;
-                    }; 
+                    } 
                     if (localMyItems.length >= 9) {
                         document.querySelector('#item9').innerHTML = localMyItems[8].name;
-                    };
+                    }
                     if (localMyItems.length >= 8) {
                         document.querySelector('#item8').innerHTML = localMyItems[7].name;
-                    };
+                    }
                     if (localMyItems.length >= 7) {
                         document.querySelector('#item7').innerHTML = localMyItems[6].name;
-                    };
+                    }
                     if (localMyItems.length >= 6) {
                         document.querySelector('#item6').innerHTML = localMyItems[5].name;
-                    };
+                    } 
                     if (localMyItems.length >= 5) {
                         document.querySelector('#item5').innerHTML = localMyItems[4].name;
-                    };
+                    }
                     if (localMyItems.length >= 4) {
                         document.querySelector('#item4').innerHTML = localMyItems[3].name;
-                    };
+                    }
                     if (localMyItems.length >= 3) {
                         document.querySelector('#item3').innerHTML = localMyItems[2].name;
-                    };
+                    }
                     if (localMyItems.length >= 2) {
                         document.querySelector('#item2').innerHTML = localMyItems[1].name;
-                    };
+                    } 
                     //document.querySelector('#item1').innerHTML = "Number 1";
                     document.querySelector('#item1').innerHTML = localMyItems[0].name;
 

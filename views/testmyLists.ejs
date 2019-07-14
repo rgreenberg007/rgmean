@@ -1185,6 +1185,147 @@
                     }
                 };
 
+                //$(document).ready(function(){
+                function myStartToAnimate() {
+                //$Scope.myStartToAnimate = function () {
+                    myWindowWidth = $(window).width();
+                    console.log("myStartToAnimate myWindowWidth = " + myWindowWidth);
+                    $("#mytitle").hide();
+                    $("#item10").hide();
+                    $("#item9").hide();
+                    $("#item8").hide();
+                    $("#item7").hide();
+                    $("#item6").hide();
+                    $("#item5").hide();
+                    $("#item4").hide();
+                    $("#item3").hide();
+                    $("#item2").hide();
+                    $("#item1").hide();
+// issue with 10 and 1 on repeat
+// title could be better
+// ten too low or else moove other closer
+                    //$("#mytitle").animate( {left: '100%', top: "5%"} ).show();
+                    //$("#mytitle").animate( {left: '100%'}).show();
+                    //$("#mytitle").animate({left: $("#mytitle").parent().width() / 2 - $("#mytitle").width() / 2}).show();
+                    //console.log($("#mytitle").parent().width() / 2 - $("#mytitle").width() / 2);
+                    //$("#mytitle").animate({left: $("#mytitle").parent().width() / 2 - $("#mytitle").width() / 2}).show();
+                    //$("#mytitle").animate({left: $(window).width() / 2 - $("#mytitle").width() / 2 }).show();
+                    //console.log($("#mytitle").width() );
+                    //$("#mytitle").animate({left: $(window).width() / 3  }).show();
+                    
+
+                    //document.querySelector('#mytitle').innerHTML = "Top 10 Lists";
+                    document.querySelector('#mytitle').innerHTML = $scope.currentListName;
+                    document.querySelector('#item10').innerHTML = "Number 10";
+                    //let item9 =  document.querySelector('#item9');
+                    //item9.innerHTML = "testing this";
+                    document.querySelector('#item9').innerHTML = "Number 9";
+                    //console.log("item9.innerHTML = " + item9.innerHTML);  
+                    document.querySelector('#item8').innerHTML = "Number 8";
+                    document.querySelector('#item7').innerHTML = "Number 7";
+                    document.querySelector('#item6').innerHTML = "Number 6";
+                    document.querySelector('#item5').innerHTML = "Number 5";
+                    document.querySelector('#item4').innerHTML = "Number 4";
+                    document.querySelector('#item3').innerHTML = "Number 3";
+                    document.querySelector('#item2').innerHTML = "Number 2";
+                    document.querySelector('#item1').innerHTML = "Number 1";
+                    //ng-repeat="aItem in myItems | orderBy: ['-rank', 'name']
+                    //var localMyItems = $scope.myItems.sort(function(a, b) { return a.rank - b.rank });
+
+                    var localMyItems = $scope.myItems.slice(0);
+                    localMyItems.sort(function(a,b) {
+                        var x = a.rank;
+                        var y = b.rank;
+                        //    console.log("x: " + x + " y: " + y);
+                        return x > y ? -1 : x < y ? 1 : 0;
+                    });
+
+                    //for (var i=0; i < $scope.myItems.length; i++) {
+                    //  console.log("$scope.myItems[" + i + "].name = " + $scope.myItems[i].name + " rank: " + $scope.myItems[i].rank);
+                    //  console.log("localMyItems[" + i + "].name = " + localMyItems[i].name + " rank: " + localMyItems[i].rank);
+                    //}
+                    if (localMyItems.length >= 10) {
+                        document.querySelector('#item10').innerHTML = localMyItems[9].name;
+                    } 
+                    if (localMyItems.length >= 9) {
+                        document.querySelector('#item9').innerHTML = localMyItems[8].name;
+                    }
+                    if (localMyItems.length >= 8) {
+                        document.querySelector('#item8').innerHTML = localMyItems[7].name;
+                    }
+                    if (localMyItems.length >= 7) {
+                        document.querySelector('#item7').innerHTML = localMyItems[6].name;
+                    }
+                    if (localMyItems.length >= 6) {
+                        document.querySelector('#item6').innerHTML = localMyItems[5].name;
+                    } 
+                    if (localMyItems.length >= 5) {
+                        document.querySelector('#item5').innerHTML = localMyItems[4].name;
+                    }
+                    if (localMyItems.length >= 4) {
+                        document.querySelector('#item4').innerHTML = localMyItems[3].name;
+                    }
+                    if (localMyItems.length >= 3) {
+                        document.querySelector('#item3').innerHTML = localMyItems[2].name;
+                    }
+                    if (localMyItems.length >= 2) {
+                        document.querySelector('#item2').innerHTML = localMyItems[1].name;
+                    } 
+                    //document.querySelector('#item1').innerHTML = "Number 1";
+                    document.querySelector('#item1').innerHTML = localMyItems[0].name;
+
+                    $("#mytitle").show();
+                    //$("#mytitle").animate( {left: '100%', top: "25px"} );
+
+                    $("#item10").animate( {left: '0%', top: "25px"} );
+                    $("#item9").animate( {left: '100%', top: "25px"} );
+                    $("#item8").animate( {left: '0%', top: "25px"} );
+                    $("#item7").animate( {left: '100%', top: "25px"} );
+                    $("#item6").animate( {left: '0%', top: "25px"} );
+                    $("#item5").animate( {left: '100%', top: "25px"} );
+                    $("#item4").animate( {left: '0%', top: "25px"} );
+                    $("#item3").animate( {left: '100%', top: "25px"} );
+                    $("#item2").animate( {left: '0%', top: "25px"} );
+                    $("#item1").animate( {left: '100%', top: "25px"} );
+
+                    //    myTestAnimate("testitem");
+
+                    //myTitleAnimate($("#mytitle"));
+                    //myTitleAnimate2("mytitle");
+
+                    //myItem10Animate($("#item10"));
+                    //myRightAnimate("mytitle");
+                    
+                    myLeftAnimate("item10");
+                    myRightAnimate("item9");
+                    myLeftAnimate("item8");
+                    myRightAnimate("item7");
+                    myLeftAnimate("item6");
+                    myRightAnimate("item5");
+                    myLeftAnimate("item4");
+                    myRightAnimate("item3");
+                    myLeftAnimate("item2");
+
+                    myRightAnimateItem1("item1");
+                    
+                    //$("#item10").show();
+                    //$("#item9").show();
+                    //$("#item8").show();
+                    //$("#item7").show();
+                    //$("#item6").show();
+                    //$("#item5").show();
+                    //$("#item4").show();
+                    //$("#item3").show();
+                    //$("#item2").show();
+                    //$("#item1").show();
+
+                    //myItem1Animate($("#item1"));
+
+                    //    setTimeout(function(){
+                    //        	location.reload();
+                    //        	}, 20000);
+                };
+
 
                 $scope.myShowDetails = function () {
                     if ($scope.buttonShowDetailsText == "Hide Details") {

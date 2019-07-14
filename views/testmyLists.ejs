@@ -1250,13 +1250,13 @@
                     //ng-repeat="aItem in myItems | orderBy: ['-rank', 'name']
                     //var localMyItems = $scope.myItems.sort(function(a, b) { return a.rank - b.rank });
 
-                    var localMyItems = $scope.myItems.slice(0);
-                    localMyItems.sort(function(a,b) {
-                        var x = a.rank;
-                        var y = b.rank;
+////                    var localMyItems = $scope.myItems.slice(0);
+////                    localMyItems.sort(function(a,b) {
+////                        var x = a.rank;
+////                        var y = b.rank;
                         //    console.log("x: " + x + " y: " + y);
-                        return true; //// x > y ? -1 : x < y ? 1 : 0;
-                    });
+////                        return true; //// x > y ? -1 : x < y ? 1 : 0;
+////                    });
 
                     //for (var i=0; i < $scope.myItems.length; i++) {
                     //  console.log("$scope.myItems[" + i + "].name = " + $scope.myItems[i].name + " rank: " + $scope.myItems[i].rank);
@@ -1492,7 +1492,7 @@
             <td>
                 <div ng-view id=myListsTable>
                     
-                    <h3><span class="fa "></span> My Lists:: ({{ myLists.length }})
+                    <h3><span class="fa "></span> My Lists::: ({{ myLists.length }})
                         <span ng-if="moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
                                 ng-click="showNewListForm()"

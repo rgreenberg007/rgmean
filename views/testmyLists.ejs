@@ -1137,7 +1137,7 @@
                 function myTestAnimate(myelementid) {
 	                //console.log('myTestAnimate myelementid = ' + myelementid + ' testAnimateCnt = ' + testAnimateCnt +
 	                //' myeffect[testAnimateCnt] = ' + myeffect[testAnimateCnt]);
-	                var element1 =  document.querySelector('#' + myelementid);
+////	                var element1 =  document.querySelector('#' + myelementid);
                     if (testAnimateCnt == 0) {
 	                    var element2 = $('#' + myelementid);
 ////	                    element2.animate({left: '20%', top: '+=100px'}, 1000);
@@ -1178,7 +1178,7 @@
 	                var animateInx = Math.floor(Math.random() * myeffect.length);
 	                //console.log('myRandomAnimate myelementid = ' + myelementid + 
 	                //' myeffect[animateInx] = ' + myeffect[animateInx]);
-	                var element1 =  document.querySelector('#' + myelementid);
+////	                var element1 =  document.querySelector('#' + myelementid);
 	                //element1.className = 'animated ' + myeffect[0] + ' infinite';
 	                //element1.className = 'animated ' + myeffect[Math.floor(Math.random() * myeffect.length)] + ' infinite';
 	                //element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
@@ -1233,20 +1233,20 @@
                     
 
                     //document.querySelector('#mytitle').innerHTML = "Top 10 Lists";
-                    document.querySelector('#mytitle').innerHTML = $scope.currentListName;
-                    document.querySelector('#item10').innerHTML = "Number 10";
+////                    document.querySelector('#mytitle').innerHTML = $scope.currentListName;
+////                    document.querySelector('#item10').innerHTML = "Number 10";
                     //let item9 =  document.querySelector('#item9');
                     //item9.innerHTML = "testing this";
-                    document.querySelector('#item9').innerHTML = "Number 9";
+////                    document.querySelector('#item9').innerHTML = "Number 9";
                     //console.log("item9.innerHTML = " + item9.innerHTML);  
-                    document.querySelector('#item8').innerHTML = "Number 8";
-                    document.querySelector('#item7').innerHTML = "Number 7";
-                    document.querySelector('#item6').innerHTML = "Number 6";
-                    document.querySelector('#item5').innerHTML = "Number 5";
-                    document.querySelector('#item4').innerHTML = "Number 4";
-                    document.querySelector('#item3').innerHTML = "Number 3";
-                    document.querySelector('#item2').innerHTML = "Number 2";
-                    document.querySelector('#item1').innerHTML = "Number 1";
+////                    document.querySelector('#item8').innerHTML = "Number 8";
+////                    document.querySelector('#item7').innerHTML = "Number 7";
+////                    document.querySelector('#item6').innerHTML = "Number 6";
+////                    document.querySelector('#item5').innerHTML = "Number 5";
+////                    document.querySelector('#item4').innerHTML = "Number 4";
+////                    document.querySelector('#item3').innerHTML = "Number 3";
+////                    document.querySelector('#item2').innerHTML = "Number 2";
+////                    document.querySelector('#item1').innerHTML = "Number 1";
                     //ng-repeat="aItem in myItems | orderBy: ['-rank', 'name']
                     //var localMyItems = $scope.myItems.sort(function(a, b) { return a.rank - b.rank });
 
@@ -1263,34 +1263,34 @@
                     //  console.log("localMyItems[" + i + "].name = " + localMyItems[i].name + " rank: " + localMyItems[i].rank);
                     //}
                     if (localMyItems.length >= 10) {
-                        document.querySelector('#item10').innerHTML = localMyItems[9].name;
+////                        document.querySelector('#item10').innerHTML = localMyItems[9].name;
                     }; 
                     if (localMyItems.length >= 9) {
-                        document.querySelector('#item9').innerHTML = localMyItems[8].name;
+////                        document.querySelector('#item9').innerHTML = localMyItems[8].name;
                     };
                     if (localMyItems.length >= 8) {
-                        document.querySelector('#item8').innerHTML = localMyItems[7].name;
+////                        document.querySelector('#item8').innerHTML = localMyItems[7].name;
                     };
                     if (localMyItems.length >= 7) {
-                        document.querySelector('#item7').innerHTML = localMyItems[6].name;
+////                        document.querySelector('#item7').innerHTML = localMyItems[6].name;
                     };
                     if (localMyItems.length >= 6) {
-                        document.querySelector('#item6').innerHTML = localMyItems[5].name;
+////                        document.querySelector('#item6').innerHTML = localMyItems[5].name;
                     };
                     if (localMyItems.length >= 5) {
-                        document.querySelector('#item5').innerHTML = localMyItems[4].name;
+////                        document.querySelector('#item5').innerHTML = localMyItems[4].name;
                     };
                     if (localMyItems.length >= 4) {
-                        document.querySelector('#item4').innerHTML = localMyItems[3].name;
+////                        document.querySelector('#item4').innerHTML = localMyItems[3].name;
                     };
                     if (localMyItems.length >= 3) {
-                        document.querySelector('#item3').innerHTML = localMyItems[2].name;
+////                        document.querySelector('#item3').innerHTML = localMyItems[2].name;
                     };
                     if (localMyItems.length >= 2) {
-                        document.querySelector('#item2').innerHTML = localMyItems[1].name;
+////                        document.querySelector('#item2').innerHTML = localMyItems[1].name;
                     };
                     //document.querySelector('#item1').innerHTML = "Number 1";
-                    document.querySelector('#item1').innerHTML = localMyItems[0].name;
+////                    document.querySelector('#item1').innerHTML = localMyItems[0].name;
 
                     $("#mytitle").show();
                     //$("#mytitle").animate( {left: '100%', top: "25px"} );
@@ -1492,7 +1492,7 @@
             <td>
                 <div ng-view id=myListsTable>
                     
-                    <h3><span class="fa "></span> My Lists: ({{ myLists.length }})
+                    <h3><span class="fa "></span> My Lists:: ({{ myLists.length }})
                         <span ng-if="moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
                                 ng-click="showNewListForm()"

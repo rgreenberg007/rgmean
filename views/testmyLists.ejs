@@ -991,8 +991,8 @@
                 function item1looping() {
                     //$('#item1').fadeOut(1000);
                     //$('#item1').fadeIn(1000);
-                    $('#item1').animate({color: 'red'}, 500);
-                    $('#item1').animate({color: 'blue'}, 500);
+////                    $('#item1').animate({color: 'red'}, 500);
+////                    $('#item1').animate({color: 'blue'}, 500);
                     if (!myAnimationStopped) {
                         timeoutItem1Loop = setTimeout(function(){
                             item1looping();
@@ -1006,9 +1006,9 @@
                     } else {
 	                    item10Deg = item10Deg + 30;
                     };
-                    $('#item10')
-                        .delay(6000).animate({ color: 'green'}, 500)
-                        .css({"transform":"rotateZ(" + item10Deg + "deg)"});
+////                    $('#item10')
+////                        .delay(6000).animate({ color: 'green'}, 500)
+////                        .css({"transform":"rotateZ(" + item10Deg + "deg)"});
                         //.css({"transform":"rotateZ(30deg)"}); 
                     if (!myAnimationStopped) {
                         item10Cnt = item10Cnt + 1;
@@ -1026,11 +1026,11 @@
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                 
 
-                    element2.animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
+////                    element2.animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
                         //.animate({left: '50%'}, 1000)
-                        .animate({left: $(window).width() / 3 }, 1000)
-                        .animate({fontSize: '2em', color: 'red'}, 500)
-                        .animate( {top: myFinalPosFromTop + "px"}, 1100 );
+////                        .animate({left: $(window).width() / 3 }, 1000)
+////                        .animate({fontSize: '2em', color: 'red'}, 500)
+////                        .animate( {top: myFinalPosFromTop + "px"}, 1100 );
                     //setTimeout(function(){
                         //    myRandomAnimate(myElement);
                     //  }, 5000);
@@ -1041,13 +1041,13 @@
                     let element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
-                    element2.animate({right: '0%'})
-                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement) //.show(1000
+////                    element2.animate({right: '0%'})
+////                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement) //.show(1000
                         //.animate({center}, 1000)
                         //.animate({left: '50%'}, 1000)
-                        .animate({left: $(window).width() / 3  }, 1000)
-                        .animate({fontSize: '2em', color: 'red'}, 500)
-                        .animate( {top: myFinalPosFromTop + "px"}, 1100 ); //, myRandomAnimate(myElement) );
+////                        .animate({left: $(window).width() / 3  }, 1000)
+////                        .animate({fontSize: '2em', color: 'red'}, 500)
+////                        .animate( {top: myFinalPosFromTop + "px"}, 1100 ); //, myRandomAnimate(myElement) );
                     //for (var i = 0; i < 10; i++) {
                         //setTimeout(function(){
                         //  myRandomAnimate(myElement);
@@ -1069,34 +1069,34 @@
                     //    .animate( {top: myFinalPosFromTop + "px"}, 1100, item1looping() ); //, myRandomAnimate(myElement) );
                     //item1looping();
                     //myRandomAnimate(myElement); 
-                    element2.animate({right: '0%'})
-                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
+////                    element2.animate({right: '0%'})
+////                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
                         //.animate({center}, 1000)
                         //.animate({left: '50%'}, 1000)
-                        .animate({left: $(window).width() / 3  }, 1000)
-                        .animate({fontSize: '2em', color: 'red'}, 500)
-                        .animate( {top: myFinalPosFromTop + "px"}, 1100)
-                        .animate({fontSize: '2em', color: 'green'}, 500); //, item1looping() );
+////                        .animate({left: $(window).width() / 3  }, 1000)
+////                        .animate({fontSize: '2em', color: 'red'}, 500)
+////                        .animate( {top: myFinalPosFromTop + "px"}, 1100)
+////                        .animate({fontSize: '2em', color: 'green'}, 500); //, item1looping() );
                 };
 
                 function myItem1Animate(myElement) {
                     myDelay = myDelay + myDelayIncrement;
-                    myElement.animate( {top: "100px"} ).delay(myDelay).show(1000)
-	                    .animate({left: '40%'}, 1000)
-	                    .animate({fontSize: '2em', color: 'red'}, 500)
-	                    .animate( {top: "+=50px"}, 1100 )
-	                    .delay(500)
-	                    .animate( {top: "-=25px"}, 1100 )
-	                    .animate({fontSize: '1em', color: 'black'}, 500)
-	                    .animate({fontSize: '3em', color: 'blue'}, 500, item1looping());
+////                    myElement.animate( {top: "100px"} ).delay(myDelay).show(1000)
+////	                    .animate({left: '40%'}, 1000)
+////	                    .animate({fontSize: '2em', color: 'red'}, 500)
+////	                    .animate( {top: "+=50px"}, 1100 )
+////	                    .delay(500)
+////	                    .animate( {top: "-=25px"}, 1100 )
+////	                    .animate({fontSize: '1em', color: 'black'}, 500)
+////	                    .animate({fontSize: '3em', color: 'blue'}, 500, item1looping());
                 };
 
                 function myItem10Animate(myElement) {
                     myDelay = myDelay + myDelayIncrement;
-                    myElement.animate( {top: "+=100px"} ).delay(myDelay).show(1000)
-	                    .animate({left: '40%'}, 1000)
-	                    .animate({fontSize: '2em', color: 'red'}, 500)
-	                    .animate( {top: "+=500px"}, 1100, item10rotate() );
+////                    myElement.animate( {top: "+=100px"} ).delay(myDelay).show(1000)
+////	                    .animate({left: '40%'}, 1000)
+////	                    .animate({fontSize: '2em', color: 'red'}, 500)
+////	                    .animate( {top: "+=500px"}, 1100, item10rotate() );
                         //.animate( {"transform": "rotateZ(25deg)"}, 100);
                         //.css({"transform":"rotateZ(90deg)"});
                         //.css({"transform":"rotateZ(90deg)","left":"0"}); 
@@ -1108,9 +1108,9 @@
                     //div.animate({left: '100px'}, "slow");
                     //div.animate( {translateX(-50%)}, "slow" );
                     //myElement.animate({left: '20%'}, 1000);
-                    myElement.animate({left: myElement.parent().width() / 2 - myElement.width() / 2}, 1000);
+////                    myElement.animate({left: myElement.parent().width() / 2 - myElement.width() / 2}, 1000);
                     
-                    myElement.animate({fontSize: '4em', color: 'red'}, 1100);
+////                    myElement.animate({fontSize: '4em', color: 'red'}, 1100);
                     //div.fadeOut(1000);
                 };
 
@@ -1120,10 +1120,10 @@
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                     //myElement.animate({right: '0%'})
-                    element2.animate({right: '0%'})
-                        .animate( {top: "+=100px"} ).delay(myDelay).show(1000)
-                        .animate({left: '40%'}, 1000)
-                        .animate({fontSize: '2em', color: 'red'}, 500);
+////                    element2.animate({right: '0%'})
+////                        .animate( {top: "+=100px"} ).delay(myDelay).show(1000)
+////                        .animate({left: '40%'}, 1000)
+////                        .animate({fontSize: '2em', color: 'red'}, 500);
                         //.animate( {top: myFinalPosFromTop + "px"}, 1100 ); //, myRandomAnimate(myElement) );
                     //for (var i = 0; i < 10; i++) {
                         //setTimeout(function(){
@@ -1140,10 +1140,10 @@
 	                let element1 =  document.querySelector('#' + myelementid);
                     if (testAnimateCnt == 0) {
 	                    let element2 = $('#' + myelementid);
-	                    element2.animate({left: '20%', top: '+=100px'}, 1000);
+////	                    element2.animate({left: '20%', top: '+=100px'}, 1000);
                     } else {
-                    	element1.className = 'animated ' + myeffect[testAnimateCnt]; // infinite';
-	                    element1.animated;
+////                    	element1.className = 'animated ' + myeffect[testAnimateCnt]; // infinite';
+////	                    element1.animated;
 	                };
                 	testAnimateCnt = testAnimateCnt + 1;
 	                if (testAnimateCnt < 14) {
@@ -1191,8 +1191,8 @@
                         if (myeffect[animateInx] == "hinge") {
                             // skip
                         } else {
-		                    element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
-                            element1.animated;
+////		                    element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
+////                            element1.animated;
                         };
 	                };
 
@@ -1295,16 +1295,16 @@
                     $("#mytitle").show();
                     //$("#mytitle").animate( {left: '100%', top: "25px"} );
 
-                    $("#item10").animate( {left: '0%', top: "25px"} );
-                    $("#item9").animate( {left: '100%', top: "25px"} );
-                    $("#item8").animate( {left: '0%', top: "25px"} );
-                    $("#item7").animate( {left: '100%', top: "25px"} );
-                    $("#item6").animate( {left: '0%', top: "25px"} );
-                    $("#item5").animate( {left: '100%', top: "25px"} );
-                    $("#item4").animate( {left: '0%', top: "25px"} );
-                    $("#item3").animate( {left: '100%', top: "25px"} );
-                    $("#item2").animate( {left: '0%', top: "25px"} );
-                    $("#item1").animate( {left: '100%', top: "25px"} );
+////                    $("#item10").animate( {left: '0%', top: "25px"} );
+////                    $("#item9").animate( {left: '100%', top: "25px"} );
+////                    $("#item8").animate( {left: '0%', top: "25px"} );
+////                    $("#item7").animate( {left: '100%', top: "25px"} );
+////                    $("#item6").animate( {left: '0%', top: "25px"} );
+////                    $("#item5").animate( {left: '100%', top: "25px"} );
+////                    $("#item4").animate( {left: '0%', top: "25px"} );
+////                    $("#item3").animate( {left: '100%', top: "25px"} );
+////                    $("#item2").animate( {left: '0%', top: "25px"} );
+////                    $("#item1").animate( {left: '100%', top: "25px"} );
 
                     //    myTestAnimate("testitem");
 

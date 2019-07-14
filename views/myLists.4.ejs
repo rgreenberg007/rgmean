@@ -101,15 +101,11 @@
                 $scope.myShowAll = 'N';
                 $scope.buttonShowDetailsText = "Show Details";
 
-                $scope.myShowAllItems = 'N';
-                $scope.buttonShowDetailsTextItems = "Show Details";
-
                 // GET =====================================================================
                 myLists.get(userEmail)
                     .success(function (data) {
                         console.log("myLists.ejs: mainController myLists.get success");
                         $scope.myShowAll = 'N';
-                        $scope.myShowAllItems = 'N';
                         $scope.myLists = data;
                         $scope.loading = false;
                         $("#listnametaken").hide();
@@ -1361,16 +1357,6 @@
                     }
                 };
 
-                $scope.myShowDetailsItems = function () {
-                    if ($scope.buttonShowDetailsTextItems == "Hide Details") {
-                        $scope.buttonShowDetailsTextItems = "Show Details";
-                        $scope.myShowAllItems = 'N';
-                    } else {
-                        $scope.buttonShowDetailsTextItems = "Hide Details";
-                        $scope.myShowAllItems = 'Y';
-                    }
-                };
-
             }]);
 
         app.filter('startFrom', function () {
@@ -1791,8 +1777,6 @@
                         ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonAnimate
                         ng-click="animateList()">Animate</button>
-                    <button type="submit" class="btn btn-primary btn-sm"
-                        ng-click="myShowDetailsItems()">{{ buttonShowDetailsTextItems }}</button>
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
                         ng-click="backToList()">Go Back</button>
                 </h3>
@@ -1805,7 +1789,7 @@
             <div>
                 <table ng-table="myItemsTableParams" border="0" cellspacing="0" cellpadding="0"
                 class="table table-striped" >
-                    <tr ng-if="myShowAllItems == 'Y'">
+                    <tr>
                         <th>Name</th>
                         <th>Description</th>
                         <!-- th>Owner</th -->
@@ -1818,12 +1802,12 @@
                         | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2" -->
                     <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
                         | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
-                        <td data-toggle="tooltip" title= "{{aItem.description}} Points: {{ aItem.rank }}">{{ aItem.name }}</td>
-                        <td ng-if="myShowAllItems == 'Y'">{{ aItem.description }}</td>
+                        <td>{{ aItem.name }}</td>
+                        <td>{{ aItem.description }}</td>
                         <!-- td>{{ aItem.owner }}</td -->
                         <!-- td>{{ aItem.list }}</td -->
                         <!-- td>{{ aItem.suggestion }}</td -->
-                        <td ng-if="myShowAllItems == 'Y'">{{ aItem.rank }}</td>
+                        <td>{{ aItem.rank }}</td>
                         <td>
                             <span ng-if="myItems2 == undefined && allowEdit">
                                 <button type="submit" class="btn btn-primary btn-sm"
@@ -2037,7 +2021,7 @@
                         <span ng-if="myComments.length > 0">
                             <table ng-table="myItemsTable2Params" border="0" cellspacing="0" cellpadding="0"
                             class="table table-striped" >
-                                <tr ng-if="myShowAllItems == 'Y'">
+                                <tr>
                                     <th>Comments:</th>
                                     <th>By</th>
                                     <th>When</th>
@@ -2051,11 +2035,9 @@
                                         {{ comment.comment }} by: {{ comment.ownerScreenName }} 
                                         on: {{ myGetDateFromTimeStamp(comment.timeStamp); }}
                                         </td -->
-                                        <td data-toggle="tooltip" 
-                                                    title= "By: {{comment.ownerScreenName}} On: {{ myGetDateFromTimeStamp(comment.timeStamp); }}"
-                                                    >{{ comment.comment }}</td>
-                                        <td ng-if="myShowAllItems == 'Y'">{{ comment.ownerScreenName }}</td>
-                                        <td ng-if="myShowAllItems == 'Y'">{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>               
+                                        <td>{{ comment.comment }}</td>
+                                        <td>{{ comment.ownerScreenName }}</td>
+                                        <td>{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>
                                         <td>
                                             <span ng-if="isMyOwner(comment.ownerEmail)">
                                                 <button type="submit" class="btn btn-primary btn-sm"

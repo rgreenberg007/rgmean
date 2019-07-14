@@ -15,6 +15,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <base href="/" />
@@ -33,6 +36,7 @@
                 $("#itemnametaken").hide();
                 $("#myItemsTable").hide();
                 $("#addItemForm").hide();
+                $("#myAnimate").hide();
 
                 $scope.currentPage = 0;
                 $scope.currentPage2 = 0;
@@ -50,20 +54,40 @@
                 $scope.buttonCommentFormText = "Show Comments";
                 $("#commentForm").hide();
                 
+                var myWindowWidth;
+                var timeoutItem1Loop;
+                var timeoutItem10Rotote;
+                var timeoutRandomAnimate;
+                var myAnimationStopped = false;
+                var myDelay = 0;
+                var myDelayIncrement = 1000;
+                var myFinalPosFromTop = 600;
+                var myFinalPosFromTopDecrement = 50;
+                var item10Cnt = 0;
+                var item10Deg = 0;
+                var testAnimateCnt = 0;
+                var myeffect = ['bounce', 'flash', 'pulse', 'rubberBand', 'shake', 'headShake', 'pulse', 
+                  'tada', 'wobble', 'jello', 'bounce', 'bounce', 'jackInTheBox', 'heartBeat'] ; // hidge, swing out!
+                  
                 $scope.myShowAll = 'N';
                 $scope.buttonShowDetailsText = "Show Details";
+
+                $scope.myShowAllItems = 'N';
+                $scope.buttonShowDetailsTextItems = "Show Details";
 
                 // GET =====================================================================
                 myLists.get()
                     .success(function (data) {
                         console.log("myPublicLists.ejs: mainController myLists.get success");
                         $scope.myShowAll = 'N';
+                        $scope.myShowAllItems = 'N';
                         $scope.myLists = data;
                         $scope.loading = false;
                         $("#listnametaken").hide();
                         $("#itemnametaken").hide();
                         $("#myItemsTable").hide();
                         $("#addItemForm").hide();
+                        $("#myAnimate").hide();
                     });
 
                 myLists.getAllPublicGrps()
@@ -320,9 +344,66 @@
                     //return true;
                 };
 
+                $scope.animateStop = function () {
+                    //  clearTimeout(myVar); // stop all timeouts that were set
+                    console.log("animateStop called");
+                    myAnimationStopped = true;
+                    clearTimeout(timeoutItem1Loop);
+                    clearTimeout(timeoutItem10Rotote);
+                    clearTimeout(timeoutRandomAnimate);
+
+                    myDelay = 0;
+                    myDelayIncrement = 1000;
+                    myFinalPosFromTop = 600;
+                    myFinalPosFromTopDecrement = 50;
+                    item10Cnt = 0;
+                    item10Deg = 0;
+                    testAnimateCnt = 0;
+                
+                    //$("#buttonAnimateStop").hide();
+                    $("#myAnimate").hide();
+                    $("#myListsTable").hide();
+                    //$("#addListForm").hide();
+                    //$("#modListForm").hide();
+                    $("#myItemsTable").show();
+                    $("#commentForm").hide();
+                    //$("#addItemForm").show();
+                    //$("#modItemForm").hide();
+                    //$("#listnametaken").hide();
+                }
+
+                $scope.animateList = function () {
+                    $scope.aboutToShowItems = false;
+                    $scope.aboutToShowRank = false;
+                    $scope.myItems2 = undefined;
+                    $scope.buttonCommentFormText = "Show Comments";
+
+                    myDelay = -955;
+                    myDelayIncrement = 1000;
+                    myFinalPosFromTop = 600;
+                    myFinalPosFromTopDecrement = 50;
+                    item10Cnt = 0;
+                    item10Deg = 0;
+                    testAnimateCnt = 0;
+
+                    $("#myListsTable").hide();
+                    //$("#addListForm").hide();
+                    //$("#modListForm").hide();
+                    $("#myItemsTable").hide();
+                    $("#commentForm").hide();
+                    //$("#addItemForm").hide();
+                    //$("#modItemForm").hide();
+                    //$("#listnametaken").hide();
+                    //$("#buttonAnimateStop").show();
+                    $("#myAnimate").show();
+                
+                    myAnimationStopped = false;
+                    myStartToAnimate();
+                };
+
                 $scope.backToList = function () {
                     //$scope.myItems2 = [];
-                    $scope.buttonCommentFormText = "Show/Add Comments";
+                    $scope.buttonCommentFormText = "Show Comments";
                     $("#myListsTable").show();
                     //$("#addListForm").hide();
                     //$("#modListForm").hide();
@@ -373,6 +454,372 @@
                     return myTime.substring(0,10);
                 };
 
+                // animation stuff - also var defined above and some start and stop functions above
+                // Seems let cannot be used for iPad use Var
+                // Seems the below comment needs to be a html comment or else iPad does not work
+                //<!-- % include myAnimateCode % -->
+
+                //function sleep(delay) {
+                  //  var start = new Date().getTime();
+                  //  while (new Date().getTime() < start + delay);
+                //}
+
+                function item1looping() {
+                    //$('#item1').fadeOut(1000);
+                    //$('#item1').fadeIn(1000);
+                    $('#item1').animate({color: 'red'}, 500);
+                    $('#item1').animate({color: 'blue'}, 500);
+                    if (!myAnimationStopped) {
+                        timeoutItem1Loop = setTimeout(function(){
+                            item1looping();
+                        }, 1010);
+                    }
+                };
+
+                function item10rotate() {
+                    if (item10Deg == 270) {
+	                    item10Deg = 0;
+                    } else {
+	                    item10Deg = item10Deg + 30;
+                    };
+                    $('#item10')
+                        .delay(6000).animate({ color: 'green'}, 500)
+                        .css({"transform":"rotateZ(" + item10Deg + "deg)"});
+                        //.css({"transform":"rotateZ(30deg)"}); 
+                    if (!myAnimationStopped) {
+                        item10Cnt = item10Cnt + 1;
+                        if (item10Cnt < 10) {
+                            timeoutItem10Rotote = setTimeout(function(){
+                                item10rotate();
+                            }, 1000);
+                        }
+                    }
+                };
+
+                function myLeftAnimate(myElement) {
+                    var element2 = $('#' + myElement);
+                    myDelay = myDelay + myDelayIncrement;
+                    myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
+                    
+
+                    element2.animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
+                        //.animate({left: '50%'}, 1000)
+                        .animate({left: $(window).width() / 3 }, 1000)
+                        .animate({fontSize: '2em', color: 'red'}, 500)
+                        .animate( {top: myFinalPosFromTop + "px"}, 1100 );
+                    //setTimeout(function(){
+                        //    myRandomAnimate(myElement);
+                    //  }, 5000);
+                    myRandomAnimate(myElement);
+                };
+
+                function myRightAnimate(myElement) {
+                    var element2 = $('#' + myElement);
+                    myDelay = myDelay + myDelayIncrement;
+                    myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
+                    element2.animate({right: '0%'})
+                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement) //.show(1000
+                        //.animate({center}, 1000)
+                        //.animate({left: '50%'}, 1000)
+                        .animate({left: $(window).width() / 3  }, 1000)
+                        .animate({fontSize: '2em', color: 'red'}, 500)
+                        .animate( {top: myFinalPosFromTop + "px"}, 1100 ); //, myRandomAnimate(myElement) );
+                    //for (var i = 0; i < 10; i++) {
+                        //setTimeout(function(){
+                        //  myRandomAnimate(myElement);
+                        //}, 1000);
+                        //sleep(1000);
+                    //}
+                    myRandomAnimate(myElement); 
+                };
+
+                function myRightAnimateItem1(myElement) {
+                    console.log("myRightAnimateItem1 called");
+                    var element2 = $('#' + myElement);
+                    myDelay = myDelay + myDelayIncrement;
+                    myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
+                    //element2 .animate({right: '0%'})
+                    //    .animate( {top: "+=100px"} ).delay(myDelay).show(1000)
+                    //    .animate({left: '30%'}, 1000)
+                    //    .animate({fontSize: '2em', color: 'red'}, 500)
+                    //    .animate( {top: myFinalPosFromTop + "px"}, 1100, item1looping() ); //, myRandomAnimate(myElement) );
+                    //item1looping();
+                    //myRandomAnimate(myElement); 
+                    element2.animate({right: '0%'})
+                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement)
+                        //.animate({center}, 1000)
+                        //.animate({left: '50%'}, 1000)
+                        .animate({left: $(window).width() / 3  }, 1000)
+                        .animate({fontSize: '2em', color: 'red'}, 500)
+                        .animate( {top: myFinalPosFromTop + "px"}, 1100)
+                        .animate({fontSize: '2em', color: 'green'}, 500); //, item1looping() );
+                };
+
+                function myItem1Animate(myElement) {
+                    myDelay = myDelay + myDelayIncrement;
+                    myElement.animate( {top: "100px"} ).delay(myDelay).show(1000)
+	                    .animate({left: '40%'}, 1000)
+	                    .animate({fontSize: '2em', color: 'red'}, 500)
+	                    .animate( {top: "+=50px"}, 1100 )
+	                    .delay(500)
+	                    .animate( {top: "-=25px"}, 1100 )
+	                    .animate({fontSize: '1em', color: 'black'}, 500)
+	                    .animate({fontSize: '3em', color: 'blue'}, 500, item1looping());
+                };
+
+                function myItem10Animate(myElement) {
+                    myDelay = myDelay + myDelayIncrement;
+                    myElement.animate( {top: "+=100px"} ).delay(myDelay).show(1000)
+	                    .animate({left: '40%'}, 1000)
+	                    .animate({fontSize: '2em', color: 'red'}, 500)
+	                    .animate( {top: "+=500px"}, 1100, item10rotate() );
+                        //.animate( {"transform": "rotateZ(25deg)"}, 100);
+                        //.css({"transform":"rotateZ(90deg)"});
+                        //.css({"transform":"rotateZ(90deg)","left":"0"}); 
+                        //item10.delay(5900).css({"transform":"rotateZ(90deg)"});
+                        //.animation( {rotate}, 1000, "ease-out");
+                };
+
+                function myTitleAnimate(myElement) {
+                    //div.animate({left: '100px'}, "slow");
+                    //div.animate( {translateX(-50%)}, "slow" );
+                    //myElement.animate({left: '20%'}, 1000);
+                    myElement.animate({left: myElement.parent().width() / 2 - myElement.width() / 2}, 1000);
+                    
+                    myElement.animate({fontSize: '4em', color: 'red'}, 1100);
+                    //div.fadeOut(1000);
+                };
+
+                function myTitleAnimate2(myElement) {
+                    console.log("myTitleAnimate2 called");
+                    var element2 = $('#' + myElement);
+                    myDelay = myDelay + myDelayIncrement;
+                    myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
+                    //myElement.animate({right: '0%'})
+                    element2.animate({right: '0%'})
+                        .animate( {top: "+=100px"} ).delay(myDelay).show(1000)
+                        .animate({left: '40%'}, 1000)
+                        .animate({fontSize: '2em', color: 'red'}, 500);
+                        //.animate( {top: myFinalPosFromTop + "px"}, 1100 ); //, myRandomAnimate(myElement) );
+                    //for (var i = 0; i < 10; i++) {
+                        //setTimeout(function(){
+                        //  myRandomAnimate(myElement);
+                        //}, 1000);
+                        //sleep(1000);
+                    //}
+                    myRandomAnimate(myElement); 
+                };
+
+                function myTestAnimate(myelementid) {
+	                //console.log('myTestAnimate myelementid = ' + myelementid + ' testAnimateCnt = ' + testAnimateCnt +
+	                //' myeffect[testAnimateCnt] = ' + myeffect[testAnimateCnt]);
+	                var element1 =  document.querySelector('#' + myelementid);
+                    if (testAnimateCnt == 0) {
+	                    var element2 = $('#' + myelementid);
+	                    element2.animate({left: '20%', top: '+=100px'}, 1000);
+                    } else {
+                    	element1.className = 'animated ' + myeffect[testAnimateCnt]; // infinite';
+	                    element1.animated;
+	                }
+                	testAnimateCnt = testAnimateCnt + 1;
+	                if (testAnimateCnt < 14) {
+    		            setTimeout(function(){
+        	            myTestAnimate(myelementid);
+        	                }, 2000);
+  	                }
+                    // bounce	flash	pulse	rubberBand
+                    // shake	headShake	swing	tada
+                    // wobble	jello	bounceIn	bounceInDown
+                    // bounceInLeft	bounceInRight	bounceInUp	bounceOut
+                    // bounceOutDown	bounceOutLeft	bounceOutRight	bounceOutUp
+                    // fadeIn	fadeInDown	fadeInDownBig	fadeInLeft
+                    // fadeInLeftBig	fadeInRight	fadeInRightBig	fadeInUp
+                    // fadeInUpBig	fadeOut	fadeOutDown	fadeOutDownBig
+                    // fadeOutLeft	fadeOutLeftBig	fadeOutRight	fadeOutRightBig
+                    // fadeOutUp	fadeOutUpBig	flipInX	flipInY
+                    // flipOutX	flipOutY	lightSpeedIn	lightSpeedOut
+                    // rotateIn	rotateInDownLeft	rotateInDownRight	rotateInUpLeft
+                    // rotateInUpRight	rotateOut	rotateOutDownLeft	rotateOutDownRight
+                    // rotateOutUpLeft	rotateOutUpRight	hinge	jackInTheBox
+                    // rollIn	rollOut	zoomIn	zoomInDown
+                    // zoomInLeft	zoomInRight	zoomInUp	zoomOut 
+                    // zoomOutDown	zoomOutLeft	zoomOutRight	zoomOutUp
+                    // slideInDown	slideInLeft	slideInRight	slideInUp
+                    // slideOutDown	slideOutLeft	slideOutRight	slideOutUp
+                    //heartBeat		
+                };
+
+                // Math.floor(Math.random() * 11);      // returns a random integer from 0 to 10
+                function myRandomAnimate(myelementid) {
+	                var animateInx = Math.floor(Math.random() * myeffect.length);
+	                //console.log('myRandomAnimate myelementid = ' + myelementid + 
+	                //' myeffect[animateInx] = ' + myeffect[animateInx]);
+	                var element1 =  document.querySelector('#' + myelementid);
+	                //element1.className = 'animated ' + myeffect[0] + ' infinite';
+	                //element1.className = 'animated ' + myeffect[Math.floor(Math.random() * myeffect.length)] + ' infinite';
+	                //element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
+
+	                //element1.animated;
+	                if (Math.floor(Math.random() * 50) < 10) {
+                        //console.log('myRandomAnimate myelementid = ' + myelementid + 
+                          //  ' myeffect[animateInx] = ' + myeffect[animateInx]);
+                        // skip hinge
+                        if (myeffect[animateInx] == "hinge") {
+                            // skip
+                        } else {
+		                    element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
+                            element1.animated;
+                        }
+	                }
+
+                    if (!myAnimationStopped) {
+                    	timeoutRandomAnimate = setTimeout(function(){
+            	            myRandomAnimate(myelementid);
+                        }, 1000);
+                    }
+                };
+
+                //$(document).ready(function(){
+                function myStartToAnimate() {
+                //$Scope.myStartToAnimate = function () {
+                    myWindowWidth = $(window).width();
+                    console.log("myStartToAnimate myWindowWidth = " + myWindowWidth);
+                    $("#mytitle").hide();
+                    $("#item10").hide();
+                    $("#item9").hide();
+                    $("#item8").hide();
+                    $("#item7").hide();
+                    $("#item6").hide();
+                    $("#item5").hide();
+                    $("#item4").hide();
+                    $("#item3").hide();
+                    $("#item2").hide();
+                    $("#item1").hide();
+// issue with 10 and 1 on repeat
+// title could be better
+// ten too low or else moove other closer
+                    //$("#mytitle").animate( {left: '100%', top: "5%"} ).show();
+                    //$("#mytitle").animate( {left: '100%'}).show();
+                    //$("#mytitle").animate({left: $("#mytitle").parent().width() / 2 - $("#mytitle").width() / 2}).show();
+                    //console.log($("#mytitle").parent().width() / 2 - $("#mytitle").width() / 2);
+                    //$("#mytitle").animate({left: $("#mytitle").parent().width() / 2 - $("#mytitle").width() / 2}).show();
+                    //$("#mytitle").animate({left: $(window).width() / 2 - $("#mytitle").width() / 2 }).show();
+                    //console.log($("#mytitle").width() );
+                    //$("#mytitle").animate({left: $(window).width() / 3  }).show();
+                    
+
+                    //document.querySelector('#mytitle').innerHTML = "Top 10 Lists";
+                    document.querySelector('#mytitle').innerHTML = $scope.currentListName;
+                    document.querySelector('#item10').innerHTML = "Number 10";
+                    //let item9 =  document.querySelector('#item9');
+                    //item9.innerHTML = "testing this";
+                    document.querySelector('#item9').innerHTML = "Number 9";
+                    //console.log("item9.innerHTML = " + item9.innerHTML);  
+                    document.querySelector('#item8').innerHTML = "Number 8";
+                    document.querySelector('#item7').innerHTML = "Number 7";
+                    document.querySelector('#item6').innerHTML = "Number 6";
+                    document.querySelector('#item5').innerHTML = "Number 5";
+                    document.querySelector('#item4').innerHTML = "Number 4";
+                    document.querySelector('#item3').innerHTML = "Number 3";
+                    document.querySelector('#item2').innerHTML = "Number 2";
+                    document.querySelector('#item1').innerHTML = "Number 1";
+                    //ng-repeat="aItem in myItems | orderBy: ['-rank', 'name']
+                    //var localMyItems = $scope.myItems.sort(function(a, b) { return a.rank - b.rank });
+
+                    var localMyItems = $scope.myItems.slice(0);
+                    localMyItems.sort(function(a,b) {
+                        var x = a.rank;
+                        var y = b.rank;
+                        //    console.log("x: " + x + " y: " + y);
+                        return x > y ? -1 : x < y ? 1 : 0;
+                    });
+
+                    //for (var i=0; i < $scope.myItems.length; i++) {
+                    //  console.log("$scope.myItems[" + i + "].name = " + $scope.myItems[i].name + " rank: " + $scope.myItems[i].rank);
+                    //  console.log("localMyItems[" + i + "].name = " + localMyItems[i].name + " rank: " + localMyItems[i].rank);
+                    //}
+                    if (localMyItems.length >= 10) {
+                        document.querySelector('#item10').innerHTML = localMyItems[9].name;
+                    } 
+                    if (localMyItems.length >= 9) {
+                        document.querySelector('#item9').innerHTML = localMyItems[8].name;
+                    }
+                    if (localMyItems.length >= 8) {
+                        document.querySelector('#item8').innerHTML = localMyItems[7].name;
+                    }
+                    if (localMyItems.length >= 7) {
+                        document.querySelector('#item7').innerHTML = localMyItems[6].name;
+                    }
+                    if (localMyItems.length >= 6) {
+                        document.querySelector('#item6').innerHTML = localMyItems[5].name;
+                    } 
+                    if (localMyItems.length >= 5) {
+                        document.querySelector('#item5').innerHTML = localMyItems[4].name;
+                    }
+                    if (localMyItems.length >= 4) {
+                        document.querySelector('#item4').innerHTML = localMyItems[3].name;
+                    }
+                    if (localMyItems.length >= 3) {
+                        document.querySelector('#item3').innerHTML = localMyItems[2].name;
+                    }
+                    if (localMyItems.length >= 2) {
+                        document.querySelector('#item2').innerHTML = localMyItems[1].name;
+                    } 
+                    //document.querySelector('#item1').innerHTML = "Number 1";
+                    document.querySelector('#item1').innerHTML = localMyItems[0].name;
+
+                    $("#mytitle").show();
+                    //$("#mytitle").animate( {left: '100%', top: "25px"} );
+
+                    $("#item10").animate( {left: '0%', top: "25px"} );
+                    $("#item9").animate( {left: '100%', top: "25px"} );
+                    $("#item8").animate( {left: '0%', top: "25px"} );
+                    $("#item7").animate( {left: '100%', top: "25px"} );
+                    $("#item6").animate( {left: '0%', top: "25px"} );
+                    $("#item5").animate( {left: '100%', top: "25px"} );
+                    $("#item4").animate( {left: '0%', top: "25px"} );
+                    $("#item3").animate( {left: '100%', top: "25px"} );
+                    $("#item2").animate( {left: '0%', top: "25px"} );
+                    $("#item1").animate( {left: '100%', top: "25px"} );
+
+                    //    myTestAnimate("testitem");
+
+                    //myTitleAnimate($("#mytitle"));
+                    //myTitleAnimate2("mytitle");
+
+                    //myItem10Animate($("#item10"));
+                    //myRightAnimate("mytitle");
+                    
+                    myLeftAnimate("item10");
+                    myRightAnimate("item9");
+                    myLeftAnimate("item8");
+                    myRightAnimate("item7");
+                    myLeftAnimate("item6");
+                    myRightAnimate("item5");
+                    myLeftAnimate("item4");
+                    myRightAnimate("item3");
+                    myLeftAnimate("item2");
+
+                    myRightAnimateItem1("item1");
+                    
+                    //$("#item10").show();
+                    //$("#item9").show();
+                    //$("#item8").show();
+                    //$("#item7").show();
+                    //$("#item6").show();
+                    //$("#item5").show();
+                    //$("#item4").show();
+                    //$("#item3").show();
+                    //$("#item2").show();
+                    //$("#item1").show();
+
+                    //myItem1Animate($("#item1"));
+
+                    //    setTimeout(function(){
+                    //        	location.reload();
+                    //        	}, 20000);
+                };
+
                 $scope.myShowDetails = function () {
                     if ($scope.buttonShowDetailsText == "Hide Details") {
                         $scope.buttonShowDetailsText = "Show Details";
@@ -380,6 +827,16 @@
                     } else {
                         $scope.buttonShowDetailsText = "Hide Details";
                         $scope.myShowAll = 'Y';
+                    }
+                };
+
+                $scope.myShowDetailsItems = function () {
+                    if ($scope.buttonShowDetailsTextItems == "Hide Details") {
+                        $scope.buttonShowDetailsTextItems = "Show Details";
+                        $scope.myShowAllItems = 'N';
+                    } else {
+                        $scope.buttonShowDetailsTextItems = "Hide Details";
+                        $scope.myShowAllItems = 'Y';
                     }
                 };
 
@@ -559,6 +1016,10 @@
                                     title="Select to make a link copy and then paste.">Copy Link to List</button>
                                 <button type="submit" class="btn btn-primary btn-sm" id=buttonCommentForm
                                     ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
+                                <button type="submit" class="btn btn-primary btn-sm" id=buttonAnimate
+                                    ng-click="animateList()">Animate</button>
+                                <button type="submit" class="btn btn-primary btn-sm"
+                                    ng-click="myShowDetailsItems()">{{ buttonShowDetailsTextItems }}</button>
                                 <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
                                     ng-click="backToList()">Go Back</button>
                             </h3>
@@ -572,7 +1033,7 @@
                         <div>
                             <table ng-table="myItemsTableParams" border="0" cellspacing="0" cellpadding="0"
                             class="table table-striped">
-                                <tr>
+                                <tr ng-if="myShowAllItems == 'Y'">
                                     <th>Name</th>
                                     <th>Description</th>
                                     <th>Points</th>
@@ -580,9 +1041,9 @@
                                 <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] " -->
                                 <tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
                                     | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2">
-                                    <td>{{ aItem.name }}</td>
-                                    <td>{{ aItem.description }}</td>
-                                    <td>{{ aItem.rank }}</td>
+                                    <td data-toggle="tooltip" title= "{{aItem.description}} Points: {{ aItem.rank }}">{{ aItem.name }}</td>
+                                    <td ng-if="myShowAllItems == 'Y'">{{ aItem.description }}</td>
+                                    <td ng-if="myShowAllItems == 'Y'">{{ aItem.rank }}</td>
                                 </tbody>
                                 <p class="text-center" ng-show="loading">
                                     <span class="fa fa-spinner fa-spin fa-3x"></span>
@@ -628,7 +1089,7 @@
                                 <span ng-if="myComments.length > 0">
                                     <table ng-table="myItemsTable2Params" border="0" cellspacing="0" cellpadding="0"
                                     class="table table-striped">
-                                        <tr>
+                                        <tr ng-if="myShowAllItems == 'Y'">
                                             <th>Comment</th>
                                             <th>By</th>
                                             <th>When</th>
@@ -637,9 +1098,11 @@
                                             ng-repeat="comment in myComments | filter:q3 | startFrom:currentPage3*pageSize3 
                                             | limitTo:pageSize3">
                                             <!-- tr -->
-                                                <td>{{ comment.comment }}</td>
-                                                <td>{{ comment.ownerScreenName }}</td>
-                                                <td>{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>
+                                                <td data-toggle="tooltip" 
+                                                    title= "By: {{comment.ownerScreenName}} On: {{ myGetDateFromTimeStamp(comment.timeStamp); }}"
+                                                    >{{ comment.comment }}</td>
+                                                <td ng-if="myShowAllItems == 'Y'">{{ comment.ownerScreenName }}</td>
+                                                <td ng-if="myShowAllItems == 'Y'">{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>
                                             <!-- /tr -->
                                         </tbody>
                                     </table>
@@ -681,6 +1144,25 @@
             <!-- /div -->
         <!-- /div -->
     <!-- /div -->
+    <div ng-view id=myAnimate>        
+            <!-- div id = "mytitle" style="text-align: center; position:absolute; color:blue;">Top 10 Lists</div -->
+            <!-- div id = "mytitle" style="text-align: center; color:blue;">Top 10 Lists</div -->
+            <h3 id = "mytitle" style="text-align: center; color:blue;">Top 10 Lists</h3>
+         
+            <button type="submit" class="btn btn-primary btn-sm" id=buttonAnimateStop
+                ng-click="animateStop()">Stop</button>
+            <!-- div id = "item10" style="position:absolute; color:blue;">Number 10</div -->
+            <div id = "item10" style="text-align: center; position:absolute; color:blue;">Number 10</div>
+            <div id = "item9" style="text-align: center; position:absolute; color:blue;">Number 9</div>
+            <div id = "item8" style="text-align: center; position:absolute; color:blue;">Number 8</div>
+            <div id = "item7" style="text-align: center; position:absolute; color:blue;">Number 7</div>
+            <div id = "item6" style="text-align: center; position:absolute; color:blue;">Number 6</div>
+            <div id = "item5" style="text-align: center; position:absolute; color:blue;">Number 5</div>
+            <div id = "item4" style="text-align: center; position:absolute; color:blue;">Number 4</div>
+            <div id = "item3" style="text-align: center; position:absolute; color:blue;">Number 3</div>
+            <div id = "item2" style="text-align: center; position:absolute; color:blue;">Number 2</div>
+            <div id = "item1" style="text-align: center; position:absolute; color:blue;">Number 1</div>
+    </div>
 </div>
 </body>
 </html>

@@ -1021,7 +1021,7 @@
                 };
 
                 function myLeftAnimate(myElement) {
-                    let element2 = $('#' + myElement);
+                    var element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                 
@@ -1038,7 +1038,7 @@
                 };
 
                 function myRightAnimate(myElement) {
-                    let element2 = $('#' + myElement);
+                    var element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
 ////                    element2.animate({right: '0%'})
@@ -1059,7 +1059,7 @@
 
                 function myRightAnimateItem1(myElement) {
                     console.log("myRightAnimateItem1 called");
-                    let element2 = $('#' + myElement);
+                    var element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                     //element2 .animate({right: '0%'})
@@ -1116,7 +1116,7 @@
 
                 function myTitleAnimate2(myElement) {
                     console.log("myTitleAnimate2 called");
-                    let element2 = $('#' + myElement);
+                    var element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                     //myElement.animate({right: '0%'})
@@ -1137,9 +1137,9 @@
                 function myTestAnimate(myelementid) {
 	                //console.log('myTestAnimate myelementid = ' + myelementid + ' testAnimateCnt = ' + testAnimateCnt +
 	                //' myeffect[testAnimateCnt] = ' + myeffect[testAnimateCnt]);
-	                let element1 =  document.querySelector('#' + myelementid);
+	                var element1 =  document.querySelector('#' + myelementid);
                     if (testAnimateCnt == 0) {
-	                    let element2 = $('#' + myelementid);
+	                    var element2 = $('#' + myelementid);
 ////	                    element2.animate({left: '20%', top: '+=100px'}, 1000);
                     } else {
 ////                    	element1.className = 'animated ' + myeffect[testAnimateCnt]; // infinite';
@@ -1175,10 +1175,10 @@
 
                 // Math.floor(Math.random() * 11);      // returns a random integer from 0 to 10
                 function myRandomAnimate(myelementid) {
-	                let animateInx = Math.floor(Math.random() * myeffect.length);
+	                var animateInx = Math.floor(Math.random() * myeffect.length);
 	                //console.log('myRandomAnimate myelementid = ' + myelementid + 
 	                //' myeffect[animateInx] = ' + myeffect[animateInx]);
-	                let element1 =  document.querySelector('#' + myelementid);
+	                var element1 =  document.querySelector('#' + myelementid);
 	                //element1.className = 'animated ' + myeffect[0] + ' infinite';
 	                //element1.className = 'animated ' + myeffect[Math.floor(Math.random() * myeffect.length)] + ' infinite';
 	                //element1.className = 'animated ' + myeffect[animateInx]; // + ' delay-3s '; //infinite';
@@ -1255,7 +1255,7 @@
                         var x = a.rank;
                         var y = b.rank;
                         //    console.log("x: " + x + " y: " + y);
-                        return x > y ? -1 : x < y ? 1 : 0;
+                        return true; //// x > y ? -1 : x < y ? 1 : 0;
                     });
 
                     //for (var i=0; i < $scope.myItems.length; i++) {
@@ -1492,7 +1492,7 @@
             <td>
                 <div ng-view id=myListsTable>
                     
-                    <h3><span class="fa "></span> My Lists ({{ myLists.length }})
+                    <h3><span class="fa "></span> My Lists: ({{ myLists.length }})
                         <span ng-if="moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
                                 ng-click="showNewListForm()"

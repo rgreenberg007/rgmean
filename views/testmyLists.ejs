@@ -1021,7 +1021,7 @@
                 };
 
                 function myLeftAnimate(myElement) {
-                    let element2 = $('#' + myElement);
+                    var element2 = $('#' + myElement);
                     myDelay = myDelay + myDelayIncrement;
                     myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
                     
@@ -1037,28 +1037,7 @@
                     myRandomAnimate(myElement);
                 };
 
-                function myRightAnimate(myElement) {
-                    let element2 = $('#' + myElement);
-                    myDelay = myDelay + myDelayIncrement;
-                    myFinalPosFromTop = myFinalPosFromTop - myFinalPosFromTopDecrement;
-                    element2.animate({right: '0%'})
-                        .animate( {top: "+=100px"} ).delay(myDelay).show(myDelayIncrement) //.show(1000
-                        //.animate({center}, 1000)
-                        //.animate({left: '50%'}, 1000)
-                        .animate({left: $(window).width() / 3  }, 1000)
-                        .animate({fontSize: '2em', color: 'red'}, 500)
-                        .animate( {top: myFinalPosFromTop + "px"}, 1100 ); //, myRandomAnimate(myElement) );
-                    //for (var i = 0; i < 10; i++) {
-                        //setTimeout(function(){
-                        //  myRandomAnimate(myElement);
-                        //}, 1000);
-                        //sleep(1000);
-                    //}
-                    myRandomAnimate(myElement); 
-                };
 
-
-                
                 $scope.myShowDetails = function () {
                     if ($scope.buttonShowDetailsText == "Hide Details") {
                         $scope.buttonShowDetailsText = "Show Details";

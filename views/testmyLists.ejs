@@ -980,6 +980,26 @@
                     if (myRank == 10) { return 1; };
                 };
 
+                // animation stuff - also var defined above and some start and stop functions above
+                //<% include myAnimateCode %>
+
+                //function sleep(delay) {
+                  //  var start = new Date().getTime();
+                  //  while (new Date().getTime() < start + delay);
+                //}
+
+                function item1looping() {
+                    //$('#item1').fadeOut(1000);
+                    //$('#item1').fadeIn(1000);
+                    $('#item1').animate({color: 'red'}, 500);
+                    $('#item1').animate({color: 'blue'}, 500);
+                    if (!myAnimationStopped) {
+                        timeoutItem1Loop = setTimeout(function(){
+                            item1looping();
+                        }, 1010);
+                    }
+                };
+
                 $scope.myShowDetails = function () {
                     if ($scope.buttonShowDetailsText == "Hide Details") {
                         $scope.buttonShowDetailsText = "Show Details";

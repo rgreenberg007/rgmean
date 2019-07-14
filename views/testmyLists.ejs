@@ -1206,8 +1206,8 @@
                 //$(document).ready(function(){
                 function myStartToAnimate() {
                 //$Scope.myStartToAnimate = function () {
-                    myWindowWidth = $(window).width();
-                    console.log("myStartToAnimate myWindowWidth = " + myWindowWidth);
+                    //myWindowWidth = $(window).width();
+                    //console.log("myStartToAnimate myWindowWidth = " + myWindowWidth);
                     $("#mytitle").hide();
                     $("#item10").hide();
                     $("#item9").hide();
@@ -1492,7 +1492,7 @@
             <td>
                 <div ng-view id=myListsTable>
                     
-                    <h3><span class="fa "></span> My Lists::: ({{ myLists.length }})
+                    <h3><span class="fa "></span> My Lists:::: ({{ myLists.length }})
                         <span ng-if="moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
                                 ng-click="showNewListForm()"

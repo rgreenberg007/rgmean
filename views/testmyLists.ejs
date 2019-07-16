@@ -33,6 +33,7 @@
                 console.log("myLists.ejs :: " + "<%= user.local.email %>" + " :: " + "<%= user.local.screenName %>"
                     + " :: " + "<%= user._id %>");
 
+                $scope.isPublic = false;
                 $scope.formData = {};
                 $scope.formData2 = {};
                 $scope.formData3 = {};
@@ -105,6 +106,8 @@
                 $scope.buttonShowDetailsTextItems = "Show Details";
 
                 // GET =====================================================================
+                mySetCommentButtonTest();
+
                 myLists.get(userEmail)
                     .success(function (data) {
                         console.log("myLists.ejs: mainController myLists.get success");
@@ -416,7 +419,8 @@
                     $scope.aboutToShowItems = false;
                     $scope.aboutToShowRank = false;
                     $scope.myItems2 = undefined;
-                    $scope.buttonCommentFormText = "Show/Add Comments";
+                    //$scope.buttonCommentFormText = "Show/Add Comments";
+                    mySetCommentButtonTest();
 
                     myDelay = -955;
                     myDelayIncrement = 1000;
@@ -447,7 +451,8 @@
                     //$scope.myItems2 = [];
                     $scope.myItems2 = undefined;
 
-                    $scope.buttonCommentFormText = "Show/Add Comments";
+                    //$scope.buttonCommentFormText = "Show/Add Comments";
+                    mySetCommentButtonTest();
 
                     // if ?? then
                     if ($scope.myRankingDone) {
@@ -480,7 +485,8 @@
                     if ($scope.buttonCommentFormText == "Hide Comments") {
                         $("#addItemForm").show();
                         $("#modItemForm").hide();
-                        $scope.buttonCommentFormText = "Show/Add Comments";
+                        //$scope.buttonCommentFormText = "Show/Add Comments";
+                        mySetCommentButtonTest();
                         $("#commentForm").hide();
                     } else {
                         // get all comments for this list in timestamp order to update display.
@@ -847,7 +853,8 @@
                     //  console.log("No");
                     //}
                     $("#addItemForm").hide();
-                    $scope.buttonCommentFormText = "Show/Add Comments";
+                    //$scope.buttonCommentFormText = "Show/Add Comments";
+                    mySetCommentButtonTest();
                     $("#commentForm").hide();
                     $("#modItemForm").show();
                     $scope.currentListItemId = myItem._id;
@@ -982,6 +989,14 @@
                     if (myRank == 8) { return 3; };
                     if (myRank == 9) { return 2; };
                     if (myRank == 10) { return 1; };
+                };
+
+                function mySetCommentButtonTest() {
+                    if ($scope.isPublic) {
+                        $scope.buttonCommentFormText = "Show Comments";
+                    } else {
+                        $scope.buttonCommentFormText = "Show/Add Comments";
+                    }
                 };
 
                 // animation stuff - also var defined above and some start and stop functions above
@@ -1504,23 +1519,24 @@
 <!-- -div ng-viewx -->
 <!-- div ng-controller="mainController" -->
 <!-- div class="container-fluid" -->
-    <table>
-        <tr>
+    <table class="table-sm table-responsive-sm">
+        <tr ng-view id=myListsTable>
             <td>
-                <div ng-view id=myListsTable>
+                <!-- div ng-view id=myListsTable -->
+                <div>
                     
-                    <h3><span class="fa "></span> My Lists : ({{ myLists.length }})
-                        <span ng-if="moreListsAllowed()">
+                    <h3><span class="fa "> My Lists ({{ myLists.length }}) </span>
+                        <span ng-if="myShowAll != 'Y'">(click to open)</span>
+                        <span ng-if="!isPublic && moreListsAllowed()">
                             <button type="submit" class="btn btn-primary btn-sm"
                                 ng-click="showNewListForm()"
                                 data-toggle="tooltip"
                                 title="Click to add a new List">New List
                             </button>
                         </span>
-                        <span ng-if="!moreListsAllowed()">
+                        <span ng-if="!isPublic && !moreListsAllowed()">
                             <p> Maximum number of Lists allowed reached. </p>
                         </span>
-                        <span ng-if="myShowAll != 'Y'">(click to open)</span>
                         <button type="submit" class="btn btn-primary btn-sm"
                             ng-click="myShowDetails()">{{ buttonShowDetailsText }}</button>
                     </h3>
@@ -1532,11 +1548,11 @@
                             <tr ng-if="myShowAll == 'Y'">
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Owner</th>
+                                <th ng-if="!isPublic">Owner</th>
                                 <!-- th>Private</th -->
-                                <th>View Grp</th>
-                                <th>Edit Grp</th>
-                                <th>Rank Grp</th>
+                                <th ng-if="!isPublic">View Grp</th>
+                                <th ng-if="!isPublic">Edit Grp</th>
+                                <th ng-if="!isPublic">Rank Grp</th>
                                 <!-- th>Suggestion</th -->
                                 <!-- th>Vote</th -->    
                                 <th>Items</th>
@@ -1551,15 +1567,15 @@
                                 </td>
                                 <td ng-if="myShowAll == 'Y'">{{ aList.description }}</td>
                                                 
-                                <td ng-if="myShowAll == 'Y'">{{ aList.owner }}</td>
+                                <td ng-if="!isPublic && myShowAll == 'Y'">{{ aList.owner }}</td>
                                 <!-- td>{{ aList.private }}</td -->
-                                <td ng-if="myShowAll == 'Y'">{{ aList.view }}</td>
-                                <td ng-if="myShowAll == 'Y'">{{ aList.edit }}</td>
-                                <td ng-if="myShowAll == 'Y'">{{ aList.rank }}</td>
+                                <td ng-if="!isPublic && myShowAll == 'Y'">{{ aList.view }}</td>
+                                <td ng-if="!isPublic && myShowAll == 'Y'">{{ aList.edit }}</td>
+                                <td ng-if="!isPublic && myShowAll == 'Y'">{{ aList.rank }}</td>
                                 <!-- td>{{ aList.suggestion }}</td -->
                                 <!-- td>{{ aList.vote }}</td -->
                                 <td>
-                                    <span ng-if="isMyOwner(aList.owner)">
+                                    <span ng-if="!isPublic && isMyOwner(aList.owner)">
                                         <button type="submit" class="btn btn-primary btn-sm"
                                             ng-click="showModListForm(aList)" data-toggle="tooltip"
                                             title="Modify the List">Mod</button>
@@ -1567,14 +1583,14 @@
                                     <button ng-if="myShowAll == 'Y'" type="submit" class="btn btn-primary btn-sm"
                                         ng-click="itemsOfList3(aList)"  data-toggle="tooltip"
                                         title="Show the List Items">Items</button>
-                                    <span ng-if="aList.itemCnt == '0' ">
+                                    <span ng-if="!isPublic && aList.itemCnt == '0' ">
                                         <span ng-if="inMyGroups(aList.edit) || isMyOwner(aList.owner)">
                                             <button type="submit" class="btn btn-primary btn-sm"
                                                 ng-click="deleteMyList(aList._id)" data-toggle="tooltip"
                                                 title="Delete this List">Del</button>
                                         </span>
                                     </span>
-                                    <span ng-if="inMyGroups(aList.rank) || isMyOwner(aList.owner)">
+                                    <span ng-if="!isPublic && (inMyGroups(aList.rank) || isMyOwner(aList.owner))">
                                         <span ng-if="!myRankedLists.includes(aList.name)">
                                             <button type="submit" class="btn btn-primary btn-sm"
                                                 ng-click="itemsOfListRank(aList)" data-toggle="tooltip"
@@ -1595,7 +1611,7 @@
                     <!-- /div -->
 
                     <table>
-                        <tr>&nbsp;</tr>
+                        <!-- tr>&nbsp;</tr -->
                         <tr>
                             <td>
                                 <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"
@@ -1625,10 +1641,11 @@
             </td>
         </tr>
 
-        <tr>
+        <tr id="addListForm">
             <td>
 
-                <span id="addListForm">
+                <!-- span id="addListForm" -->
+                <span>
                     <h3> Create a new List: </h3>
                     <div class="alert alert-danger" id="listnametaken">List Name already taken!</div>
                     <% if (message.length > 0) { %>
@@ -1697,10 +1714,11 @@
 
             </td>
         </tr>
-        <tr>
+        <tr id="modListForm">
             <td>
 
-                <span id="modListForm">
+                <!-- span id="modListForm" -->
+                <span>
                     <h3> Modify the {{ currentListName }} List. </h3>
                     <% if (message.length > 0) { %>
                     <div class="alert alert-danger"><%= message %></div>
@@ -1765,11 +1783,14 @@
         </tr>
     </table>
 
+    <table class="table-sm table-responsive-sm">
+    <tr>
+    <td>
     <div ng-view id=myItemsTable>
-        <!-- span ng-if="myItems.length == 0 && aboutToShowRank == true" -->
+
         <span ng-if="myItems.length == 0 && myItems2.length == 0">
             <h3><span class="fa "></span>{{ currentListName }}: Contains no Items. You must Add Items before you can
-                Rank them.
+                    Rank them.
                 <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList ng-click="backToList()">Go
                     Back</button></h3>
         </span>
@@ -1785,8 +1806,8 @@
                 <h3><span class="fa "></span>{{ currentListName }}: <span class="label label-infox">(Items:
                     {{ myItems.length }})</span>
                     <button type="submit" class="btn btn-primary btn-sm" ng-click="myCopyLink()"
-                    data-toggle="tooltip" 
-                    title="Copy a Link to this List. Then paste, into Email to send for example">Copy Link to List</button>
+                        data-toggle="tooltip" 
+                        title="Copy a Link to this List. Then paste, into Email to send for example">Copy Link to List</button>
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonCommentForm
                         ng-click="showCommentForm()">{{ buttonCommentFormText }}</button>
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonAnimate
@@ -1797,6 +1818,7 @@
                         ng-click="backToList()">Go Back</button>
                 </h3>
             </div>
+            
             <span ng-if="myItems2 != undefined">
                 <div>
                     <p>Select up to 10 Items for Ranking - Rank them - Then save Your Ranking.</p>
@@ -1804,7 +1826,7 @@
             </span>
             <div>
                 <table ng-table="myItemsTableParams" border="0" cellspacing="0" cellpadding="0"
-                class="table table-striped" >
+                class="table table-striped table-sm table-responsive-sm" >
                     <tr ng-if="myShowAllItems == 'Y'">
                         <th>Name</th>
                         <th>Description</th>
@@ -1812,7 +1834,7 @@
                         <!-- th>List</th -->
                         <!-- th>Suggestion</th  -->
                         <th>Points</th>
-                        <th>Operations</th>
+                        <th ng-if="!isPublic">Operations</th>
                     </tr>
                     <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
                         | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2" -->
@@ -1824,7 +1846,7 @@
                         <!-- td>{{ aItem.list }}</td -->
                         <!-- td>{{ aItem.suggestion }}</td -->
                         <td ng-if="myShowAllItems == 'Y'">{{ aItem.rank }}</td>
-                        <td>
+                        <td ng-if="!isPublic">
                             <span ng-if="myItems2 == undefined && allowEdit">
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="myEditItem(aItem)" data-toggle="tooltip" 
@@ -1847,8 +1869,8 @@
             </div>
 
             <!-- span ng-if="myItems.length > 5" -->
-            <table>
-                <tr>&nbsp;</tr>
+            <table class="table-sm table-responsive-sm">
+                <!-- tr>&nbsp;</tr -->
                 <tr>
                     <td>
                         <button ng-disabled="currentPage2 == 0" ng-click="currentPage2=currentPage2-1"
@@ -1891,7 +1913,7 @@
                 </div>
                 <div>
                     <table ng-table="myItemsTable2Params" border="0" cellspacing="0" cellpadding="0"
-                    class="table table-striped" >
+                    class="table table-striped table-sm table-responsive-sm" >
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
@@ -1942,7 +1964,7 @@
             </span>
         </span>
 
-        <span ng-if="myItems2 == undefined">
+        <span ng-if="!isPublic && myItems2 == undefined">
             <span ng-if="!moreItemsAllowed()">
                 <p>This List contains the maximum Items allowed.</p>
             </span>
@@ -2012,12 +2034,12 @@
             </form>
         </span>
 
-        <table>
+        <table class="table-sm table-responsive-sm">
             <tr>
                 <td>
                     <span id="commentForm">
-                        <h3> Add a comment about the {{ currentListName }} List. </h3>
-                        <form name="myForm3">
+                        <h3 ng-if="!isPublic"> Add a comment about the {{ currentListName }} List. </h3>
+                        <form ng-if="!isPublic" name="myForm3">
                             <div class="form-group">
                                 <label>Comment</label>
                                 <input type="text" class="form-control" name="comment" ng-model="formData3.comment"
@@ -2031,8 +2053,11 @@
                                 title="Comment on this List.">Add</button>
                         </form>
 
-                        <span ng-if="0 >= myComments.length">
+                        <span ng-if="!isPublic  && 0 >= myComments.length">
                             <p>No comments on this List, yet. Add one. </p>
+                        </span>
+                        <span ng-if="isPublic  && 0 >= myComments.length">
+                                <p>No comments on this List, yet. </p>
                         </span>
                         <span ng-if="myComments.length > 0">
                             <table ng-table="myItemsTable2Params" border="0" cellspacing="0" cellpadding="0"
@@ -2041,7 +2066,7 @@
                                     <th>Comments:</th>
                                     <th>By</th>
                                     <th>When</th>
-                                    <th>Delete</th>
+                                    <th ng-if="!isPublic">Delete</th>
                                 </tr>
                                 <tbody class="tableWithItemsToOrder" id="tableWithItemsToOrder" 
                                     ng-repeat="comment in myComments | filter:q3 | startFrom:currentPage3*pageSize3 | 
@@ -2057,7 +2082,7 @@
                                         <td ng-if="myShowAllItems == 'Y'">{{ comment.ownerScreenName }}</td>
                                         <td ng-if="myShowAllItems == 'Y'">{{ myGetDateFromTimeStamp(comment.timeStamp); }}</td>               
                                         <td>
-                                            <span ng-if="isMyOwner(comment.ownerEmail)">
+                                            <span ng-if="!isPublic && isMyOwner(comment.ownerEmail)">
                                                 <button type="submit" class="btn btn-primary btn-sm"
                                                     ng-click="deleteMyComment(comment)">Delete</button>
                                             </span>
@@ -2069,7 +2094,7 @@
                             </table>
 
                             <table>
-                                <tr>&nbsp;</tr>
+                                <!-- tr>&nbsp;</tr -->
                                 <tr>
                                     <td>
                                         <button ng-disabled="currentPage3 == 0" ng-click="currentPage3=currentPage3-1"
@@ -2103,7 +2128,9 @@
             </tr>
         </table>
     </div>
-
+    </td>
+    </tr>
+    </table>
 
     <div ng-view id=myAnimate>
             

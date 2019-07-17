@@ -31,9 +31,15 @@
             .controller('mainController', ['$scope', '$http', 'myLists', '$filter', function ($scope, $http, myLists, $filter) {
                 console.log("myLists.ejs: myListsController mainController reached");
                 console.log("myLists.ejs :: " + "<%= user.local.email %>" + " :: " + "<%= user.local.screenName %>"
-                    + " :: " + "<%= user._id %>");
+                    + " :: " + "<%= user._id %> " + ":: public: " + "<%= public %>");
 
-                $scope.isPublic = true;
+                if ( "<%= public %>" == "T") {
+                    $scope.isPublic = true;
+                } else {
+                    $scope.isPublic = false;
+                }
+               
+                console.log("myLists.ejs :: $scope.isPublic = " + $scope.isPublic);
                 $scope.formData = {};
                 $scope.formData2 = {};
                 $scope.formData3 = {};
@@ -134,7 +140,7 @@
                         //  itemsPerPage: 5,
                         //  fillLastPage: true
                         //};
-
+                        console.log("myLists.ejs :: after myLists.get(userEmail) :: $scope.isPublic = " + $scope.isPublic);
                     });
 
                 myLists.getAllGrps()
@@ -993,8 +999,10 @@
 
                 function mySetCommentButtonTest() {
                     if ($scope.isPublic) {
+                        console.log("mySetCommentButtonTest in if $scope.isPublic :: " + $scope.isPublic);
                         $scope.buttonCommentFormText = "Show Comments";
                     } else {
+                        console.log("mySetCommentButtonTest in else $scope.isPublic  :: " + $scope.isPublic);
                         $scope.buttonCommentFormText = "Show/Add Comments";
                     }
                 };

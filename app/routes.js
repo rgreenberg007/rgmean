@@ -106,7 +106,8 @@ module.exports = function(app, passport) {
         failureFlash : true;
         res.render('testmyLists.ejs', {
             user : req.user,
-            message: "" 
+            message: "",
+            public: "F"
         });
     });
 
@@ -122,9 +123,11 @@ module.exports = function(app, passport) {
     app.get('/testmyPublicLists', isLoggedInDontCare, function(req, res) {
         console.log("routes.js /testmyPublicLists reached.");
         failureFlash : true;
-        res.render('testmyPublicLists.ejs', {
+        //res.render('testmyPublicLists.ejs', {
+        res.render('testmyLists.ejs', {
             user : req.user,
-            message: "" 
+            message: "",
+            public: "T"
         });
     });
 
@@ -142,7 +145,8 @@ module.exports = function(app, passport) {
         failureFlash : true;
         res.render('myPublicLists.ejs', {
             user : req.user,
-            message: "" //req.flash('grpsDetailsMessage')
+            message: "",
+            public: "T"
         });
     });
 
@@ -163,7 +167,8 @@ module.exports = function(app, passport) {
         failureFlash : true;
         res.render('myLists.ejs', {
             user : req.user,
-            message: "" //req.flash('grpsDetailsMessage')
+            message: "",
+            public: "F"
         });
     });
 

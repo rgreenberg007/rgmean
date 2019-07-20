@@ -948,6 +948,11 @@
                     }
                 };
 
+                $scope.inPublicGroups = function (tmpGrp) {
+                    //console.log("myPublicLists.ejs:  mainController inPublicGroups  tmpGrp: " + tmpGrp);
+                    return $scope.myPublicGrps.some(function(item) { return item.grp === tmpGrp; });
+                };
+
                 // animation stuff - also var defined above and some start and stop functions above
                 // Seems let cannot be used for iPad use Var
                 // Seems the below comment needs to be a html comment or else iPad does not work
@@ -1509,7 +1514,7 @@
                                 <th ng-if="!isPublic">Rank Grp</th>
                                 <!-- th>Suggestion</th -->
                                 <!-- th>Vote</th -->    
-                                <th>Items</th>
+                                <th class="text-right">Items</th>
                             </tr>
                             <!-- tbody class="problemcheckboxx" ng-repeat="aList in myLists | orderBy: 'name'
                                 | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" -->
@@ -1528,7 +1533,7 @@
                                 <td ng-if="!isPublic && myShowAll == 'Y'">{{ aList.rank }}</td>
                                 <!-- td>{{ aList.suggestion }}</td -->
                                 <!-- td>{{ aList.vote }}</td -->
-                                <td>
+                                <td class="text-right">
                                     <span ng-if="!isPublic && isMyOwner(aList.owner)">
                                         <button type="submit" class="btn btn-primary btn-sm"
                                             ng-click="showModListForm(aList)" data-toggle="tooltip"
@@ -1581,7 +1586,8 @@
                                 <!-- input ng-model="q" id="search" class="form-control" placeholder="Set Rows per Page" / -->
                             </td>
                             <td>
-                                <select ng-model="pageSize" id="pageSize" class="form-control btn btn-primary btn-sm">
+                                <select ng-model="pageSize" id="pageSize" 
+                                    class="form-control form-control-sm btn btn-primary btn-sm">
                                     <option value="5">5</option>
                                     <option value="10">10</option>
                                     <option value="15">15</option>
@@ -1608,14 +1614,14 @@
                     <form name="myForm">
                         <div class="form-group">
                             <label>List Name</label>
-                            <input type="text" class="form-control" name="name" ng-model="formData.name" required
+                            <input type="text" class="form-control form-control-sm" name="name" ng-model="formData.name" required
                                 placeholder="List Name" maxlength="32"
                                 [ngClass]="{'invalid-textbox' :myForm.submitted && !name.valid }" data-toggle="tooltip"
                                 title="Enter the List name. Must be unique." />
                         </div>
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" class="form-control" name="description" ng-model="formData.description"
+                            <input type="text" class="form-control form-control-sm" name="description" ng-model="formData.description"
                                 placeholder="Describe this List" required maxlength="128"
                                 [ngClass]="{'invalid-textbox' :myForm.submitted && !description.valid }"
                                 data-toggle="tooltip" title="Describe the List." />
@@ -1630,7 +1636,7 @@
                         </div -->
                         <div class="form-group">
                             <label>Who can See this List <label>
-                            <select class="form-control" name="view" ng-model="formData.view"
+                            <select class="form-control form-control-sm" name="view" ng-model="formData.view"
                                 ng-options="grp for grp in myGrpsA" placeholder="Select Group" required
                                 [ngClass]="{'invalid-textbox' :myForm.submitted && !view.valid }"
                                 data-toggle="tooltip" title="Enter the Group that can See this List.">
@@ -1638,7 +1644,7 @@
                         </div>
                         <div class="form-group">
                             <label>Who can Edit this List <label>
-                            <select class="form-control" name="edit" ng-model="formData.edit"
+                            <select class="form-control form-control-sm" name="edit" ng-model="formData.edit"
                                 ng-options="grp for grp in myGrpsB" placeholder="Select Group" required
                                 [ngClass]="{'invalid-textbox' :myForm.submitted && !edit.valid }"
                                 data-toggle="tooltip" title="Enter the Group that can Edit this List.">
@@ -1646,13 +1652,13 @@
                         </div>
                         <div class="form-group">
                             <label>Who can Vote/Rank Items in this List <label>
-                            <select class="form-control" name="rank" ng-model="formData.rank"
+                            <select class="form-control form-control-sm" name="rank" ng-model="formData.rank"
                                 ng-options="grp for grp in myGrpsB" placeholder="Select Group" required
                                 [ngClass]="{'invalid-textbox' :myForm.submitted && !rank.valid }"
                                 data-toggle="tooltip" title="Enter the Group that can Rank this List.">
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyList()" 
+                        <button type="submit" class="btn btn-primary btn-sm" ng-click="createMyList()" 
                             ng-disabled="!myForm.name.$dirty || !myForm.description.$dirty || !myForm.view.$dirty || 
                             !myForm.edit.$dirty || !myForm.rank.$dirty ||
                             (myForm.name.$dirty && myForm.name.$invalid) || 
@@ -1661,7 +1667,7 @@
                             (myForm.edit.$dirty && myForm.edit.$invalid) || 
                             (myForm.rank.$dirty && myForm.rank.$invalid)" data-toggle="tooltip"
                             title="Add this new List!">Add</button>
-                        <button type="submit" class="btn btn-primary btn-lg"
+                        <button type="submit" class="btn btn-primary btn-sm"
                             ng-click="createMyListCancel()">Cancel</button>
                     </form>
                 </span>
@@ -1680,7 +1686,7 @@
                     <form name="myForm2">
                         <div class="form-group">
                             <label>List Name</label>
-                            <input type="text" class="form-control" name="name" ng-model="formData2.name" required
+                            <input type="text" class="form-control form-control-sm" name="name" ng-model="formData2.name" required
                                  maxlength="32"
                                 [ngClass]="{'invalid-textbox' :myForm2.submitted && !name.valid }" data-toggle="tooltip"
                                 title="Enter the List name. Must be unique." />
@@ -1688,14 +1694,14 @@
                         <!-- [ngClass]="{'invalid-textbox' :myForm2.submitted && !description.valid }" -->
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" class="form-control" name="description" ng-model="formData2.description"
+                            <input type="text" class="form-control form-control-sm" name="description" ng-model="formData2.description"
                                 required maxlength="128" 
                                 [ngClass]="{'invalid-textbox' :myForm2.submitted && !description.valid }"
                                 data-toggle="tooltip" title="Describe the List." />
                         </div>
                         <div class="form-group">
                             <label>Who can See this List <label>
-                            <select class="form-control" name="view" ng-model="formData2.view"
+                            <select class="form-control form-control-sm" name="view" ng-model="formData2.view"
                                 ng-options="grp for grp in myGrpsA" required value="{{currentListView}}"
                                 [ngClass]="{'invalid-textbox' :myForm2.submitted && !view.valid }"
                                 data-toggle="tooltip" title="Enter the Group that can See this List.">
@@ -1703,7 +1709,7 @@
                         </div>
                         <div class="form-group">
                             <label>Who can Edit this List <label>
-                            <select class="form-control" name="edit" ng-model="formData2.edit"
+                            <select class="form-control form-control-sm" name="edit" ng-model="formData2.edit"
                                 ng-options="grp for grp in myGrpsB" placeholder="Select Group" required
                                 value={{currentListEdit}}
                                 [ngClass]="{'invalid-textbox' :myForm2.submitted && !edit.valid }"
@@ -1712,14 +1718,14 @@
                         </div>
                         <div class="form-group">
                             <label>Who can Vote/Rank Items in this List <label>
-                            <select class="form-control" name="rank" ng-model="formData2.rank"
+                            <select class="form-control form-control-sm" name="rank" ng-model="formData2.rank"
                                 ng-options="grp for grp in myGrpsB" placeholder="Select Group" required
                                 value={{currentListRank}}
                                 [ngClass]="{'invalid-textbox' :myForm2.submitted && !rank.valid }"
                                 data-toggle="tooltip" title="Enter the Group that can Rank this List.">
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg" ng-click="modifyMyList()" 
+                        <button type="submit" class="btn btn-primary btn-sm" ng-click="modifyMyList()" 
                             ng-disabled="!myForm2.name.$dirty || !myForm2.description.$dirty || !myForm2.view.$dirty || 
                             !myForm2.edit.$dirty || !myForm2.rank.$dirty ||
                             (myForm2.name.$dirty && myForm2.name.$invalid) ||
@@ -1728,7 +1734,7 @@
                             (myForm2.edit.$dirty && myForm2.edit.$invalid) || 
                             (myForm2.rank.$dirty && myForm2.rank.$invalid)" data-toggle="tooltip"
                             title="Modify this List!">Modify</button>
-                        <button type="submit" class="btn btn-primary btn-lg"
+                        <button type="submit" class="btn btn-primary btn-sm"
                             ng-click="modifyMyListCancel()">Cancel</button>
                     </form>
                 </span>
@@ -1771,6 +1777,12 @@
                     <button type="submit" class="btn btn-primary btn-sm" id=buttonBackToList
                         ng-click="backToList()">Go Back</button>
                 </h3>
+                <span ng-if="isPublic && inPublicGroups(editGrp) && editGrp != 'Just Me' ">
+                    <p class="py-sm-0 my-sm-0"> Join the group: {{ editGrp }}, to Edit this List</p>
+                </span>
+                <span ng-if="isPublic && inPublicGroups(rankGrp) && rankGrp != 'Just Me' ">
+                    <p class="py-sm-0 my-sm-0"> Join the group: {{ rankGrp }}, to Rank this List</p>
+                </span>
             </div>
             
             <span ng-if="myItems2 != undefined">
@@ -1788,7 +1800,7 @@
                         <!-- th>List</th -->
                         <!-- th>Suggestion</th  -->
                         <th>Points</th>
-                        <th ng-if="!isPublic">Operations</th>
+                        <th ng-if="!isPublic" class="text-right">Operations</th>
                     </tr>
                     <!-- tbody class="problemcheckboxx" ng-repeat="aItem in myItems | orderBy: ['-rank', 'name'] 
                         | filter:q2 | startFrom:currentPage2*pageSize2 | limitTo:pageSize2" -->
@@ -1800,7 +1812,7 @@
                         <!-- td>{{ aItem.list }}</td -->
                         <!-- td>{{ aItem.suggestion }}</td -->
                         <td ng-if="myShowAllItems == 'Y'">{{ aItem.rank }}</td>
-                        <td ng-if="!isPublic">
+                        <td ng-if="!isPublic" class="text-right" >
                             <span ng-if="myItems2 == undefined && allowEdit">
                                 <button type="submit" class="btn btn-primary btn-sm"
                                     ng-click="myEditItem(aItem)" data-toggle="tooltip" 
@@ -1840,7 +1852,8 @@
                         <!-- input ng-model="q2" id="search" class="form-control" placeholder="Set Rows per Page" / -->
                     </td>
                     <td>
-                        <select ng-model="pageSize2" id="pageSize2" class="form-control btn btn-primary btn-sm">
+                        <select ng-model="pageSize2" id="pageSize2" 
+                            class="form-control form-control-sm btn btn-primary btn-sm">
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
@@ -1888,10 +1901,10 @@
                                         ng-click="myRemoveItem2(aItem2)" data-toggle="tooltip" 
                                         title="Remove from Items to Rank">Don't Rank</button>
                                     <span ng-if="$index != 0 ">
-                                        <button class="btn btn-success" ng-click="moveUp(aItem2, $index  );">Up</button>
+                                        <button class="btn btn-success btn-sm" ng-click="moveUp(aItem2, $index  );">Up</button>
                                     </span>
                                     <span ng-if="myItems2.length > ($index + 1) ">
-                                        <button class="btn btn-success"
+                                        <button class="btn btn-success btn-sm"
                                             ng-click="moveDown(aItem2, $index );">Down</button>
                                     </span>
                                 </td>
@@ -1911,7 +1924,7 @@
                 </span>
                 <!-- span ng-if="!myRankingDone"><p>myRankingDone false</p></span -->
                 <span ng-if="!myRankingDone">
-                    <button class="btn btn-success" ng-click="saveMyRanking();"
+                    <button class="btn btn-success btn-sm" ng-click="saveMyRanking();"
                     data-toggle="tooltip" 
                     title="Save your Ranking when set they way you want">Save My Ranking</button>
                 </span>
@@ -1932,21 +1945,21 @@
                         <form name="myItemForm">
                             <div class="form-group">
                                 <label>Item Name</label>
-                                <input type="text" class="form-control" name="name" ng-model="formItemData.name"
+                                <input type="text" class="form-control form-control-sm" name="name" ng-model="formItemData.name"
                                     required placeholder="Item Name" maxlength="32"
                                     [ngClass]="{'invalid-textbox' :myItemForm.submitted && !name.valid }"
                                     data-toggle="tooltip" title="Enter the Item name. Must be unique." />
                             </div>
                             <div class="form-group">
                                 <label>Description</label>
-                                <input type="text" class="form-control" name="description"
+                                <input type="text" class="form-control form-control-sm" name="description"
                                     ng-model="formItemData.description" placeholder="Describe this Item" required
                                     maxlength="128"
                                     [ngClass]="{'invalid-textbox' :myItemForm.submitted && !description.detail }"
                                     data-toggle="tooltip" title="Describe the Item." />
                             </div>
                             <!-- button type="submit" class="btn btn-warning btn-lg">Add</button -->
-                            <button type="submit" class="btn btn-primary btn-lg" ng-click="createMyItem()" 
+                            <button type="submit" class="btn btn-primary btn-sm" ng-click="createMyItem()" 
                                 ng-disabled="!myItemForm.name.$dirty || !myItemForm.description.$dirty || 
                                 (myItemForm.name.$dirty && myItemForm.name.$invalid) || 
                                 (myItemForm.description.$dirty && myItemForm.description.$invalid) " data-toggle="tooltip"
@@ -1965,25 +1978,25 @@
             <form name="myModItemForm">
                 <div class="form-group">
                     <label>Item Name</label>
-                    <input type="text" class="form-control" name="name" ng-model="formModItemData.name"
+                    <input type="text" class="form-control form-control-sm" name="name" ng-model="formModItemData.name"
                         required placeholder="Item Name" maxlength="32"
                         [ngClass]="{'invalid-textbox' :myModItemForm.submitted && !name.valid }"
                         data-toggle="tooltip" title="Enter the Item name. Must be unique." />
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <input type="text" class="form-control" name="description"
+                    <input type="text" class="form-control form-control-sm" name="description"
                         ng-model="formModItemData.description" placeholder="Describe this Item" required
                         maxlength="128"
                         [ngClass]="{'invalid-textbox' :myModItemForm.submitted && !description.detail }"
                         data-toggle="tooltip" title="Describe the Item." />
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="modifyMyItem()" 
+                <button type="submit" class="btn btn-primary btn-sm" ng-click="modifyMyItem()" 
                     ng-disabled="!myModItemForm.name.$dirty || !myModItemForm.description.$dirty || 
                     (myModItemForm.name.$dirty && myModItemForm.name.$invalid) || 
                     (myModItemForm.description.$dirty && myModItemForm.description.$invalid) " data-toggle="tooltip"
                     title="Modify this Item!">Modify</button>
-                    <button type="submit" class="btn btn-primary btn-lg"
+                    <button type="submit" class="btn btn-primary btn-sm"
                     ng-click="modifyMyItemCancel()">Cancel</button>
             </form>
         </span>
@@ -1996,22 +2009,22 @@
                         <form ng-if="!isPublic" name="myForm3">
                             <div class="form-group">
                                 <label>Comment</label>
-                                <input type="text" class="form-control" name="comment" ng-model="formData3.comment"
+                                <input type="text" class="form-control form-control-sm" name="comment" ng-model="formData3.comment"
                                     required maxlength="128"
                                     [ngClass]="{'invalid-textbox' :myForm3.submitted && !comment.valid }"
                                     data-toggle="tooltip" title="Add a comment about the List." />
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg" ng-click="addCommentOnList()"
+                            <button type="submit" class="btn btn-primary btn-sm" ng-click="addCommentOnList()"
                                 ng-disabled="!myForm3.comment.$dirty ||
                                 (myForm3.comment.$dirty && myForm3.comment.$invalid)" data-toggle="tooltip"
                                 title="Comment on this List.">Add</button>
                         </form>
 
                         <span ng-if="!isPublic  && 0 >= myComments.length">
-                            <p>No comments on this List, yet. Add one. </p>
+                            <p class="py-sm-0 my-sm-0">No comments on this List, yet. Add one. </p>
                         </span>
                         <span ng-if="isPublic  && 0 >= myComments.length">
-                                <p>No comments on this List, yet. </p>
+                                <p class="py-sm-0 my-sm-0">No comments on this List, yet. </p>
                         </span>
                         <span ng-if="myComments.length > 0">
                             <table ng-table="myItemsTable2Params" border="0" cellspacing="0" cellpadding="0"
@@ -2065,7 +2078,7 @@
                                     </td>
                                     <td>
                                         <select ng-model="pageSize3" id="pageSize3"
-                                            class="form-control btn btn-primary btn-sm">
+                                            class="form-control form-control-sm btn btn-primary btn-sm">
                                             <option value="5">5</option>
                                             <option value="10">10</option>
                                             <option value="15">15</option>

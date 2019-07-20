@@ -11,43 +11,39 @@
             word-wrap: break-word;
         }
     </style>
-    <!-- style>
-        body         { padding-top:80px; }
-    </style -->
+
 </head>
 <body class="bg-secondary text-white">
-        <div id='mainx' class="container-fluid">
-            <% include myNavBar %>
-<!--  body -->
-<!-- div class="container" -->
+<div id='mainx' class="container-fluid">
+<% include myNavBar %>
 <div ng-viewx>
-        <div ng-controller="mainController">
-            <div class="container">
-<div class="col-sm-6 col-sm-offset-3">
-    <h1><span class="fa fa-sign-in"></span> Top 10 Lists - Login</h1>
-    <% if (message.length > 0) { %>
-        <div class="alert alert-danger"><%= message %></div>
-    <% } %>
-
-    <form action="/login" method="post">
-        <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control" name="email">
+    <div ng-controller="mainController">
+        <div class="container">
+            <div class="col-sm-6 col-sm-offset-3">
+                <h1><span class="fa"></span>Login</h1>
+                <% if (message.length > 0) { %>
+                    <div class="alert alert-danger"><%= message %></div>
+                <% } %>
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <label class="py-sm-0 my-sm-0">Email</label>
+                        <input type="text" class="form-control form-control-sm" name="email"
+                        data-toggle="tooltip" title="Enter your Email Username">
+                    </div>
+                    <div class="form-group">
+                        <label class="py-sm-0 my-sm-0">Password</label>
+                        <input type="password" class="form-control form-control-sm" name="password"
+                        data-toggle="tooltip" title="Enter your Password">
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-sm"
+                        data-toggle="tooltip" title="Select to Login">Login</button>
+                </form>
+                <hr />
+                    <p class="py-sm-0 my-sm-0">Need an account? <a href="/signup">Signup</a></p>
+                    <p class="py-sm-0 my-sm-0">Or go <a href="/">Home</a></p>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password">
-        </div>
-        <button type="submit" class="btn btn-warning btn-lg">Login</button>
-    </form>
-    <hr>
-
-    <p>Need an account? <a href="/signup">Signup</a></p>
-    <p>Or go <a href="/">Home</a></p>
-
-</div>
-</div>
-</div>
+    </div>
 </div>
 </div>
 </body>

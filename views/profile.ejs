@@ -11,67 +11,67 @@
             word-wrap: break-word;
         }
     </style>
-    <!-- style>
-        body         { padding-top:80px; word-wrap:break-word; }
-    </style -->
 </head>
 <body class="bg-secondary text-white">
-    <div id='mainx' class="container-fluid">
-        <% include myNavBar %>
-<!-- body>
-<div class="container" -->
+<div id='mainx' class="container-fluid">
+    <% include myNavBar %>
     <div ng-viewx>
         <div ng-controller="mainController">
             <div class="container">
-    <% if (message.length > 0) { %>
-        <div class="alert alert-danger"><%= message %></div>
-    <% } %>
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="well">
-                <h3><span class="fa fa-user"></span> Top 10 Lists - Your Profile </h3>
-                <% if (user.local.email) { %>
-                    <p>
-                        <strong>Email</strong>: <%= user.local.email %><br>
-                        <strong>Screen Name</strong>: <%= user.local.screenName %><br>
-                        <strong>Private</strong>: <%= user.local.private %><br>
-                        
-                        <form action="/changeProfile" method="post">
-                            <div class="form-group">
-                                <label>On Save Change Screen Name to: </label>
-                                <input type="text" class="form-control" 
-                                maxlength="32" name="screenNameNew"  value="<%= user.local.screenName %>">
-                            </div>
-                            <div class="form-group">
-                                <label>On Save change Private (Y/N) to: </label>
-                                <select type="text" class="form-control" name="privateNew"  
-                                value="<%= user.local.private %>" > 
-                                <% if (user.local.private == "N") { %>
-                                    <option value="Y" >Y</option>
-                                    <option value="N" selected>N</option>
-                                <% } else { %>
-                                    <option value="Y" selected>Y</option>
-                                    <option value="N" >N</option>
-                                <% } %>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-warning btn-lg">Save</button>
-                        </form>
-                    </p>
-                   
-                    <a href="/chgPassword" class="btn btn-default"  >Change Password</a>
-                    <!-- a href="/unlink/local" class="btn btn-default">Unlink</a -->
-                    <a href="/unlink/local" class="btn btn-default"  onclick="return confirm('Are you sure you want to be removed completely from this app?')">Remove Me!</a>
-                   
-                    <a href="javascript:history.go(-1)" class="btn btn-default btn-sm">Close Your Profile</a>
-                <% } else { %>
-                    <a href="/connect/local" class="btn btn-default">Connect Local</a>
+                <% if (message.length > 0) { %>
+                    <div class="alert alert-danger"><%= message %></div>
                 <% } %>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="well">
+                            <h3><span class="fa"></span>Your Profile</h3>
+                            <% if (user.local.email) { %>
+                                <p class="py-sm-0 my-sm-0">
+                                <strong>Email</strong>: <%= user.local.email %><br>
+                                <strong>Screen Name</strong>: <%= user.local.screenName %><br>
+                                <strong>Private</strong>: <%= user.local.private %><br>
+                                </p>
+                                <form action="/changeProfile" method="post">
+                                    <div class="form-group">
+                                        <label class="py-sm-0 my-sm-0">On Save Change Screen Name to: </label>
+                                        <input type="text" class="form-control form-control-sm" 
+                                            maxlength="32" name="screenNameNew"  value="<%= user.local.screenName %>"
+                                            data-toggle="tooltip" title="Enter a Screen Name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="py-sm-0 my-sm-0">On Save change Private (Y/N) to: </label>
+                                        <select type="text" class="form-control form-control-sm" name="privateNew"  
+                                            value="<%= user.local.private %>"
+                                            data-toggle="tooltip" 
+                                            title="Make yourself Private to prevent others from putting you in Groups" > 
+                                            <% if (user.local.private == "N") { %>
+                                                <option value="Y" >Y</option>
+                                                <option value="N" selected>N</option>
+                                            <% } else { %>
+                                                <option value="Y" selected>Y</option>
+                                                <option value="N" >N</option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning btn-sm"
+                                        data-toggle="tooltip" 
+                                        title="Save your changes">Save</button>
+                                </form>
+                                <hr />
+                   
+                                <a href="/chgPassword" class="btn btn-default btn-sm"  >Change Password</a>
+                                <!-- a href="/unlink/local" class="btn btn-default">Unlink</a -->
+                                <a href="/unlink/local" class="btn btn-default btn-sm"  onclick="return confirm('Are you sure you want to be removed completely from this app?')">Remove Me!</a>
+                   
+                                <a href="javascript:history.go(-1)" class="btn btn-default btn-sm">Close Your Profile</a>
+                            <% } else { %>
+                                <a href="/connect/local" class="btn btn-default btn-sm">Connect Local</a>
+                            <% } %>
+                        </div>
+                    </div>       
+                </div>
             </div>
-        </div>       
-    </div>
-    </div>
-    </div>
+        </div>
     </div>
 </div>
 </body>

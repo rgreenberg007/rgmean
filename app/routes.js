@@ -124,7 +124,7 @@ module.exports = function(app, passport) {
         console.log("routes.js /testmyPublicLists reached.");
         failureFlash : true;
         //res.render('testmyPublicLists.ejs', {
-        res.render('testmyLists.ejs', {
+        res.render('testmyPublicLists.ejs', {
             user : req.user,
             message: "",
             public: "T"
@@ -863,7 +863,6 @@ module.exports = function(app, passport) {
         console.log("req.body.grpOwner: " + req.body.grpOwner);
         //console.log("res.body: " + JSON.stringify(res.body));
 
-        // create a toDoGrp, information comes from AJAX request from Angular
         userGrp.create({
            grp: req.body.grp,
            email: req.body.email,
@@ -935,9 +934,76 @@ module.exports = function(app, passport) {
                  });
                 //getUserGrpsDetails(res);
             }
+        });
+    });
+
+     app.post('/api/userGrpDetailUpdate', function (req, res) {
+        console.log("routes.js: app.post /api/userGrpDetailUpdate about to update");
+        console.log("req.body: " + JSON.stringify(req.body));
+        console.log("req.body._id: " + req.body._id);
+        console.log("req.body.prevGrp: " + req.body.prevGrp);
+        console.log("req.body.grp2: " + req.body.grp2);
+        console.log("req.body.detail2: " + req.body.detail2);
+        console.log("req.body.private2: " + req.body.private2);
+        // if grp name is not orignal and already exists then return error and do not do any updating
+        // modify usergrps and mylists only if grp changed for all finds that match grp in usergrps
+        // and that match grp, view, edit, rank in mylists
+        // checking done at server via route to update
+        userGrpDetail.findByIdAndUpdate( req.body._id, {
+            grp: req.body.grp2,
+            detail: req.body.detail2,
+            private: req.body.private2
+         }, function (err, user) {
+            if (err) {
+                 if (err.name === 'MongoError' && err.code === 11000) {
+                    console.log("dup grp name found!");
+                    return res.status(500).send({ user : req.user, message : "Group Name already taken!" });
+                  } else {
+                    console.log("Some userGrpDetail.findByIdAndUpdate error found!");
+                    return res.status(500).send(err);
+                  }
+            } else {
+                // if name changed then update  usergrps and  mylists where needed.
+                if (req.body.prevGrp != req.body.grp2) {
+                    userGrp.update({"grp": req.body.prevGrp}, {"$set":{"grp": req.body.grp2}}, {"multi": true}, function (err, user) {
+                        if (err) { console.log("Some userGrp.update on grp error found!");
+                            return res.status(500).send(err);
+                        } else { console.log("No error found!");
+                            // rank edit view grp
+                            myList.update({"grp": req.body.prevGrp}, {"$set":{"grp": req.body.grp2}}, {"multi": true}, function (err, user) {
+                                if (err) { console.log("Some myList.update on grp error found!");
+                                    return res.status(500).send(err);
+                                } else { console.log("No error found!");
+                                    myList.update({"view": req.body.prevGrp}, {"$set":{"view": req.body.grp2}}, {"multi": true}, function (err, user) {
+                                        if (err) { console.log("Some myList.update on view error found!");
+                                            return res.status(500).send(err);
+                                        } else { console.log("No error found!");
+                                            myList.update({"edit": req.body.prevGrp}, {"$set":{"edit": req.body.grp2}}, {"multi": true}, function (err, user) {
+                                                if (err) { console.log("Some myList.update on edit error found!");
+                                                    return res.status(500).send(err);
+                                                } else { console.log("No error found!");
+                                                    myList.update({"rank": req.body.prevGrp}, {"$set":{"rank": req.body.grp2}}, {"multi": true}, function (err, user) {
+                                                        if (err) { console.log("Some myList.update on rank error found!");
+                                                            return res.status(500).send(err);
+                                                        } else { console.log("No error found!");
+                                                            getUserGrpsDetailsForUser(req.user.local.email, res);
+                                                        };
+                                                    });
+                                                };
+                                            });
+                                        };
+                                    });
+                                };
+                            });
+                        };
+                    });
+                } else {
+                    getUserGrpsDetailsForUser(req.user.local.email, res);
+                };  
+            };
          });
-     });
-    
+    });
+
     app.post('/api/userGrpDetailA', function (req, res) {
         console.log("routes.js: app.post /api/userGrpDetailA about to create");
         console.log("req.user: " + JSON.stringify(req.user));
@@ -1000,6 +1066,28 @@ module.exports = function(app, passport) {
             // get and return all the Users in Grps after you delete a user from a grp
             //getUserGrps(res);
             getUserGrpsA(req.user.local.email, res);
+        });
+    });
+
+    app.post('/api/userGrpsDelUser2', function (req, res) {
+        console.log("routes.js: app.post /api/userGrpsDelUser about to delete");
+        console.log("req.body: " + JSON.stringify(req.body));
+        
+        console.log("req.body.grp: " + req.body.grp);
+        console.log("req.body.email: " + req.body.email);
+        console.log("req.body.grpOwner: " + req.body.grpOwner);
+        userGrp.remove({
+           grp: req.body.grp,
+           email: req.body.email,
+           grpOwner: req.body.grpOwner
+        }, function (err, userGrp) {
+            if (err)
+                res.send(err);
+            // get and return all the Users in Grps after you delete a user from a grp
+            //getUserGrps(res);
+            //getUserGrpsA(req.user.local.email, res);
+            getUserGrpsC(req.body.grp, res);
+
         });
     });
 
@@ -1420,7 +1508,7 @@ function getUsers3(usersToExclude, res) {
         res.json(users); // return all todos in JSON format
     //}).sort( {"local.screenName" : 1} ).where ({"local.email": {$nin: usersToExclude}});
     //}).sort( {"local.screenName" : 1} ).where ({"local.email": {$nin: usersToExclude} , "private" : {$ne : "Y"} });
-}).sort( {"local.screenName" : 1} ).where ({ "local.private" : "N" , "local.email": {$nin: usersToExclude} } );
+}).sort( {"local.email" : 1} ).where ({ "local.private" : "N" , "local.email": {$nin: usersToExclude} } );
     // { field: { $nin: [ <value1>, <value2> ... <valueN> ]} }
 };
 
@@ -1903,6 +1991,31 @@ function getUserGrpsB(mygrp_id, res) {
         ////console.log("getUerGrpsB " + JSON.stringify(userGrps));
         ////res.json(userGrps); 
     ////}).sort( {grp : 1, email : 1} ).where ( {grp : mygrp_id} ) ;
+};
+
+function getUserGrpsC(mygrp_id, res) {
+    var grpDetail = "";
+    var grpPrivate = "";
+    userGrpDetail.find(function (err, userGrpsDetailsX) {
+        if (err) {
+            return res.send(err);
+        }
+        //res.json(userGrpsDetailsA); 
+        console.log("getUerGrpsB userGrpsDetailsX " + JSON.stringify(userGrpsDetailsX));
+        grpDetail = userGrpsDetailsX[0].detail;
+        grpPrivate = userGrpsDetailsX[0].private;
+
+        userGrp.find(function (err, userGrps) {
+            if (err) {
+                res.send(err);
+            }
+            //userGrps[userGrps.length] = grpDetail;
+            //userGrps[userGrps.length] = grpPrivate;
+            console.log("getUerGrpsB " + JSON.stringify(userGrps));
+            res.json(userGrps); 
+        }).sort( {grp : 1, email : 1} ).where ( {grp : mygrp_id} ) ;
+     
+    }).where ( {grp : mygrp_id} ) ;
 };
 
 function getUserGrpOwners(mygrp_id, res) {

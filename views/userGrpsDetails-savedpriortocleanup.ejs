@@ -1,17 +1,16 @@
 <!doctype html>
-<!-- userGrpsDetails - for showing Groups owed by the current User and
-    for allowing the User to manage these Groups and which Users are in them.
-    This shows the Groups the current User owns.
-    This allows the current User to Create New Groups, Modify Existing Groups and Delete Empty Groups.
-    This allows the current User to see the Users in each of their Groups, 
-    and to Add and Remove Users from their Groups.
--->
 <html ng-app="scotchTodo" lang="en">
+
 <head X-Content-Type-Options: nosniff>
+    <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+    <!-- ??? Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- ??? Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
@@ -27,24 +26,25 @@
         var app = angular.module('userGrpsDetailsController', [])
             .controller('mainController', ['$scope', '$http', 'userGrpsDetails', '$filter', 
                 function ($scope, $http, userGrpsDetails, $filter) {
-                //console.log("userGrpsDetails.ejs: userGrpsDetailsController mainController reached");
-                $scope.formData = {};               // for creating a new group - should use a better name
-                $scope.formData2 = {};              // for modifying the group - should use a better name
-                $scope.formData3 = {};              // for adding users to the group - should use a better name
+                console.log("userGrpsDetails.ejs: userGrpsDetailsController mainController reached");
+                $scope.formData = {};
+                $scope.formData2 = {};
+                $scope.formData3 = {};
                 $scope.loading = true;
                 $scope.myUserGrpsTableParams = {};
-                $scope.selectToAdd = [];            // for list of users to select from for adding a user to a group 
-                $scope.noMoreUsersToAdd = true;     // Set to indicate all Users are already in the Group and no more Users can be added
-                // initially only show the create Group form along with the my groups table
-                $("#grpnametaken").hide();          // shown on Group Creation if the Group Name is already taken
-                $("#grpnametaken2").hide();         // shown on Group Modifcation if the Group Name is already taken 
-                $("#modGroupForm").hide();          // the Modify Group form
-                $("#userInfoForm").hide();          // the User info for a Group. From here the Users in the given Group are managed
-                $("#createGroupForm").show();       // the Create Group form
-                $("#addUserToGrpForm").hide();      // The Add User to Group selection control
-                $("#allUsersAdded").hide();         // Set to indicate all Users are already in the Group and no more Users can be added
- 
-                // initiallization for paging for my Groups and for Users in a Group
+                $scope.selectToAdd = [];
+                $scope.noMoreUsersToAdd = true;
+                $("#grpnametaken").hide();
+                $("#grpnametaken2").hide();
+                //var userEmail = "<!-- %= user.local.email % -->";
+                //console.log("userGrpsDetails.ejs: userEmail: ", userEmail);
+
+                $("#modGroupForm").hide();
+                $("#userInfoForm").hide();
+                $("#createGroupForm").show();
+                $("#addUserToGrpForm").hide();
+                $("#allUsersAdded").hide();
+
                 $scope.currentPage = 0;
                 $scope.currentPage2 = 0;
                 $scope.pageSize = 10;
@@ -52,7 +52,7 @@
                 $scope.q = '';
                 $scope.q2 = '';
 
-                // Get the userGrpDetails for display of the Groups owned by the current User
+                // GET =====================================================================
                 userGrpsDetails.get()
                     .success(function (data) {
                         console.log("userGrpsDetails.ejs: mainController userGrpsDetails.get success");
@@ -60,46 +60,50 @@
                         $scope.loading = false;
                         $("#grpnametaken").hide();
                     });
-
-                // Create a new Group
+                // CREATE ==================================================================
                 $scope.createUserGrpDetail = function () {
                     console.log("userGrpsDetails.ejs:  mainController createUserGrpDetail ");
-                    // validate the formData to make sure that something is there - done in the HTML below
-                    // if form is empty, nothing will happen - can't really happen since the button is not enabled unless this is set
+                    // validate the formData to make sure that something is there
+                    // if form is empty, nothing will happen
                     if ($scope.formData.grp != undefined) {
                         $scope.loading = true;
+                        //$scope.formData.email = userEmail; // emailx;
+                        //$scope.formData.grpOwner = 'Y';
                         // call the create function from our service (returns a promise object)
-                        //console.log("userGrpsDetails.ejs: $scope.formData: " + JSON.stringify($scope.formData));
+                        console.log("userGrpsDetails.ejs: $scope.formData: " + JSON.stringify($scope.formData));
+                        //userGrps.create( {"grp":$scope.userGrpName, "grpOwner":"Y"} )
                         userGrpsDetails.create($scope.formData)
                             .error(function (data) {
                                 $scope.loading = false;
                                 console.log("userGrpsDetails.ejs: createUserGrpDetail ERROR data: " + JSON.stringify(data));
                                 console.log("userGrpsDetails.ejs: createUserGrpDetail ERROR data.message: " + data.message);
                                 message = data.message;
-                                $("#grpnametaken").show();  // assume this is the error
+                                $("#grpnametaken").show();
+
                             })
                             .success(function (data) {
                                 $scope.loading = false;
-                                $scope.formData = {}; // clear the form so our user is ready to enter another Group
+                                $scope.formData = {}; // clear the form so our user is ready to enter another
                                 //console.log("userGrpsDetails.ejs: createUserGrpDetail $scope.userGrpsDetails: " + JSON.stringify($scope.userGrpsDetails) );
-                                $scope.userGrpsDetails = data; // set the data for display with the new Group included 
+                                $scope.userGrpsDetails = data; // 
                                 $("#grpnametaken").hide();
                                 console.log("userGrpsDetails.ejs: createUserGrpDetail $scope.userGrpsDetails: " + JSON.stringify($scope.userGrpsDetails));
                             });
                     }
                 };
 
-                // Delete a Group - only available when no users (other than the owner) is in the Group 
                 $scope.deleteGrpDetail = function (grpName) {
                     console.log("userGrpsDetails.ejs:  mainController deleteGrpDetail grpName: " + grpName.grp);
+                    //$scope.loading = true;
+
                     if (confirm('Are you sure to delete this record ?') == true) {
                         console.log(" yes delete");
                         $scope.loading = true;
                         userGrpsDetails.delGrp(grpName.grp)
                             .success(function (data) {
                                 $scope.loading = false;
-                                $scope.formData = {}; 
-                                $scope.userGrpsDetails = data; // set the data for display with the deleted Group now excluded
+                                $scope.formData = {}; // clear the form so our user is ready to enter another
+                                $scope.userGrpsDetails = data; // 
                                 $("#grpnametaken").hide();
                                 $("#modGroupForm").hide();
                                 $("#userInfoForm").hide();
@@ -112,16 +116,13 @@
                     }
                 };
 
-                // Modify a Group
                 $scope.modifyUserGrpDetail = function () {
                     //console.log("userGrpsDetails.ejs:  mainController modifyUserGrpDetail");
+                        // just update usergrpdetails
                         // if grp name is not orignal and already exists then return error and do not do any updating
-                        // otherwise
-                        //   update usergrpdetails
-                        //   modify usergrps and mylists only if grp changed 
-                        //     for all finds that match grp in usergrps
-                        //     and that match grp, view, edit, rank in mylists
-                        // the above checking is done at the server via the route to update
+                        // modify usergrps and mylists only if grp changed for all finds that match grp in usergrps
+                        // and that match grp, view, edit, rank in mylists
+                        // checking done at server via route to update
                         $scope.formData2._id = $scope.currentGrpId;
                         $scope.formData2.prevGrp = $scope.currentGrpGrp;
                         userGrpsDetails.update($scope.formData2)
@@ -136,7 +137,7 @@
                                 $scope.loading = false;
                                 $scope.formData2 = {}; // clear the form so our user is ready to enter another
                                 //console.log("userGrpsDetails.ejs: createUserGrpDetail $scope.userGrpsDetails: " + JSON.stringify($scope.userGrpsDetails) );
-                                $scope.userGrpsDetails = data;  // set the data for display with the modified Group information 
+                                $scope.userGrpsDetails = data; // 
                                 $("#grpnametaken2").hide();
                                 //console.log("userGrpsDetails.ejs: createUserGrpDetail $scope.userGrpsDetails: " + JSON.stringify($scope.userGrpsDetails));
                                 $("#modGroupForm").hide();
@@ -179,7 +180,6 @@
                     $scope.currentGrpDetail = myGrp.detail;
                     $scope.currentGrpPrivate = myGrp.private;
 
-                    // Get the User in this Group - note special values being passed as first two items
                     userGrpsDetails.detOfGrp(myGrp.grp)
                         .success(function (data) {
                             $scope.loading = false;
@@ -205,7 +205,6 @@
                     $("#createGroupForm").show();
                 };
 
-                // Remove a User from a Group
                 $scope.removeUserFromGrp = function (myGrp) {
                     //console.log("userGrpsDetails.ejs:  mainController removeUserFromGrp myGrp.email: ", myGrp.email);
                     if (confirm('Really Remove this User from this Group?') == true) {
@@ -257,16 +256,21 @@
                             //$("#addUserToGrpForm").show();
                             //console.log("showUsersToAdd $scope.selectToAdd: " + JSON.stringify($scope.selectToAdd) );
                         });
+
+                    //$("#modGroupForm").hide();
+                    //$("#userInfoForm").show();
+                    //$("#createGroupForm").hide();
                 };
 
                 $scope.addUserToGrp = function () {
                     console.log(" addUserToGrp  $scope.formData3: " + JSON.stringify($scope.formData3) +
                         " $scope.currentGrpGrp: " + $scope.currentGrpGrp);
                     //$("#addUserToGrpForm").show();
-                    // Add the user to the group and then get an updated list of users in the Group and Users left to add.
-                    // what if list is empty ?? Handled in HTML below
+                    // Add the user to the group and then get an updated list of users left to add.
+                    // what if list is empty ??
                     $scope.loading = true;
                     $scope.formData3.grp = $scope.currentGrpGrp;
+                    //$scope.formData3.email = $scope.formData3.email;
                     $scope.formData3.grpOwner = 'N';
                     userGrpsDetails.createGrpEntry($scope.formData3)
                         .success(function (data) {
@@ -306,6 +310,9 @@
                                             //console.log("showUsersToAdd $scope.selectToAdd: " + JSON.stringify($scope.selectToAdd) );
                                     });
                             });
+                            //$("#modGroupForm").hide();
+                            //$("#userInfoForm").show();
+                            //$("#createGroupForm").hide();
                     });
                 };
 
@@ -366,8 +373,6 @@
             });
     </script>
     <script>
-        // Note: Some of these are not used and some are used in other modules and being kept in case the modules are later combined.
-        // Some are also for testing purposes. 
         angular.module('userGrpsDetailsService', [])
             .factory('userGrpsDetails', ['$http', function ($http) {
                 return {

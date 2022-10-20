@@ -22,7 +22,7 @@
     "express": "~4.14.0",
     "express-session": "~1.14.1",
     "method-override": "~2.3.6",
-    "mongoose": "~4.13.1",
+    "mongoose": "~4.13.21",
     "morgan": "~1.7.0",
     "ngx-pagination": "^4.0.0",
     "paginate": "^0.2.0",
